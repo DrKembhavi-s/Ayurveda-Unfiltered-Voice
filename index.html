@@ -128,7 +128,7 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
       <button onclick="setRole('fac')">👨‍🏫 Faculty</button>
       <button onclick="setRole('admin')">🔐 Admin</button>
     </div>
-    <div class="alert alert-warn" id="roleHint" style="font-size:12px;"></div>
+
     <div class="form-group"><label>Username</label><input type="text" id="lu" placeholder="Enter username" /></div>
     <div class="form-group"><label>Password</label><input type="password" id="lp" placeholder="Enter password" onkeypress="if(event.key==='Enter')doLogin()" /></div>
     <button class="btn btn-grad" style="width:100%;padding:14px;font-size:15px;" onclick="doLogin()">Sign In →</button>
@@ -534,12 +534,12 @@ Dr. Kembhavi's Ayurveda Unfiltered Voice needs your perspectives on critical ref
 // ║  Your Apps → Web App → Config                 ║
 // ╚════════════════════════════════════════════════╝
 const firebaseConfig = {
-  apiKey:            "AIzaSyDqNQne9mqtSSJdMGZxv-4y-tMGRehs02g",
-  authDomain:        "ayurveda-unfiltered-voice.firebaseapp.com",
-  projectId:         "ayurveda-unfiltered-voice",
-  storageBucket:     "ayurveda-unfiltered-voice.firebasestorage.app",
-  messagingSenderId: "220882680704",
-  appId:             "1:220882680704:web:dd866513680c256e101f65"
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
@@ -551,12 +551,7 @@ const CREDS = {
   fac:   {u:'ayurfaculty2025', p:'faculty@ayur',  role:'FAC'},
   admin: {u:'ayuradmin2025',   p:'admin@vaidya',  role:'ADMIN'}
 };
-const HINTS = {
-  ug:   'Username: <b>ayurstudent2025</b> &nbsp;·&nbsp; Password: <b>vaidya@123</b>',
-  pg:   'Username: <b>aypgscholar2025</b> &nbsp;·&nbsp; Password: <b>pgvaidya@123</b>',
-  fac:  'Username: <b>ayurfaculty2025</b> &nbsp;·&nbsp; Password: <b>faculty@ayur</b>',
-  admin:'Username: <b>ayuradmin2025</b> &nbsp;·&nbsp; Password: <b>admin@vaidya</b>'
-};
+
 const CAT_LABELS = {academic:'Academic Reforms',clinical:'Clinical Practice',research:'Research & Dev',administrative:'Administrative',development:'Development',regulatory:'Regulatory'};
 
 // ── STATE ──
@@ -575,7 +570,6 @@ const notify = (msg,type='success')=>{const n=document.createElement('div');n.cl
 function setRole(r){
   selectedRole=r;
   document.querySelectorAll('#loginTabs button').forEach((b,i)=>b.classList.toggle('active',['ug','pg','fac','admin'][i]===r));
-  document.getElementById('roleHint').innerHTML=HINTS[r];
 }
 setRole('ug');
 
