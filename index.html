@@ -1,1165 +1,1020 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dr. Kembhavi's Voice of Ayurveda Platform</title>
-    <meta name="description" content="A platform to share your views about academic, clinical, research, administrative and development reforms in Ayurveda">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-            border-radius: 10px;
-        }
-        
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-        
-        .subtitle {
-            text-align: center;
-            color: #666;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-        
-        .description {
-            text-align: center;
-            color: #555;
-            font-size: 1em;
-            margin-top: 10px;
-            padding: 0 20px;
-            line-height: 1.8;
-        }
-        
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            margin: 30px 0;
-            flex-wrap: wrap;
-        }
-        
-        .tab-button {
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            padding: 15px 25px;
-            margin: 5px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            color: #2c3e50;
-            transition: all 0.3s ease;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-        }
-        
-        .tab-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        
-        .tab-button.active {
-            background: #2c3e50;
-            color: white;
-        }
-        
-        .tab-content {
-            display: none;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
-        }
-        
-        .forum-section {
-            margin-bottom: 30px;
-        }
-        
-        .post-form {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        
-        input, textarea, select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-        }
-        
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        textarea {
-            height: 120px;
-            resize: vertical;
-        }
-        
-        .btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        
-        .btn:disabled {
-            background: #95a5a6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .posts-container {
-            margin-top: 30px;
-        }
-        
-        .post-item {
-            background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .post-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .post-author {
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        
-        .post-date {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .post-content {
-            line-height: 1.8;
-            margin-bottom: 15px;
-        }
-        
-        .post-category {
-            background: #667eea;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 15px;
-            font-size: 12px;
-            display: inline-block;
-        }
-        
-        .coalition-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-        
-        .coalition-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-        
-        .coalition-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .card-title {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-        
-        .compliance-timeline {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-top: 20px;
-        }
-        
-        .timeline-item {
-            display: flex;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            border-left: 4px solid #28a745;
-        }
-        
-        .timeline-item.upcoming {
-            border-left-color: #ffc107;
-        }
-        
-        .timeline-item.overdue {
-            border-left-color: #dc3545;
-        }
-        
-        .timeline-date {
-            font-weight: bold;
-            color: #2c3e50;
-            margin-right: 20px;
-            min-width: 120px;
-        }
-        
-        .proposal-builder {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-top: 20px;
-        }
-        
-        .section-divider {
-            height: 2px;
-            background: linear-gradient(to right, #667eea, #764ba2);
-            margin: 30px 0;
-            border-radius: 2px;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-        
-        .empty-state-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-            opacity: 0.3;
-        }
-        
-        .empty-state-text {
-            font-size: 1.2em;
-            margin-bottom: 10px;
-        }
-        
-        .empty-state-subtext {
-            font-size: 0.9em;
-            opacity: 0.7;
-        }
-        
-        .login-prompt {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .login-prompt h3 {
-            color: #856404;
-            margin-bottom: 10px;
-        }
-        
-        .stats-banner {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            text-align: center;
-        }
-        
-        .stat-box {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-        }
-        
-        .stat-box h3 {
-            font-size: 2.5em;
-            margin-bottom: 5px;
-        }
-        
-        .stat-box p {
-            font-size: 0.9em;
-            opacity: 0.9;
-        }
-        
-        .cta-banner {
-            margin-top: 40px;
-            padding: 40px;
-            background: linear-gradient(135deg, #ff9a9e, #fecfef);
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        
-        .cta-banner h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            border: none;
-        }
-        
-        .cta-banner p {
-            font-size: 18px;
-            color: #666;
-            margin-bottom: 30px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .cta-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        
-        footer {
-            margin-top: 50px;
-            padding: 30px;
-            background: rgba(44, 62, 80, 0.9);
-            color: white;
-            border-radius: 15px;
-            text-align: center;
-        }
-        
-        footer h3 {
-            margin-bottom: 15px;
-        }
-        
-        footer p {
-            margin: 15px 0;
-            opacity: 0.8;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            h1 {
-                font-size: 1.8em;
-            }
-            
-            .subtitle {
-                font-size: 1em;
-            }
-            
-            .description {
-                font-size: 0.9em;
-            }
-            
-            .nav-tabs {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .tab-button {
-                margin: 5px 0;
-                width: 200px;
-            }
-            
-            .coalition-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .timeline-item {
-                flex-direction: column;
-            }
-            
-            .timeline-date {
-                margin-bottom: 10px;
-            }
-            
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dr. Kembhavi's Ayurveda Unfiltered Voice</title>
+<meta name="description" content="A confidential platform for reform voices in Ayurveda — Academic, Clinical, Research, Administrative, Development">
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<style>
+:root{
+  --grad:linear-gradient(135deg,#667eea,#764ba2);
+  --purple:#764ba2;--blue:#667eea;
+  --orange:#f97316;--green:#25D366;
+  --secondary:#16a34a;--accent:#2563eb;--danger:#dc2626;
+  --bg:#f0f2ff;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--grad);min-height:100vh;color:var(--text);}
+.hidden{display:none!important;}
+.container{max-width:920px;margin:0 auto;padding:20px 16px;}
+.btn{padding:10px 22px;border:none;border-radius:25px;cursor:pointer;font-size:14px;font-weight:700;transition:all .2s;}
+.btn-grad{background:var(--grad);color:#fff;} .btn-grad:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(118,75,162,.4);}
+.btn-orange{background:var(--orange);color:#fff;} .btn-orange:hover{background:#ea6c00;}
+.btn-green{background:var(--green);color:#fff;}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-outline{background:transparent;border:2px solid var(--border);color:var(--text);}
+.btn-sm{padding:6px 14px;font-size:12px;}
+.card{background:var(--card);border-radius:15px;padding:22px;box-shadow:0 5px 20px rgba(0,0,0,.1);margin-bottom:16px;}
+.card-glass{background:rgba(255,255,255,.95);border-radius:15px;padding:22px;box-shadow:0 5px 20px rgba(0,0,0,.1);margin-bottom:16px;}
+.form-group{margin-bottom:15px;}
+label{display:block;font-weight:700;margin-bottom:6px;font-size:14px;}
+input,select,textarea{width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;transition:border-color .2s;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--purple);}
+textarea{resize:vertical;min-height:100px;}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.badge-pg{background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd;}
+.badge-ug{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;}
+.badge-fac{background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe;}
+.badge-anon{background:#fef3c7;color:#92400e;border:1px solid #fde68a;}
+.badge-active{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;}
+.badge-closed{background:#f1f5f9;color:#64748b;border:1px solid var(--border);}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;margin-right:4px;background:#f1f5f9;color:var(--muted);}
+.star{font-size:22px;cursor:pointer;color:#d1d5db;}
+.star.active{color:#f59e0b;}
+.nav{display:flex;gap:4px;background:rgba(255,255,255,.15);padding:6px;border-radius:10px;margin-bottom:22px;flex-wrap:wrap;}
+.nav-btn{flex:1;min-width:80px;padding:9px 6px;background:transparent;border:none;border-radius:7px;cursor:pointer;font-weight:700;font-size:12px;color:rgba(255,255,255,.75);transition:all .2s;text-align:center;}
+.nav-btn.active{background:#fff;color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.1);}
+.white-nav{background:rgba(0,0,0,.06);}
+.white-nav .nav-btn{color:var(--muted);}
+.white-nav .nav-btn.active{background:#fff;color:var(--text);}
+.post-item{background:#fff;padding:18px;margin-bottom:12px;border-radius:10px;border-left:4px solid var(--purple);box-shadow:0 2px 5px rgba(0,0,0,.08);}
+.post-cat{background:var(--grad);color:#fff;padding:4px 12px;border-radius:15px;font-size:11px;font-weight:700;display:inline-block;}
+.idea-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;}
+.upvote-btn{display:flex;align-items:center;gap:6px;background:#f1f5f9;border:1px solid var(--border);border-radius:20px;padding:6px 14px;cursor:pointer;font-size:13px;font-weight:700;transition:all .2s;white-space:nowrap;}
+.upvote-btn.voted,.upvote-btn:hover{background:#fff7ed;border-color:var(--orange);color:var(--orange);}
+.poll-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;border:2px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .2s;font-size:14px;}
+.poll-opt:hover{border-color:var(--purple);background:#f5f3ff;}
+.bar-bg{height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;flex:1;}
+.bar-fill{height:8px;background:var(--grad);border-radius:4px;transition:width .5s;}
+.stat-card{background:rgba(255,255,255,.15);border-radius:12px;padding:20px;text-align:center;backdrop-filter:blur(5px);}
+.stat-num{font-size:30px;font-weight:900;color:#fff;}
+.stat-lbl{font-size:12px;color:rgba(255,255,255,.8);margin-top:4px;}
+.alert{padding:12px 16px;border-radius:8px;margin-bottom:14px;font-size:14px;}
+.alert-info{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;}
+.alert-warn{background:#fffbeb;border:1px solid #fde68a;color:#92400e;}
+.alert-success{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.sec-title{font-size:19px;font-weight:700;margin-bottom:4px;color:#fff;}
+.sec-sub{color:rgba(255,255,255,.7);font-size:13px;margin-bottom:16px;}
+.sec-title-dark{font-size:18px;font-weight:700;margin-bottom:4px;color:var(--text);}
+.sec-sub-dark{color:var(--muted);font-size:13px;margin-bottom:16px;}
+.reaction-btn{background:#f8f9fa;border:1px solid var(--border);padding:5px 12px;border-radius:15px;cursor:pointer;font-size:12px;transition:all .2s;margin-right:5px;}
+.reaction-btn:hover{background:#e9ecef;transform:scale(1.05);}
+.timeline-item{display:flex;margin-bottom:14px;padding:14px;background:#f8f9fa;border-radius:10px;border-left:4px solid var(--secondary);}
+.timeline-date{font-weight:700;margin-right:16px;min-width:100px;font-size:13px;}
+.proposal-sec{background:#f8f9fa;padding:16px;margin:12px 0;border-left:4px solid var(--purple);border-radius:5px;}
+.empty-state{text-align:center;padding:50px 20px;color:rgba(255,255,255,.6);}
+.empty-state-dark{text-align:center;padding:50px 20px;color:var(--muted);}
+.notification{position:fixed;top:20px;right:20px;background:#2ecc71;color:#fff;padding:14px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.3);z-index:9999;max-width:300px;font-size:14px;animation:slideIn .3s ease-out;}
+.notification.error{background:#e74c3c;}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+/* COUNTER */
+.counter{background:linear-gradient(135deg,var(--orange),#f43f5e);color:#fff;text-align:center;padding:10px;font-size:14px;font-weight:700;}
+/* LOGIN */
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-box{background:#fff;border-radius:20px;padding:36px;max-width:460px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.15);}
+.logo{text-align:center;margin-bottom:24px;}
+.logo h1{font-size:24px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.3;}
+.logo p{color:var(--muted);font-size:12px;margin-top:6px;}
+.tab-toggle{display:flex;background:#f1f5f9;border-radius:8px;padding:4px;margin-bottom:16px;gap:2px;}
+.tab-toggle button{flex:1;padding:8px 4px;border:none;border-radius:6px;cursor:pointer;font-weight:700;font-size:12px;background:transparent;color:var(--muted);transition:all .2s;}
+.tab-toggle button.active{background:#fff;color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1);}
+.privacy-note{font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;}
+/* HEADER */
+.app-header{background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.app-header h2{font-size:17px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+/* CTA */
+.cta-banner{background:linear-gradient(135deg,#ff9a9e,#fecfef);border-radius:20px;padding:28px;text-align:center;margin:20px 0;}
+/* WHATSAPP */
+.wa-float{position:fixed;bottom:28px;right:28px;width:56px;height:56px;background:linear-gradient(45deg,#25D366,#20B955);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 5px 20px rgba(37,211,102,.5);z-index:999;animation:waPulse 2s infinite;}
+@keyframes waPulse{0%,100%{box-shadow:0 5px 20px rgba(37,211,102,.4);}50%{box-shadow:0 5px 30px rgba(37,211,102,.8);}}
+.wa-modal{display:none;position:fixed;z-index:10001;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.75);}
+.wa-modal-inner{background:#fff;margin:6% auto;padding:28px;border-radius:20px;width:90%;max-width:520px;max-height:82vh;overflow-y:auto;position:relative;}
+.wa-card{background:#f0fdf4;padding:16px;margin:12px 0;border-radius:12px;border-left:4px solid var(--green);}
+.wa-preview{background:#fff;padding:12px;border-radius:8px;font-size:13px;line-height:1.6;border:1px solid var(--border);max-height:90px;overflow-y:auto;margin:8px 0;white-space:pre-line;color:#333;}
+footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;text-align:center;margin-top:28px;}
+@media(max-width:600px){.grid2,.grid4{grid-template-columns:1fr;}.nav-btn{min-width:60px;font-size:11px;padding:8px 4px;}}
+</style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🕉️ Dr. Kembhavi's Voice of Ayurveda</h1>
-            <p class="subtitle">Ayurveda Reform Platform</p>
-            <p class="description">
-                A platform to share your views about <strong>Academic, Clinical, Research, Administrative</strong> and <strong>Development Reforms in Ayurveda</strong>
-            </p>
-        </header>
-        
-        <div class="nav-tabs">
-            <button class="tab-button active" onclick="showTab('forums')">📢 Discussion Forum</button>
-            <button class="tab-button" onclick="showTab('coalition')">🤝 Community Network</button>
-            <button class="tab-button" onclick="showTab('compliance')">📋 Documentation Tracker</button>
-            <button class="tab-button" onclick="showTab('proposals')">📝 Reform Proposals</button>
-        </div>
-        
-        <!-- Forums Tab -->
-        <div id="forums" class="tab-content active">
-            <h2>Discussion Forum - Share Your Views</h2>
-            <p style="margin-bottom: 20px;"><em>"Express your perspectives on Academic, Clinical, Research, Administrative and Development aspects of Ayurveda"</em></p>
-            
-            <div class="post-form">
-                <h3>Share Your Views</h3>
-                <div class="form-group">
-                    <label>Post As:</label>
-                    <select id="anonymity">
-                        <option value="anonymous">Anonymous (Recommended for sensitive topics)</option>
-                        <option value="named">With my name</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Reform Category:</label>
-                    <select id="category">
-                        <option value="academic">Academic Reforms</option>
-                        <option value="clinical">Clinical Practice Reforms</option>
-                        <option value="research">Research & Development</option>
-                        <option value="administrative">Administrative Issues</option>
-                        <option value="development">Development Initiatives</option>
-                        <option value="regulatory">Regulatory Challenges</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Subject:</label>
-                    <input type="text" id="subject" placeholder="Brief description of your topic">
-                </div>
-                
-                <div class="form-group">
-                    <label>Your Views & Suggestions:</label>
-                    <textarea id="message" placeholder="Share your experiences, observations, challenges, or reform suggestions..."></textarea>
-                </div>
-                
-                <button class="btn" onclick="submitPost()" id="submitPostBtn">Share Your Views</button>
-            </div>
-            
-            <div class="posts-container" id="posts-container">
-                <!-- Posts will be dynamically added here -->
-            </div>
-        </div>
-        
-        <!-- Coalition Tab -->
-        <div id="coalition" class="tab-content">
-            <h2>Community Network</h2>
-            <p style="margin-bottom: 20px;"><em>"Connect with Ayurveda professionals committed to meaningful reforms"</em></p>
-            
-            <div class="coalition-grid">
-                <div class="coalition-card">
-                    <h3 class="card-title">🏥 Register Your Institution</h3>
-                    <p>Join the network of Ayurveda professionals working towards reform.</p>
-                    <div class="form-group">
-                        <input type="text" id="coalition-institution" placeholder="Institution/Organization Name">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="coalition-location" placeholder="Location (City/State)">
-                    </div>
-                    <div class="form-group">
-                        <input type="email" id="coalition-email" placeholder="Contact Email">
-                    </div>
-                    <button class="btn" onclick="joinCoalition()">Join Network</button>
-                </div>
-                
-                <div class="coalition-card">
-                    <h3 class="card-title">📊 Network Statistics</h3>
-                    <p><strong>Member Institutions:</strong> <span id="member-count">0</span></p>
-                    <p><strong>Locations Represented:</strong> <span id="states-count">0</span></p>
-                    <p><strong>Active Discussions:</strong> <span id="campaigns-count">0</span></p>
-                    <p style="margin-top: 20px; color: #666; font-size: 14px;">Together we can create meaningful change in Ayurveda education and practice.</p>
-                </div>
-                
-                <div class="coalition-card">
-                    <h3 class="card-title">📢 Initiate Discussion</h3>
-                    <p>Start focused discussions on specific reform topics.</p>
-                    <div class="form-group">
-                        <input type="text" id="campaign-title" placeholder="Discussion Topic">
-                    </div>
-                    <div class="form-group">
-                        <textarea id="campaign-description" placeholder="Topic Description" style="height: 80px;"></textarea>
-                    </div>
-                    <button class="btn" onclick="createCampaign()">Start Discussion</button>
-                </div>
-                
-                <div class="coalition-card">
-                    <h3 class="card-title">📅 Collaborative Events</h3>
-                    <p>Coordinate meetings and knowledge-sharing sessions.</p>
-                    <div style="margin: 15px 0;">
-                        <strong>Upcoming Events:</strong><br>
-                        <span style="color: #666;">Will be scheduled based on community needs</span>
-                    </div>
-                    <button class="btn" onclick="scheduleEvent()">Propose Event</button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Compliance Tab -->
-        <div id="compliance" class="tab-content">
-            <h2>Documentation & Compliance Tracker</h2>
-            <p style="margin-bottom: 20px;"><em>"Track and document the administrative requirements affecting Ayurveda institutions"</em></p>
-            
-            <div class="compliance-timeline">
-                <h3>Document Your Compliance Activities</h3>
-                <p style="margin-bottom: 20px; color: #666;">Record inspection schedules and documentation requirements to build evidence for reform discussions.</p>
-                
-                <div class="form-group">
-                    <label>Regulatory Body:</label>
-                    <select id="inspection-body">
-                        <option value="NCISM">NCISM</option>
-                        <option value="QCI">QCI</option>
-                        <option value="NAAC">NAAC</option>
-                        <option value="NABH">NABH</option>
-                        <option value="State Board">State Board</option>
-                        <option value="University">University</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Activity Date:</label>
-                    <input type="date" id="inspection-date">
-                </div>
-                
-                <div class="form-group">
-                    <label>Documents Required:</label>
-                    <input type="number" id="docs-required" placeholder="Number of documents">
-                </div>
-                
-                <div class="form-group">
-                    <label>Time Spent (Hours):</label>
-                    <input type="number" id="hours-spent" placeholder="Total hours spent">
-                </div>
-                
-                <button class="btn" onclick="addInspection()">Add Record</button>
-                
-                <div id="inspection-list" style="margin-top: 30px;">
-                    <!-- Inspection records will appear here -->
-                </div>
-            </div>
-            
-            <div class="compliance-timeline" style="margin-top: 30px;">
-                <h3>Administrative Burden Calculator</h3>
-                <p style="margin-bottom: 20px; color: #666;">Calculate the time and resources spent on administrative compliance.</p>
-                
-                <div class="form-group">
-                    <label>Average hours per month on documentation:</label>
-                    <input type="number" id="hours" placeholder="e.g., 120">
-                </div>
-                <div class="form-group">
-                    <label>Number of staff involved:</label>
-                    <input type="number" id="staff" placeholder="e.g., 8">
-                </div>
-                <div class="form-group">
-                    <label>Average hourly cost per staff (₹):</label>
-                    <input type="number" id="cost" placeholder="e.g., 500">
-                </div>
-                <button class="btn" onclick="calculateComplianceCost()">Calculate Impact</button>
-                <div id="cost-result" style="margin-top: 20px; font-size: 18px; font-weight: bold;"></div>
-            </div>
-        </div>
-        
-        <!-- Proposals Tab -->
-        <div id="proposals" class="tab-content">
-            <h2>Reform Proposal Generator</h2>
-            <p style="margin-bottom: 20px;"><em>"Create structured proposals for Academic, Clinical, Research, Administrative, and Development reforms"</em></p>
-            
-            <div class="proposal-builder">
-                <h3>Create Your Reform Proposal</h3>
-                
-                <div class="form-group">
-                    <label>Proposal Title: *</label>
-                    <input type="text" id="proposal-title" placeholder="e.g., Enhancing Clinical Training in Ayurveda Curriculum">
-                </div>
-                
-                <div class="form-group">
-                    <label>Reform Area:</label>
-                    <select id="proposal-category">
-                        <option value="Academic">Academic Reforms</option>
-                        <option value="Clinical">Clinical Practice</option>
-                        <option value="Research">Research & Development</option>
-                        <option value="Administrative">Administrative Improvements</option>
-                        <option value="Development">Development Initiatives</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Current Situation/Challenge: *</label>
-                    <textarea id="current-problem" placeholder="Describe the current situation or challenge that needs reform..."></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label>Proposed Reform/Solution: *</label>
-                    <textarea id="proposed-solution" placeholder="Describe your proposed reform or solution..."></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label>Expected Benefits:</label>
-                    <textarea id="expected-benefits" placeholder="List the potential benefits of implementing this reform..."></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label>Supporting Evidence/Examples:</label>
-                    <textarea id="supporting-data" placeholder="Provide any data, examples, or evidence supporting your proposal..."></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label>Implementation Approach:</label>
-                    <textarea id="implementation" placeholder="Suggest steps for implementation..."></textarea>
-                </div>
-                
-                <button class="btn" onclick="generateProposal()">Generate Proposal Document</button>
-                
-                <div id="generated-proposal" style="display: none; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
-                    <h3>Generated Proposal Document</h3>
-                    <div id="proposal-content"></div>
-                    <button class="btn" style="margin-top: 20px;" onclick="copyProposal()">Copy to Clipboard</button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Statistics Banner -->
-        <div class="stats-banner">
-            <h2 style="text-align: center; margin-bottom: 30px;">📊 Platform Activity</h2>
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <h3 id="total-posts">0</h3>
-                    <p>Views Shared</p>
-                </div>
-                <div class="stat-box">
-                    <h3 id="active-discussions">0</h3>
-                    <p>Active Discussions</p>
-                </div>
-                <div class="stat-box">
-                    <h3 id="reform-proposals">0</h3>
-                    <p>Reform Proposals</p>
-                </div>
-                <div class="stat-box">
-                    <h3 id="total-engagement">0</h3>
-                    <p>Total Contributions</p>
-                </div>
-            </div>
-        </div>
 
-        <!-- Call to Action Banner -->
-        <div class="cta-banner">
-            <h2>🕉️ Join the Conversation on Ayurveda Reform</h2>
-            <p>
-                Your perspectives on academic, clinical, research, administrative, and development reforms in Ayurveda are valuable. Share your views, connect with like-minded professionals, and contribute to meaningful change.
-            </p>
-            <div class="cta-buttons">
-                <button class="btn" onclick="showTab('forums')" style="font-size: 16px;">
-                    📢 Share Your Views
-                </button>
-                <button class="btn" onclick="showTab('coalition')" style="font-size: 16px;">
-                    🤝 Join Network
-                </button>
-                <button class="btn" onclick="showTab('proposals')" style="font-size: 16px;">
-                    📝 Create Proposal
-                </button>
-            </div>
-        </div>
+<!-- LIVE COUNTER BANNER -->
+<div class="counter" id="counterBanner">🌿 Loading platform data...</div>
 
-        <!-- Footer -->
-        <footer>
-            <h3>Dr. Kembhavi's Voice of Ayurveda Platform</h3>
-            <p style="margin: 15px 0;">
-                A platform dedicated to fostering dialogue and driving reforms in Academic, Clinical, Research, Administrative, and Development aspects of Ayurveda
-            </p>
-            <div style="margin-top: 20px;">
-                <p><strong>Mission:</strong> Empowering Ayurveda professionals to share perspectives and shape the future of Ayurvedic education and practice</p>
-                <p style="font-size: 14px; margin-top: 20px; opacity: 0.7;">
-                    © <span id="current-year"></span> Dr. Kembhavi's Voice of Ayurveda Platform | 
-                    All Rights Reserved
-                </p>
-            </div>
-        </footer>
+<!-- ═══════════════ LOGIN SCREEN ═══════════════ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="logo">
+      <h1>🌿 Dr. Kembhavi's<br>Ayurveda Unfiltered Voice</h1>
+      <p>Academic · Clinical · Research · Administrative · Development Reform</p>
     </div>
-    
-    <script>
-        // Initialize empty data structures
-        let posts = [];
-        let coalitionMembers = [];
-        let campaigns = [];
-        let proposals = [];
-        let inspections = [];
-        
-        // Tab functionality
-        function showTab(tabName) {
-            const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach(tab => tab.classList.remove('active'));
-            
-            const buttons = document.querySelectorAll('.tab-button');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-        }
-        
-        // Forum functionality
-        function submitPost() {
-            const subject = document.getElementById('subject').value.trim();
-            const message = document.getElementById('message').value.trim();
-            const category = document.getElementById('category').value;
-            const anonymity = document.getElementById('anonymity').value;
-            
-            if (!subject || !message) {
-                alert('Please fill in both subject and message fields.');
-                return;
-            }
-            
-            const newPost = {
-                id: Date.now(),
-                author: anonymity === 'anonymous' ? 'Anonymous Contributor' : 'Registered User',
-                date: new Date().toISOString().split('T')[0],
-                category: category,
-                subject: subject,
-                content: message
-            };
-            
-            posts.unshift(newPost);
-            localStorage.setItem('forum_posts', JSON.stringify(posts));
-            
-            displayPosts();
-            
-            document.getElementById('subject').value = '';
-            document.getElementById('message').value = '';
-            
-            updateStats();
-            alert('Your views have been shared successfully! Thank you for contributing to the dialogue.');
-        }
-        
-        function displayPosts() {
-            const container = document.getElementById('posts-container');
-            container.innerHTML = '';
-            
-            if (posts.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">💬</div>
-                        <div class="empty-state-text">No discussions yet</div>
-                        <div class="empty-state-subtext">Be the first to share your views on Ayurveda reforms!</div>
-                    </div>
-                `;
-                return;
-            }
-            
-            posts.forEach(post => {
-                const postElement = document.createElement('div');
-                postElement.className = 'post-item';
-                
-                const categoryLabels = {
-                    'academic': 'Academic Reforms',
-                    'clinical': 'Clinical Practice',
-                    'research': 'Research & Development',
-                    'administrative': 'Administrative',
-                    'development': 'Development',
-                    'regulatory': 'Regulatory'
-                };
-                
-                postElement.innerHTML = `
-                    <div class="post-header">
-                        <span class="post-author">${post.author}</span>
-                        <span class="post-date">${post.date}</span>
-                    </div>
-                    <h4>${post.subject}</h4>
-                    <div class="post-content">${post.content}</div>
-                    <span class="post-category">${categoryLabels[post.category] || post.category}</span>
-                `;
-                container.appendChild(postElement);
-            });
-        }
-        
-        // Coalition functionality
-        function joinCoalition() {
-            const institution = document.getElementById('coalition-institution').value.trim();
-            const location = document.getElementById('coalition-location').value.trim();
-            const email = document.getElementById('coalition-email').value.trim();
-            
-            if (!institution || !location || !email) {
-                alert('Please fill in all fields to join the network.');
-                return;
-            }
-            
-            const newMember = {
-                id: Date.now(),
-                institution: institution,
-                state: location,
-                email: email,
-                joinDate: new Date().toISOString().split('T')[0]
-            };
-            
-            coalitionMembers.push(newMember);
-            localStorage.setItem('coalition_members', JSON.stringify(coalitionMembers));
-            
-            document.getElementById('coalition-institution').value = '';
-            document.getElementById('coalition-location').value = '';
-            document.getElementById('coalition-email').value = '';
-            
-            updateCoalitionStats();
-            updateStats();
-            alert(`Welcome to the network! ${institution} has been added. Together we grow stronger!`);
-        }
-        
-        function updateCoalitionStats() {
-            const states = [...new Set(coalitionMembers.map(m => m.state))];
-            document.getElementById('member-count').textContent = coalitionMembers.length;
-            document.getElementById('states-count').textContent = states.length;
-            document.getElementById('campaigns-count').textContent = campaigns.length;
-        }
-        
-        function createCampaign() {
-            const title = document.getElementById('campaign-title').value.trim();
-            const description = document.getElementById('campaign-description').value.trim();
-            
-            if (!title || !description) {
-                alert('Please provide both discussion topic and description.');
-                return;
-            }
-            
-            const newCampaign = {
-                id: Date.now(),
-                title: title,
-                description: description,
-                startDate: new Date().toISOString().split('T')[0],
-                status: 'active'
-            };
-            
-            campaigns.push(newCampaign);
-            localStorage.setItem('campaigns', JSON.stringify(campaigns));
-            
-            document.getElementById('campaign-title').value = '';
-            document.getElementById('campaign-description').value = '';
-            
-            updateCoalitionStats();
-            alert('Discussion topic created successfully! Share it with your network.');
-        }
-        
-        function scheduleEvent() {
-            alert('Event coordination feature - connect with the community to schedule collaborative events!');
-        }
-        
-        // Compliance functionality
-        function addInspection() {
-            const body = document.getElementById('inspection-body').value;
-            const date = document.getElementById('inspection-date').value;
-            const docs = document.getElementById('docs-required').value;
-            const hours = document.getElementById('hours-spent').value;
-            
-            if (!date || !docs || !hours) {
-                alert('Please fill in all compliance activity details.');
-                return;
-            }
-            
-            const inspection = {
-                id: Date.now(),
-                body: body,
-                date: date,
-                documentsRequired: parseInt(docs),
-                hoursSpent: parseInt(hours)
-            };
-            
-            inspections.push(inspection);
-            localStorage.setItem('inspections', JSON.stringify(inspections));
-            
-            displayInspections();
-            
-            document.getElementById('inspection-date').value = '';
-            document.getElementById('docs-required').value = '';
-            document.getElementById('hours-spent').value = '';
-            
-            alert('Compliance record added successfully! This data contributes to understanding administrative burden.');
-        }
-        
-        function displayInspections() {
-            const container = document.getElementById('inspection-list');
-            
-            if (inspections.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📋</div>
-                        <div class="empty-state-text">No records yet</div>
-                        <div class="empty-state-subtext">Start documenting compliance activities to track administrative requirements.</div>
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = '<h4 style="margin-bottom: 15px;">Your Compliance Records:</h4>';
-            
-            inspections.forEach(inspection => {
-                const item = document.createElement('div');
-                item.className = 'timeline-item';
-                item.innerHTML = `
-                    <div class="timeline-date">${inspection.date}</div>
-                    <div>
-                        <strong>${inspection.body} Activity</strong><br>
-                        Documents Required: ${inspection.documentsRequired} | 
-                        Time Spent: ${inspection.hoursSpent} hours
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
-        
-        function calculateComplianceCost() {
-            const hours = parseFloat(document.getElementById('hours').value) || 0;
-            const staff = parseFloat(document.getElementById('staff').value) || 0;
-            const cost = parseFloat(document.getElementById('cost').value) || 0;
-            
-            if (hours === 0 || staff === 0 || cost === 0) {
-                alert('Please fill in all fields to calculate administrative burden.');
-                return;
-            }
-            
-            const monthlyComplianceCost = hours * staff * cost;
-            const annualComplianceCost = monthlyComplianceCost * 12;
-            const teachingHoursLost = hours * staff * 12;
-            
-            const resultDiv = document.getElementById('cost-result');
-            resultDiv.innerHTML = `
-                <div style="background: #fff3cd; padding: 20px; border-radius: 8px; border-left: 4px solid #ffc107;">
-                    <h4 style="margin-bottom: 15px; color: #856404;">Administrative Burden Analysis</h4>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                        <div>
-                            <strong>Monthly Impact:</strong> ₹${monthlyComplianceCost.toLocaleString()}
-                        </div>
-                        <div>
-                            <strong>Annual Impact:</strong> ₹${annualComplianceCost.toLocaleString()}
-                        </div>
-                        <div>
-                            <strong>Time Invested:</strong> ${teachingHoursLost.toLocaleString()} hours/year
-                        </div>
-                        <div>
-                            <strong>Work Days:</strong> ${Math.floor(teachingHoursLost/8)} days/year
-                        </div>
-                    </div>
-                    <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 5px;">
-                        <small style="color: #856404;">
-                            <strong>Insight:</strong> This represents ${Math.floor(teachingHoursLost/8)} full working days annually 
-                            allocated to administrative activities. Consider how this time could be utilized for academic, clinical, or research advancement.
-                        </small>
-                    </div>
+    <div class="alert alert-info">🔒 A confidential platform for reform voices in Ayurveda. Anonymous submissions encouraged.</div>
+    <div class="tab-toggle" id="loginTabs">
+      <button class="active" onclick="setRole('ug')">🎓 UG Student</button>
+      <button onclick="setRole('pg')">📚 PG Scholar</button>
+      <button onclick="setRole('fac')">👨‍🏫 Faculty</button>
+      <button onclick="setRole('admin')">🔐 Admin</button>
+    </div>
+    <div class="alert alert-warn" id="roleHint" style="font-size:12px;"></div>
+    <div class="form-group"><label>Username</label><input type="text" id="lu" placeholder="Enter username" /></div>
+    <div class="form-group"><label>Password</label><input type="password" id="lp" placeholder="Enter password" onkeypress="if(event.key==='Enter')doLogin()" /></div>
+    <button class="btn btn-grad" style="width:100%;padding:14px;font-size:15px;" onclick="doLogin()">Sign In →</button>
+    <p class="privacy-note">By signing in you agree to use this platform respectfully and constructively.<br>All data is stored securely and handled with complete confidentiality.</p>
+  </div>
+</div>
+
+<!-- ═══════════════ MAIN APP ═══════════════ -->
+<div id="mainApp" class="hidden">
+  <div class="app-header">
+    <h2>🌿 Ayurveda Unfiltered Voice</h2>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span id="userBadge" style="font-size:12px;color:var(--muted);"></span>
+      <button class="btn btn-outline btn-sm" onclick="location.reload()">Logout</button>
+    </div>
+  </div>
+
+  <!-- ─── STUDENT / PG VIEW ─── -->
+  <div id="studentView" class="hidden">
+    <div class="container">
+      <div class="nav" id="sNav">
+        <button class="nav-btn active" onclick="sTab('feedback')">📝 Private Feedback</button>
+        <button class="nav-btn" onclick="sTab('ideas')">💡 Idea Board</button>
+        <button class="nav-btn" onclick="sTab('polls')">📊 Polls</button>
+      </div>
+
+      <!-- PRIVATE FEEDBACK -->
+      <div id="s-feedback">
+        <div class="sec-title">Private Feedback</div>
+        <div class="sec-sub">Admin-eyes only. Your voice, your terms.</div>
+        <div class="card">
+          <div style="background:#fef3c7;padding:12px;border-radius:8px;display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+            <input type="checkbox" id="chkAnon" checked style="width:16px;height:16px;cursor:pointer;">
+            <label for="chkAnon" style="margin:0;cursor:pointer;font-size:13px;">Submit Anonymously <span class="badge badge-anon">Recommended</span></label>
+          </div>
+          <div class="hidden" id="nameRow"><div class="form-group"><label>Your Name</label><input type="text" id="fbName" placeholder="Your name" /></div></div>
+          <div class="grid2">
+            <div class="form-group"><label>College</label><input type="text" id="fbCollege" placeholder="Your college" /></div>
+            <div class="form-group"><label>Year / Stage</label>
+              <select id="fbYear"><option value="">Select...</option><option>1st Year BAMS</option><option>2nd Year BAMS</option><option>3rd Year BAMS</option><option>Final Year BAMS</option><option>Internship</option><option>1st Year PG</option><option>2nd Year PG</option><option>3rd Year PG</option><option>PhD Scholar</option></select>
+            </div>
+          </div>
+          <div class="form-group"><label>Feedback Category</label>
+            <select id="fbCat" onchange="toggleSubject()"><option value="">Select...</option><option>Curriculum Content</option><option>Teaching Methods</option><option>Practical Training</option><option>Subject-Specific Feedback</option><option>Research Support</option><option>Library & Resources</option><option>Ethical Concern (Confidential)</option><option>General Suggestion</option><option>Other</option></select>
+          </div>
+          <div class="form-group hidden" id="subjectRow"><label>Subject</label>
+            <select id="fbSubject"><option value="">Select subject...</option><option>SA - Samhita Adhyayan</option><option>PV - Padartha Vigyan</option><option>Sanskrit</option><option>SR - Shareera Rachana</option><option>SK - Shareera Kriya</option><option>DG - Dravyaguna</option><option>RSBK - Rasa Shastra & Bhaishajya Kalpana</option><option>RN - Roga Nidan</option><option>AT - Agada Tantra</option><option>KC - Kaumarabhritya</option><option>PK - Panchakarma</option><option>ST - Stree Tantra</option><option>SKT - Shalakya Tantra</option><option>PTSR - Prasuti Tantra & Stree Roga</option><option>KB - Kayachikitsa</option><option>RM - Research Methodology</option></select>
+          </div>
+          <div class="form-group"><label>Overall Rating</label>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
+              <span class="star" onclick="setRating(1)">★</span><span class="star" onclick="setRating(2)">★</span><span class="star" onclick="setRating(3)">★</span><span class="star" onclick="setRating(4)">★</span><span class="star" onclick="setRating(5)">★</span>
+              <span id="ratingLbl" style="color:var(--muted);font-size:13px;">Not rated</span>
+            </div>
+          </div>
+          <div class="grid2">
+            <div class="form-group"><label>✅ What helped your learning?</label><textarea id="fbHelped" placeholder="What worked well..." style="min-height:80px;"></textarea></div>
+            <div class="form-group"><label>❌ What hindered your learning?</label><textarea id="fbHindered" placeholder="What could be better..." style="min-height:80px;"></textarea></div>
+          </div>
+          <div class="form-group"><label>Your Feedback / Suggestion <span style="color:var(--danger);">*</span></label><textarea id="fbMain" placeholder="Share your thoughts constructively and specifically..." style="min-height:120px;"></textarea></div>
+
+          <!-- PG SCHOLAR OPTIONAL SECTION -->
+          <div id="pgSection" class="hidden">
+            <div style="border-top:2px dashed var(--border);padding-top:18px;margin-top:8px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+                <div><strong>📚 PG Scholar Section</strong> <span class="badge badge-pg" style="margin-left:6px;">Optional · Strictly Confidential</span><p style="font-size:12px;color:var(--muted);margin-top:2px;">Admin eyes only. Be factual and constructive.</p></div>
+                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;margin:0;"><input type="checkbox" id="chkPG" style="width:16px;height:16px;" onchange="togglePGF()"> <span style="font-size:13px;font-weight:700;">Include PG Section</span></label>
+              </div>
+              <div id="pgFields" class="hidden">
+                <div class="alert alert-warn" style="font-size:12px;">⚠️ Strictly anonymous. Please be factual.</div>
+                <div class="grid2">
+                  <div class="form-group"><label>Synopsis Writing Experience</label><select id="pgSyn"><option value="">Select...</option><option>Excellent — Regular mentoring</option><option>Adequate support</option><option>Minimal guidance</option><option>No guidance — worked independently</option><option>Faced significant difficulties</option></select></div>
+                  <div class="form-group"><label>Guide-Scholar Relationship</label><select id="pgGuide"><option value="">Select...</option><option>Excellent — Regular support</option><option>Good — Available when needed</option><option>Average — Limited availability</option><option>Poor — Rarely accessible</option><option>Problematic — Issues to report</option></select></div>
+                  <div class="form-group"><label>Research Infrastructure</label><select id="pgInfra"><option value="">Select...</option><option>Excellent</option><option>Good</option><option>Adequate</option><option>Poor</option><option>Very Poor</option></select></div>
+                  <div class="form-group"><label>Conference / Publication Support</label><select id="pgConf"><option value="">Select...</option><option>Actively encouraged & supported</option><option>Supported when I initiated</option><option>No support, no obstacle</option><option>Discouraged from publishing independently</option></select></div>
                 </div>
-            `;
-        }
-        
-        // Proposal functionality
-        function generateProposal() {
-            const title = document.getElementById('proposal-title').value.trim();
-            const category = document.getElementById('proposal-category').value;
-            const problem = document.getElementById('current-problem').value.trim();
-            const solution = document.getElementById('proposed-solution').value.trim();
-            const benefits = document.getElementById('expected-benefits').value.trim();
-            const data = document.getElementById('supporting-data').value.trim();
-            const implementation = document.getElementById('implementation').value.trim();
-            
-            if (!title || !problem || !solution) {
-                alert('Please fill in at least the title, current situation, and proposed solution.');
-                return;
-            }
-            
-            const proposal = {
-                id: Date.now(),
-                title: title,
-                category: category,
-                problem: problem,
-                solution: solution,
-                benefits: benefits,
-                data: data,
-                implementation: implementation,
-                createdDate: new Date().toISOString().split('T')[0]
-            };
-            
-            proposals.push(proposal);
-            localStorage.setItem('proposals', JSON.stringify(proposals));
-            
-            const proposalContent = `
-                <div style="font-family: Arial, sans-serif; line-height: 1.8; color: #333; max-height: 500px; overflow-y: auto;">
-                    <div style="text-align: center; margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 10px;">
-                        <h2 style="margin: 0; font-size: 24px;">${title}</h2>
-                        <p style="margin: 10px 0 0 0; opacity: 0.9;">Reform Category: ${category}</p>
-                        <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.8;">Dr. Kembhavi's Voice of Ayurveda Platform</p>
-                    </div>
-                    
-                    <div style="background: #f8f9fa; padding: 20px; margin: 20px 0; border-left: 4px solid #dc3545; border-radius: 5px;">
-                        <h3 style="color: #dc3545; margin: 0 0 15px 0;">📋 Current Situation/Challenge</h3>
-                        <p style="margin: 0; line-height: 1.6;">${problem}</p>
-                    </div>
-                    
-                    <div style="background: #e8f5e8; padding: 20px; margin: 20px 0; border-left: 4px solid #28a745; border-radius: 5px;">
-                        <h3 style="color: #28a745; margin: 0 0 15px 0;">💡 Proposed Reform/Solution</h3>
-                        <p style="margin: 0; line-height: 1.6;">${solution}</p>
-                    </div>
-                    
-                    ${benefits ? `
-                    <div style="background: #fff3cd; padding: 20px; margin: 20px 0; border-left: 4px solid #ffc107; border-radius: 5px;">
-                        <h3 style="color: #856404; margin: 0 0 15px 0;">🌟 Expected Benefits</h3>
-                        <p style="margin: 0; line-height: 1.6;">${benefits}</p>
-                    </div>` : ''}
-                    
-                    ${data ? `
-                    <div style="background: #e7f3ff; padding: 20px; margin: 20px 0; border-left: 4px solid #007bff; border-radius: 5px;">
-                        <h3 style="color: #004085; margin: 0 0 15px 0;">📊 Supporting Evidence</h3>
-                        <p style="margin: 0; line-height: 1.6;">${data}</p>
-                    </div>` : ''}
-                    
-                    ${implementation ? `
-                    <div style="background: #f3e5f5; padding: 20px; margin: 20px 0; border-left: 4px solid #6f42c1; border-radius: 5px;">
-                        <h3 style="color: #492b6e; margin: 0 0 15px 0;">⚙️ Implementation Approach</h3>
-                        <p style="margin: 0; line-height: 1.6;">${implementation}</p>
-                    </div>` : ''}
-                    
-                    <div style="margin-top: 30px; padding: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 10px; text-align: center;">
-                        <p style="margin: 0; font-style: italic; font-size: 16px;">
-                            "Progress is impossible without change, and those who cannot change their minds cannot change anything."
-                        </p>
-                    </div>
-                    
-                    <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px; text-align: center; color: #666;">
-                        <p style="margin: 0;">
-                            <strong>Generated:</strong> ${new Date().toLocaleDateString()} | 
-                            <strong>Proposal ID:</strong> DVA-${proposal.id} |
-                            <strong>Category:</strong> ${category}
-                        </p>
-                        <p style="margin: 5px 0 0 0; font-size: 14px;">
-                            Dr. Kembhavi's Voice of Ayurveda Platform
-                        </p>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('proposal-content').innerHTML = proposalContent;
-            document.getElementById('generated-proposal').style.display = 'block';
-            
-            updateStats();
-            alert(`Reform proposal "${title}" has been generated successfully!`);
-        }
-        
-        function copyProposal() {
-            const content = document.getElementById('proposal-content').innerText;
-            navigator.clipboard.writeText(content).then(() => {
-                alert('Proposal copied to clipboard! You can now paste it into your documents.');
-            }).catch(() => {
-                alert('Please manually select and copy the proposal text.');
-            });
-        }
-        
-        // Statistics update
-        function updateStats() {
-            document.getElementById('total-posts').textContent = posts.length;
-            document.getElementById('active-discussions').textContent = posts.filter(p => {
-                const postDate = new Date(p.date);
-                const thirtyDaysAgo = new Date();
-                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-                return postDate >= thirtyDaysAgo;
-            }).length;
-            document.getElementById('reform-proposals').textContent = proposals.length;
-            
-            let totalEngagement = posts.length + coalitionMembers.length + proposals.length + campaigns.length;
-            document.getElementById('total-engagement').textContent = totalEngagement;
-        }
-        
-        // Load data from localStorage on page load
-        function loadData() {
-            try {
-                posts = JSON.parse(localStorage.getItem('forum_posts') || '[]');
-                coalitionMembers = JSON.parse(localStorage.getItem('coalition_members') || '[]');
-                campaigns = JSON.parse(localStorage.getItem('campaigns') || '[]');
-                proposals = JSON.parse(localStorage.getItem('proposals') || '[]');
-                inspections = JSON.parse(localStorage.getItem('inspections') || '[]');
-            } catch (error) {
-                console.log('Starting with fresh data');
-            }
-            
-            displayPosts();
-            displayInspections();
-            updateCoalitionStats();
-            updateStats();
-        }
-        
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            loadData();
-            document.getElementById('current-year').textContent = new Date().getFullYear();
-        });
-    </script>
-    
-    <!-- Load external scripts -->
-    <script src="app.js"></script>
-    <script src="auth.js"></script>
-    <script src="whatsapp-integration.js"></script>
+                <div class="form-group"><label>Additional Comments (ethical concerns, authorship issues, etc.)</label><textarea id="pgComments" placeholder="Be factual and specific..." style="min-height:80px;"></textarea></div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-orange" style="width:100%;padding:14px;margin-top:14px;font-size:15px;" onclick="submitFeedback()">🎙️ Submit My Voice</button>
+          <p class="privacy-note">Stored securely in Firebase. Only the admin can view private feedback.</p>
+        </div>
+      </div>
+
+      <!-- IDEA BOARD (Students) -->
+      <div id="s-ideas" class="hidden">
+        <div class="sec-title">💡 Reform Idea Board</div>
+        <div class="sec-sub">Share ideas, read others', upvote what resonates. Visible to all users.</div>
+        <div class="card">
+          <div class="form-group"><label>Category</label><select id="ideaCat"><option value="">Select...</option><option>Curriculum Reform</option><option>Teaching Methods</option><option>Research Infrastructure</option><option>Clinical Training</option><option>Student Welfare</option><option>Digital Learning</option><option>Assessment Reform</option><option>PG Scholar Issues</option><option>Other</option></select></div>
+          <div class="form-group"><textarea id="ideaText" placeholder="Share your reform idea — be specific and actionable..." style="min-height:100px;"></textarea></div>
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;margin:0;font-size:13px;"><input type="checkbox" id="ideaAnon" checked style="width:14px;height:14px;"> Post anonymously</label>
+            <input type="text" id="ideaAuthor" placeholder="Your name" style="width:180px;display:none;" />
+            <button class="btn btn-grad" onclick="submitIdea()">Post Idea →</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+          <select id="ideaFilter" onchange="loadIdeas()" style="padding:8px 12px;border:2px solid rgba(255,255,255,.3);border-radius:8px;font-size:13px;background:rgba(255,255,255,.9);"><option value="">All Categories</option><option>Curriculum Reform</option><option>Teaching Methods</option><option>Research Infrastructure</option><option>Clinical Training</option><option>Student Welfare</option><option>Digital Learning</option><option>Assessment Reform</option><option>PG Scholar Issues</option><option>Other</option></select>
+          <select id="ideaSort" onchange="loadIdeas()" style="padding:8px 12px;border:2px solid rgba(255,255,255,.3);border-radius:8px;font-size:13px;background:rgba(255,255,255,.9);"><option value="upvotes">Most Upvoted</option><option value="newest">Newest First</option></select>
+        </div>
+        <div id="ideaList"><p style="color:rgba(255,255,255,.6);text-align:center;padding:40px;">Loading ideas...</p></div>
+      </div>
+
+      <!-- POLLS (Students) -->
+      <div id="s-polls" class="hidden">
+        <div class="sec-title">📊 Active Polls</div>
+        <div class="sec-sub">Answer admin polls anonymously. Your vote is private.</div>
+        <div id="pollListStudent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── FACULTY / PROFESSIONAL VIEW ─── -->
+  <div id="facultyView" class="hidden">
+    <div class="container">
+      <div class="nav" id="fNav">
+        <button class="nav-btn active" onclick="fTab('forum')">📢 Forum</button>
+        <button class="nav-btn" onclick="fTab('network')">🤝 Network</button>
+        <button class="nav-btn" onclick="fTab('compliance')">📋 Compliance</button>
+        <button class="nav-btn" onclick="fTab('proposals')">📝 Proposals</button>
+        <button class="nav-btn" onclick="fTab('fideas')">💡 Ideas</button>
+      </div>
+
+      <!-- DISCUSSION FORUM -->
+      <div id="f-forum">
+        <div class="sec-title">📢 Discussion Forum</div>
+        <div class="sec-sub">Share views on Academic, Clinical, Research, Administrative & Development reforms.</div>
+        <div class="card">
+          <div class="grid2">
+            <div class="form-group"><label>Post As</label><select id="fAnon" onchange="toggleFacName()"><option value="anon">Anonymous (Recommended)</option><option value="named">With name / institution</option></select></div>
+            <div class="form-group"><label>Reform Category</label><select id="fCat"><option value="academic">Academic Reforms</option><option value="clinical">Clinical Practice</option><option value="research">Research & Development</option><option value="administrative">Administrative Issues</option><option value="development">Development Initiatives</option><option value="regulatory">Regulatory Challenges</option></select></div>
+          </div>
+          <div class="form-group hidden" id="fNameRow"><label>Your Name / Institution</label><input type="text" id="fAuthorName" placeholder="Dr. Name, Institution" /></div>
+          <div class="form-group"><label>Subject</label><input type="text" id="fSubject" placeholder="Brief topic description" /></div>
+          <div class="form-group"><label>Your Views & Suggestions</label><textarea id="fMessage" placeholder="Share your experiences, observations, challenges, or reform suggestions..." style="min-height:130px;"></textarea></div>
+          <button class="btn btn-grad" onclick="submitForumPost()">📢 Share Your Views</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <select id="fFilterCat" onchange="loadForum()" style="padding:8px 12px;border:2px solid rgba(255,255,255,.3);border-radius:8px;font-size:13px;background:rgba(255,255,255,.9);"><option value="">All Categories</option><option value="academic">Academic</option><option value="clinical">Clinical</option><option value="research">Research</option><option value="administrative">Administrative</option><option value="development">Development</option><option value="regulatory">Regulatory</option></select>
+        </div>
+        <div id="forumList"></div>
+      </div>
+
+      <!-- COMMUNITY NETWORK -->
+      <div id="f-network" class="hidden">
+        <div class="sec-title">🤝 Community Network</div>
+        <div class="sec-sub">Connect with Ayurveda professionals committed to meaningful reform.</div>
+        <div class="grid2">
+          <div class="card">
+            <div class="sec-title-dark" style="margin-bottom:12px;">🏥 Register Your Institution</div>
+            <div class="form-group"><input type="text" id="cInst" placeholder="Institution / Organization Name" /></div>
+            <div class="form-group"><input type="text" id="cLoc" placeholder="City / State" /></div>
+            <div class="form-group"><input type="email" id="cEmail" placeholder="Contact Email" /></div>
+            <div class="form-group"><select id="cRole"><option>Faculty</option><option>Principal</option><option>Administrator</option><option>Researcher</option><option>Clinician</option></select></div>
+            <button class="btn btn-grad" onclick="joinNetwork()">Join Network →</button>
+          </div>
+          <div class="card">
+            <div class="sec-title-dark" style="margin-bottom:12px;">📊 Network Stats</div>
+            <p style="margin-bottom:10px;"><strong>Member Institutions:</strong> <span id="memberCount">—</span></p>
+            <p style="margin-bottom:10px;"><strong>Locations:</strong> <span id="stateCount">—</span></p>
+            <p style="margin-bottom:10px;"><strong>Active Discussions:</strong> <span id="campaignCount">—</span></p>
+            <p style="font-size:13px;color:var(--muted);margin-top:12px;">Together we create meaningful change in Ayurveda education and practice.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="sec-title-dark" style="margin-bottom:12px;">📢 Start a Focused Discussion</div>
+          <div class="form-group"><input type="text" id="discTitle" placeholder="Discussion Topic" /></div>
+          <div class="form-group"><textarea id="discDesc" placeholder="Describe the topic and why it matters..." style="min-height:80px;"></textarea></div>
+          <button class="btn btn-grad" onclick="startDiscussion()">Start Discussion →</button>
+        </div>
+        <div id="memberList"></div>
+      </div>
+
+      <!-- COMPLIANCE TRACKER -->
+      <div id="f-compliance" class="hidden">
+        <div class="sec-title">📋 Compliance Tracker</div>
+        <div class="sec-sub">Document administrative requirements — build evidence for reform discussions.</div>
+        <div class="card">
+          <div class="sec-title-dark" style="margin-bottom:14px;">Record Compliance Activity</div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Records are stored locally on your device for your personal tracking.</p>
+          <div class="grid2">
+            <div class="form-group"><label>Regulatory Body</label><select id="cBody"><option>NCISM</option><option>QCI</option><option>NAAC</option><option>NABH</option><option>State Board</option><option>University</option><option>Other</option></select></div>
+            <div class="form-group"><label>Activity Date</label><input type="date" id="cDate" /></div>
+            <div class="form-group"><label>Documents Required</label><input type="number" id="cDocs" placeholder="Number" /></div>
+            <div class="form-group"><label>Time Spent (Hours)</label><input type="number" id="cHoursSpent" placeholder="Hours" /></div>
+          </div>
+          <button class="btn btn-grad" onclick="addCompliance()">Add Record</button>
+          <div id="complianceList" style="margin-top:20px;"></div>
+        </div>
+        <div class="card">
+          <div class="sec-title-dark" style="margin-bottom:12px;">💰 Administrative Burden Calculator</div>
+          <div class="grid2">
+            <div class="form-group"><label>Avg. hours/month on documentation</label><input type="number" id="calcH" placeholder="e.g., 120" /></div>
+            <div class="form-group"><label>Staff involved</label><input type="number" id="calcS" placeholder="e.g., 8" /></div>
+            <div class="form-group"><label>Avg. hourly cost per staff (₹)</label><input type="number" id="calcC" placeholder="e.g., 500" /></div>
+            <div></div>
+          </div>
+          <button class="btn btn-grad" onclick="calcBurden()">Calculate Impact</button>
+          <div id="burdenResult" style="margin-top:16px;"></div>
+        </div>
+      </div>
+
+      <!-- REFORM PROPOSALS -->
+      <div id="f-proposals" class="hidden">
+        <div class="sec-title">📝 Reform Proposal Generator</div>
+        <div class="sec-sub">Create structured proposals for Ayurveda education and practice reform.</div>
+        <div class="card">
+          <div class="form-group"><label>Proposal Title <span style="color:var(--danger);">*</span></label><input type="text" id="pTitle" placeholder="e.g., Enhancing Clinical Training in Ayurveda Curriculum" /></div>
+          <div class="form-group"><label>Reform Area</label><select id="pCat"><option>Academic Reforms</option><option>Clinical Practice</option><option>Research & Development</option><option>Administrative Improvements</option><option>Development Initiatives</option><option>Regulatory Reform</option></select></div>
+          <div class="form-group"><label>Current Situation / Challenge <span style="color:var(--danger);">*</span></label><textarea id="pProblem" placeholder="Describe the current situation or challenge..."></textarea></div>
+          <div class="form-group"><label>Proposed Reform / Solution <span style="color:var(--danger);">*</span></label><textarea id="pSolution" placeholder="Describe your proposed solution..."></textarea></div>
+          <div class="form-group"><label>Expected Benefits</label><textarea id="pBenefits" placeholder="List the potential benefits..."></textarea></div>
+          <div class="form-group"><label>Supporting Evidence / Examples</label><textarea id="pData" placeholder="Provide data, examples, or evidence..."></textarea></div>
+          <div class="form-group"><label>Implementation Approach</label><textarea id="pImpl" placeholder="Suggest steps for implementation..."></textarea></div>
+          <button class="btn btn-grad" onclick="generateProposal()">📄 Generate Proposal Document</button>
+          <div id="proposalOutput" class="hidden" style="margin-top:20px;background:#f8f9fa;border-radius:10px;padding:20px;">
+            <div id="proposalContent"></div>
+            <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+              <button class="btn btn-outline btn-sm" onclick="copyProposal()">Copy to Clipboard</button>
+              <button class="btn btn-grad btn-sm" onclick="saveProposalToFirebase()">💾 Save to Platform</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FACULTY IDEA BOARD -->
+      <div id="f-fideas" class="hidden">
+        <div class="sec-title">💡 Idea Board</div>
+        <div class="sec-sub">Share and upvote reform ideas — visible to all users including students.</div>
+        <div class="card">
+          <div class="form-group"><label>Category</label><select id="fIdeaCat"><option value="">Select...</option><option>Curriculum Reform</option><option>Teaching Methods</option><option>Research Infrastructure</option><option>Clinical Training</option><option>Faculty Welfare</option><option>Student Welfare</option><option>Assessment Reform</option><option>Regulatory Reform</option><option>Other</option></select></div>
+          <div class="form-group"><textarea id="fIdeaText" placeholder="Your reform idea — be specific and actionable..." style="min-height:100px;"></textarea></div>
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;margin:0;font-size:13px;"><input type="checkbox" id="fIdeaAnon" checked style="width:14px;height:14px;"> Post anonymously</label>
+            <input type="text" id="fIdeaAuthor" placeholder="Your name" style="width:180px;display:none;" />
+            <button class="btn btn-grad" onclick="submitFacultyIdea()">Post Idea →</button>
+          </div>
+        </div>
+        <div id="fIdeaList"><p style="color:rgba(255,255,255,.6);text-align:center;padding:40px;">Loading...</p></div>
+      </div>
+    </div>
+
+    <!-- FACULTY FOOTER -->
+    <div class="container">
+      <div class="cta-banner">
+        <h2 style="color:var(--text);margin-bottom:10px;">🕉️ Join the Conversation on Ayurveda Reform</h2>
+        <p style="color:#555;max-width:600px;margin:0 auto 16px;font-size:15px;">Your perspectives shape the future of Ayurvedic education and practice.</p>
+        <button class="btn btn-grad" onclick="waModal.show()">📱 Share via WhatsApp</button>
+      </div>
+      <footer>
+        <h3>Dr. Kembhavi's Ayurveda Unfiltered Voice</h3>
+        <p style="margin:10px 0;opacity:.8;">Empowering Ayurveda professionals to share perspectives and drive meaningful reform</p>
+        <p style="font-size:12px;opacity:.6;margin-top:10px;">© 2025 Dr. Kembhavi's Ayurveda Unfiltered Voice | All Rights Reserved</p>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ─── ADMIN VIEW ─── -->
+  <div id="adminView" class="hidden">
+    <div class="container">
+      <div class="nav white-nav" id="aNav">
+        <button class="nav-btn active" onclick="aTab('dashboard')">📊 Dashboard</button>
+        <button class="nav-btn" onclick="aTab('afeedback')">📬 Feedback</button>
+        <button class="nav-btn" onclick="aTab('aforum')">📢 Forum</button>
+        <button class="nav-btn" onclick="aTab('aideas')">💡 Ideas</button>
+        <button class="nav-btn" onclick="aTab('apolls')">📋 Polls</button>
+        <button class="nav-btn" onclick="aTab('anetwork')">👥 Network</button>
+        <button class="nav-btn" onclick="aTab('aproposals')">📝 Proposals</button>
+      </div>
+
+      <!-- ADMIN DASHBOARD -->
+      <div id="a-dashboard">
+        <div class="grid4" style="margin-bottom:20px;">
+          <div class="stat-card"><div class="stat-num" id="aTot">—</div><div class="stat-lbl">Student Feedback</div></div>
+          <div class="stat-card"><div class="stat-num" id="aIdeas">—</div><div class="stat-lbl">Ideas Shared</div></div>
+          <div class="stat-card"><div class="stat-num" id="aForum">—</div><div class="stat-lbl">Forum Posts</div></div>
+          <div class="stat-card"><div class="stat-num" id="aMembers">—</div><div class="stat-lbl">Network Members</div></div>
+        </div>
+        <div class="card-glass">
+          <strong>🔑 Login Credentials Reference</strong>
+          <table style="font-size:13px;border-collapse:collapse;width:100%;margin-top:10px;">
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:7px;font-weight:700;">UG Student</td><td style="padding:7px;"><code>ayurstudent2025</code></td><td style="padding:7px;"><code>vaidya@123</code></td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:7px;font-weight:700;">PG Scholar</td><td style="padding:7px;"><code>aypgscholar2025</code></td><td style="padding:7px;"><code>pgvaidya@123</code></td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:7px;font-weight:700;">Faculty</td><td style="padding:7px;"><code>ayurfaculty2025</code></td><td style="padding:7px;"><code>faculty@ayur</code></td></tr>
+            <tr><td style="padding:7px;font-weight:700;">Admin</td><td style="padding:7px;"><code>ayuradmin2025</code></td><td style="padding:7px;"><code>admin@vaidya</code></td></tr>
+          </table>
+        </div>
+        <div class="card-glass">
+          <strong>Quick Actions</strong><br><br>
+          <button class="btn btn-grad btn-sm" onclick="exportAllCSV()" style="margin-right:8px;">⬇️ Export Feedback CSV</button>
+          <a href="analytics.html" class="btn btn-outline btn-sm" style="text-decoration:none;display:inline-block;">📈 Analytics Dashboard</a>
+        </div>
+      </div>
+
+      <!-- ADMIN: STUDENT FEEDBACK -->
+      <div id="a-afeedback" class="hidden">
+        <div class="sec-title-dark" style="margin-bottom:14px;">All Student Feedback</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+          <select id="afFCat" onchange="loadAdminFB()" style="padding:8px 12px;border:2px solid var(--border);border-radius:8px;font-size:13px;"><option value="">All Categories</option><option>Curriculum Content</option><option>Teaching Methods</option><option>Practical Training</option><option>Research Support</option><option>Ethical Concern (Confidential)</option></select>
+          <select id="afFType" onchange="loadAdminFB()" style="padding:8px 12px;border:2px solid var(--border);border-radius:8px;font-size:13px;"><option value="">UG + PG</option><option value="UG">UG Only</option><option value="PG">PG Only</option></select>
+        </div>
+        <div id="adminFBList"></div>
+      </div>
+
+      <!-- ADMIN: FORUM -->
+      <div id="a-aforum" class="hidden">
+        <div class="sec-title-dark" style="margin-bottom:14px;">Faculty Discussion Forum</div>
+        <div id="adminForumList"></div>
+      </div>
+
+      <!-- ADMIN: IDEAS -->
+      <div id="a-aideas" class="hidden">
+        <div class="sec-title-dark" style="margin-bottom:14px;">Idea Board — All Ideas</div>
+        <div id="adminIdeaList"></div>
+      </div>
+
+      <!-- ADMIN: POLLS -->
+      <div id="a-apolls" class="hidden">
+        <div class="sec-title-dark" style="margin-bottom:14px;">Poll Management</div>
+        <div class="card">
+          <strong style="display:block;margin-bottom:12px;">Create New Poll</strong>
+          <div class="form-group"><label>Poll Question</label><input type="text" id="pollQ" placeholder="e.g., What is the biggest gap in PG research support?" /></div>
+          <div class="form-group"><label>Options (add 2–4)</label>
+            <input type="text" class="popt" placeholder="Option 1" style="margin-bottom:7px;" />
+            <input type="text" class="popt" placeholder="Option 2" style="margin-bottom:7px;" />
+            <input type="text" class="popt" placeholder="Option 3 (optional)" style="margin-bottom:7px;" />
+            <input type="text" class="popt" placeholder="Option 4 (optional)" />
+          </div>
+          <button class="btn btn-grad" onclick="createPoll()">Publish Poll</button>
+        </div>
+        <div id="adminPollList"></div>
+      </div>
+
+      <!-- ADMIN: NETWORK -->
+      <div id="a-anetwork" class="hidden">
+        <div class="sec-title-dark" style="margin-bottom:14px;">Network Members</div>
+        <div id="adminNetworkList"></div>
+      </div>
+
+      <!-- ADMIN: PROPOSALS -->
+      <div id="a-aproposals" class="hidden">
+        <div class="sec-title-dark" style="margin-bottom:14px;">Reform Proposals Submitted</div>
+        <div id="adminProposalList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHATSAPP FLOATING BUTTON -->
+<div class="wa-float" onclick="waModal.show()" title="Share via WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.886 3.488"/></svg>
+</div>
+
+<!-- WHATSAPP MODAL -->
+<div class="wa-modal" id="waModalEl">
+  <div class="wa-modal-inner">
+    <button onclick="waModal.hide()" style="position:absolute;right:14px;top:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#999;">×</button>
+    <h3 style="text-align:center;color:var(--green);margin-bottom:18px;">📱 Share via WhatsApp</h3>
+    <div class="wa-card">
+      <div style="font-weight:700;margin-bottom:6px;">🕉️ Platform Invitation</div>
+      <div class="wa-preview">🌿 *Dr. Kembhavi's Ayurveda Unfiltered Voice* 🌿
+
+A confidential platform for reform voices in Ayurveda — Academic, Clinical, Research, Administrative & Development.
+
+Join the conversation: [PLATFORM_URL]
+
+Your voice matters! 🎙️ #AyurvedaReform #DrKembhavi</div>
+      <button class="btn btn-green btn-sm" onclick="whatsapp.sharePlatform()">Share →</button>
+    </div>
+    <div class="wa-card">
+      <div style="font-weight:700;margin-bottom:6px;">📜 Reform Discussion</div>
+      <div class="wa-preview">🚨 *AYURVEDA REFORM DISCUSSION* 🚨
+
+Dr. Kembhavi invites professionals to discuss reforms in:
+📚 Academic · 🏥 Clinical · 🔬 Research · 📋 Administrative · 🌱 Development
+
+Join: [PLATFORM_URL]
+
+*Together we drive meaningful change!* 🕉️</div>
+      <button class="btn btn-green btn-sm" onclick="whatsapp.shareReform()">Share →</button>
+    </div>
+    <div class="wa-card">
+      <div style="font-weight:700;margin-bottom:6px;">🚨 Urgent Call to Action</div>
+      <div class="wa-preview">⚠️ *YOUR INPUT NEEDED* ⚠️
+
+Dr. Kembhavi's Ayurveda Unfiltered Voice needs your perspectives on critical reforms in Ayurveda education and practice.
+
+🔗 [PLATFORM_URL]
+
+*Your experience shapes the future of Ayurveda* #AyurvedaUnfiltered</div>
+      <button class="btn btn-green btn-sm" onclick="whatsapp.shareUrgent()">Share →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SCRIPT ═══════════════ -->
+<script>
+// ╔════════════════════════════════════════════════╗
+// ║  FIREBASE CONFIG — REPLACE WITH YOUR OWN      ║
+// ║  Firebase Console → Project Settings →        ║
+// ║  Your Apps → Web App → Config                 ║
+// ╚════════════════════════════════════════════════╝
+const firebaseConfig = {
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ── CREDENTIALS ──
+const CREDS = {
+  ug:    {u:'ayurstudent2025', p:'vaidya@123',   role:'UG'},
+  pg:    {u:'aypgscholar2025', p:'pgvaidya@123', role:'PG'},
+  fac:   {u:'ayurfaculty2025', p:'faculty@ayur',  role:'FAC'},
+  admin: {u:'ayuradmin2025',   p:'admin@vaidya',  role:'ADMIN'}
+};
+const HINTS = {
+  ug:   'Username: <b>ayurstudent2025</b> &nbsp;·&nbsp; Password: <b>vaidya@123</b>',
+  pg:   'Username: <b>aypgscholar2025</b> &nbsp;·&nbsp; Password: <b>pgvaidya@123</b>',
+  fac:  'Username: <b>ayurfaculty2025</b> &nbsp;·&nbsp; Password: <b>faculty@ayur</b>',
+  admin:'Username: <b>ayuradmin2025</b> &nbsp;·&nbsp; Password: <b>admin@vaidya</b>'
+};
+const CAT_LABELS = {academic:'Academic Reforms',clinical:'Clinical Practice',research:'Research & Dev',administrative:'Administrative',development:'Development',regulatory:'Regulatory'};
+
+// ── STATE ──
+let userRole='', rating=0, selectedRole='ug';
+let votedIdeas = JSON.parse(localStorage.getItem('ayv_vi')||'[]');
+let votedPolls  = JSON.parse(localStorage.getItem('ayv_vp')||'{}');
+let complianceRecs = JSON.parse(localStorage.getItem('ayv_comp')||'[]');
+let currentProposalData = null;
+
+// ── UTILITY ──
+const esc = s=>(s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const ts  = t=>t?.toDate?t.toDate().toLocaleDateString('en-IN'):'Just now';
+const notify = (msg,type='success')=>{const n=document.createElement('div');n.className=`notification${type==='error'?' error':''}`;n.innerHTML=msg+'<button onclick="this.parentElement.remove()" style="background:none;border:none;color:#fff;float:right;font-size:16px;cursor:pointer;margin-left:10px;">×</button>';document.body.appendChild(n);setTimeout(()=>n.remove&&n.remove(),5000);};
+
+// ── LOGIN ──
+function setRole(r){
+  selectedRole=r;
+  document.querySelectorAll('#loginTabs button').forEach((b,i)=>b.classList.toggle('active',['ug','pg','fac','admin'][i]===r));
+  document.getElementById('roleHint').innerHTML=HINTS[r];
+}
+setRole('ug');
+
+function doLogin(){
+  const u=document.getElementById('lu').value.trim(), p=document.getElementById('lp').value.trim();
+  const found=Object.values(CREDS).find(c=>c.u===u&&c.p===p);
+  if(!found){alert('❌ Invalid credentials. Please try again.');return;}
+  userRole=found.role;
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('mainApp').classList.remove('hidden');
+  const badges={UG:'🎓 UG Student',PG:'📚 PG Scholar',FAC:'👨‍🏫 Faculty / Professional',ADMIN:'🔐 Admin'};
+  document.getElementById('userBadge').textContent=badges[userRole];
+  if(userRole==='UG'){showView('studentView');loadIdeas();loadStudentPolls();}
+  else if(userRole==='PG'){showView('studentView');document.getElementById('pgSection').classList.remove('hidden');loadIdeas();loadStudentPolls();}
+  else if(userRole==='FAC'){showView('facultyView');loadForum();loadNetworkStats();displayComplianceRecs();}
+  else if(userRole==='ADMIN'){showView('adminView');loadAdminDash();}
+  updateCounter();
+}
+function showView(v){['studentView','facultyView','adminView'].forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById(v).classList.remove('hidden');}
+
+// ── FORM HELPERS ──
+document.getElementById('chkAnon').addEventListener('change',function(){document.getElementById('nameRow').classList.toggle('hidden',this.checked);});
+document.getElementById('ideaAnon').addEventListener('change',function(){document.getElementById('ideaAuthor').style.display=this.checked?'none':'block';});
+document.getElementById('fIdeaAnon').addEventListener('change',function(){document.getElementById('fIdeaAuthor').style.display=this.checked?'none':'block';});
+function toggleFacName(){const v=document.getElementById('fAnon').value;document.getElementById('fNameRow').style.display=v==='named'?'block':'none';}
+function toggleSubject(){document.getElementById('subjectRow').classList.toggle('hidden',document.getElementById('fbCat').value!=='Subject-Specific Feedback');}
+function togglePGF(){document.getElementById('pgFields').classList.toggle('hidden',!document.getElementById('chkPG').checked);}
+function setRating(n){rating=n;document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('active',i<n));document.getElementById('ratingLbl').textContent=['','Poor','Below Average','Average','Good','Excellent'][n];}
+
+// ── STUDENT NAV ──
+function sTab(s){
+  ['feedback','ideas','polls'].forEach(id=>document.getElementById('s-'+id).classList.add('hidden'));
+  document.getElementById('s-'+s).classList.remove('hidden');
+  document.querySelectorAll('#sNav .nav-btn').forEach((b,i)=>b.classList.toggle('active',['feedback','ideas','polls'][i]===s));
+  if(s==='ideas')loadIdeas(); if(s==='polls')loadStudentPolls();
+}
+// ── FACULTY NAV ──
+function fTab(s){
+  ['forum','network','compliance','proposals','fideas'].forEach(id=>document.getElementById('f-'+id).classList.add('hidden'));
+  document.getElementById('f-'+s).classList.remove('hidden');
+  document.querySelectorAll('#fNav .nav-btn').forEach((b,i)=>b.classList.toggle('active',['forum','network','compliance','proposals','fideas'][i]===s));
+  if(s==='forum')loadForum(); if(s==='network'){loadNetworkStats();loadMembers();} if(s==='fideas')loadFacultyIdeas(); if(s==='compliance')displayComplianceRecs();
+}
+// ── ADMIN NAV ──
+function aTab(s){
+  ['dashboard','afeedback','aforum','aideas','apolls','anetwork','aproposals'].forEach(id=>document.getElementById('a-'+id).classList.add('hidden'));
+  document.getElementById('a-'+s).classList.remove('hidden');
+  document.querySelectorAll('#aNav .nav-btn').forEach((b,i)=>b.classList.toggle('active',['dashboard','afeedback','aforum','aideas','apolls','anetwork','aproposals'][i]===s));
+  const fns={afeedback:loadAdminFB,aforum:loadAdminForum,aideas:loadAdminIdeas,apolls:loadAdminPolls,anetwork:loadAdminNetwork,aproposals:loadAdminProposals};
+  if(fns[s])fns[s]();
+}
+
+// ════════════════════════════════════════
+// STUDENT PRIVATE FEEDBACK
+// ════════════════════════════════════════
+async function submitFeedback(){
+  const main=document.getElementById('fbMain').value.trim();
+  if(!main){alert('Please enter your feedback before submitting.');return;}
+  const isAnon=document.getElementById('chkAnon').checked;
+  const pgOn=document.getElementById('chkPG')?.checked;
+  const data={
+    userType:userRole, anonymous:isAnon,
+    name:isAnon?'Anonymous':(document.getElementById('fbName').value.trim()||'Anonymous'),
+    college:document.getElementById('fbCollege').value.trim(),
+    year:document.getElementById('fbYear').value,
+    category:document.getElementById('fbCat').value,
+    subject:document.getElementById('fbSubject').value,
+    rating, helped:document.getElementById('fbHelped').value.trim(),
+    hindered:document.getElementById('fbHindered').value.trim(),
+    feedback:main,
+    timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+    pg:pgOn?{synopsis:document.getElementById('pgSyn').value,guide:document.getElementById('pgGuide').value,infra:document.getElementById('pgInfra').value,conference:document.getElementById('pgConf').value,comments:document.getElementById('pgComments').value.trim()}:null
+  };
+  try{
+    await db.collection('feedback').add(data);
+    notify('✅ Your voice has been recorded. Thank you!');
+    ['fbName','fbCollege','fbMain','fbHelped','fbHindered'].forEach(id=>document.getElementById(id).value='');
+    ['fbCat','fbYear','fbSubject'].forEach(id=>document.getElementById(id).value='');
+    rating=0; document.querySelectorAll('.star').forEach(s=>s.classList.remove('active'));
+    document.getElementById('ratingLbl').textContent='Not rated';
+    updateCounter();
+  }catch(e){notify('Error submitting: '+e.message,'error');}
+}
+
+// ════════════════════════════════════════
+// IDEA BOARD
+// ════════════════════════════════════════
+async function loadIdeas(){
+  const list=document.getElementById('ideaList'); if(!list)return;
+  list.innerHTML='<p style="color:rgba(255,255,255,.6);text-align:center;padding:40px;">Loading...</p>';
+  try{
+    const cat=document.getElementById('ideaFilter')?.value;
+    const sort=document.getElementById('ideaSort')?.value||'upvotes';
+    let q=db.collection('ideas');
+    if(cat)q=q.where('category','==',cat);
+    q=q.orderBy(sort==='upvotes'?'upvotes':'timestamp','desc');
+    const snap=await q.get();
+    if(snap.empty){list.innerHTML='<p style="color:rgba(255,255,255,.6);text-align:center;padding:40px;">No ideas yet. Be the first!</p>';return;}
+    list.innerHTML='';
+    snap.forEach(doc=>{const d=doc.data(),id=doc.id,voted=votedIdeas.includes(id);
+      list.innerHTML+=`<div class="idea-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;"><div style="flex:1;"><span class="tag">${esc(d.category||'General')}</span> <span style="font-size:12px;color:var(--muted);">${esc(d.author||'Anonymous')} · ${ts(d.timestamp)}</span><p style="margin-top:10px;line-height:1.6;">${esc(d.text)}</p></div><button class="upvote-btn ${voted?'voted':''}" id="up-${id}" onclick="upvote('${id}')">👍 <span id="upc-${id}">${d.upvotes||0}</span></button></div></div>`;
+    });
+  }catch(e){list.innerHTML=`<p style="color:red;text-align:center;padding:20px;">Error: ${e.message}</p>`;}
+}
+
+async function loadFacultyIdeas(){
+  const list=document.getElementById('fIdeaList'); if(!list)return;
+  list.innerHTML='<p style="color:rgba(255,255,255,.6);text-align:center;padding:40px;">Loading...</p>';
+  try{
+    const snap=await db.collection('ideas').orderBy('upvotes','desc').get();
+    if(snap.empty){list.innerHTML='<p style="color:rgba(255,255,255,.6);text-align:center;padding:40px;">No ideas yet.</p>';return;}
+    list.innerHTML='';
+    snap.forEach(doc=>{const d=doc.data(),id=doc.id,voted=votedIdeas.includes(id);
+      list.innerHTML+=`<div class="idea-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;"><div style="flex:1;"><span class="tag">${esc(d.category||'General')}</span> <span style="font-size:12px;color:var(--muted);">${esc(d.author||'Anonymous')} · 👍 ${d.upvotes||0} · ${ts(d.timestamp)}</span><p style="margin-top:10px;line-height:1.6;">${esc(d.text)}</p></div><button class="upvote-btn ${voted?'voted':''}" id="fup-${id}" onclick="upvote('${id}','f')">👍 <span id="fupc-${id}">${d.upvotes||0}</span></button></div></div>`;
+    });
+  }catch(e){}
+}
+
+async function _submitIdea(tId,cId,aId,auId){
+  const text=document.getElementById(tId).value.trim(), cat=document.getElementById(cId).value;
+  if(!text){notify('Please write your idea first.','error');return;}
+  if(!cat){notify('Please select a category.','error');return;}
+  const isAnon=document.getElementById(aId).checked;
+  await db.collection('ideas').add({text,category:cat,author:isAnon?'Anonymous':(document.getElementById(auId).value.trim()||'Anonymous'),upvotes:0,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+  document.getElementById(tId).value=''; document.getElementById(cId).value='';
+  notify('💡 Idea posted successfully!');
+}
+function submitIdea(){_submitIdea('ideaText','ideaCat','ideaAnon','ideaAuthor').then(loadIdeas);}
+function submitFacultyIdea(){_submitIdea('fIdeaText','fIdeaCat','fIdeaAnon','fIdeaAuthor').then(loadFacultyIdeas);}
+
+async function upvote(id,pfx=''){
+  if(votedIdeas.includes(id)){notify('You have already upvoted this idea.','error');return;}
+  votedIdeas.push(id); localStorage.setItem('ayv_vi',JSON.stringify(votedIdeas));
+  await db.collection('ideas').doc(id).update({upvotes:firebase.firestore.FieldValue.increment(1)});
+  const btn=document.getElementById((pfx?'f':'')+'up-'+id), cnt=document.getElementById((pfx?'f':'')+'upc-'+id);
+  if(btn)btn.classList.add('voted'); if(cnt)cnt.textContent=parseInt(cnt.textContent)+1;
+}
+
+// ════════════════════════════════════════
+// POLLS
+// ════════════════════════════════════════
+async function loadStudentPolls(){
+  const list=document.getElementById('pollListStudent'); if(!list)return;
+  try{
+    const snap=await db.collection('polls').where('active','==',true).orderBy('timestamp','desc').get();
+    if(snap.empty){list.innerHTML='<p style="color:rgba(255,255,255,.6);text-align:center;padding:40px;">No active polls right now. Check back soon!</p>';return;}
+    list.innerHTML=''; snap.forEach(doc=>{list.innerHTML+=buildPollCard(doc);});
+  }catch(e){list.innerHTML=`<p style="color:red;padding:20px;">Error: ${e.message}</p>`;}
+}
+
+function buildPollCard(doc,isAdmin=false){
+  const d=doc.data(),id=doc.id,voted=votedPolls[id]!==undefined;
+  const total=(d.options||[]).reduce((s,o)=>s+(o.votes||0),0);
+  let html=`<div class="card" style="background:rgba(255,255,255,.95);"><strong style="font-size:15px;">${esc(d.question)}</strong><div style="margin-top:14px;">`;
+  if(voted||isAdmin){(d.options||[]).forEach(o=>{const pct=total>0?Math.round((o.votes||0)/total*100):0;html+=`<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>${esc(o.text)}</span><span style="font-weight:700;">${pct}% (${o.votes||0})</span></div><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></div>`;});}
+  else{(d.options||[]).forEach((o,i)=>{html+=`<div class="poll-opt" onclick="votePoll('${id}',${i})">${esc(o.text)}</div>`;});}
+  html+=`<p style="font-size:12px;color:var(--muted);margin-top:10px;">${total} vote${total!==1?'s':''}</p></div></div>`;
+  return html;
+}
+
+async function votePoll(pollId,optIdx){
+  if(votedPolls[pollId]!==undefined)return;
+  votedPolls[pollId]=optIdx; localStorage.setItem('ayv_vp',JSON.stringify(votedPolls));
+  const ref=db.collection('polls').doc(pollId), doc=await ref.get(), opts=doc.data().options;
+  opts[optIdx].votes=(opts[optIdx].votes||0)+1;
+  await ref.update({options:opts}); loadStudentPolls();
+}
+
+// ════════════════════════════════════════
+// FACULTY FORUM
+// ════════════════════════════════════════
+async function submitForumPost(){
+  const subj=document.getElementById('fSubject').value.trim(), msg=document.getElementById('fMessage').value.trim();
+  if(!subj||!msg){notify('Please fill in subject and message.','error');return;}
+  const isAnon=document.getElementById('fAnon').value==='anon';
+  await db.collection('forumPosts').add({
+    author:isAnon?'Anonymous Contributor':(document.getElementById('fAuthorName').value.trim()||'Anonymous'),
+    category:document.getElementById('fCat').value, subject:subj, content:msg,
+    reactions:{support:0,helpful:0,concerned:0},
+    timestamp:firebase.firestore.FieldValue.serverTimestamp()
+  });
+  document.getElementById('fSubject').value=''; document.getElementById('fMessage').value='';
+  notify('✅ Your views have been shared with the community!'); loadForum(); updateCounter();
+}
+
+async function loadForum(target){
+  const listId = (userRole==='ADMIN'||target==='admin') ? 'adminForumList' : 'forumList';
+  const list=document.getElementById(listId); if(!list)return;
+  list.innerHTML='<p style="color:var(--muted);text-align:center;padding:30px;">Loading...</p>';
+  try{
+    const catF=document.getElementById('fFilterCat')?.value;
+    const snap=await db.collection('forumPosts').orderBy('timestamp','desc').get();
+    const filtered=snap.docs.filter(d=>!catF||d.data().category===catF);
+    if(!filtered.length){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">No posts yet. Be the first to share!</p>';return;}
+    list.innerHTML='';
+    filtered.forEach(doc=>{const d=doc.data();
+      list.innerHTML+=`<div class="post-item"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin-bottom:8px;"><span style="font-weight:700;">${esc(d.author)}</span><span style="font-size:12px;color:var(--muted);">${ts(d.timestamp)}</span></div><h4 style="margin-bottom:8px;">${esc(d.subject)}</h4><p style="line-height:1.7;margin-bottom:12px;">${esc(d.content)}</p><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"><span class="post-cat">${CAT_LABELS[d.category]||d.category}</span><div><button class="reaction-btn" onclick="reactPost('${doc.id}','support',this)">💪 ${d.reactions?.support||0}</button><button class="reaction-btn" onclick="reactPost('${doc.id}','helpful',this)">👍 ${d.reactions?.helpful||0}</button><button class="reaction-btn" onclick="reactPost('${doc.id}','concerned',this)">😟 ${d.reactions?.concerned||0}</button></div></div></div>`;
+    });
+  }catch(e){list.innerHTML=`<p style="color:red;padding:20px;">Error: ${e.message}</p>`;}
+}
+
+async function reactPost(id,type,btn){
+  const ref=db.collection('forumPosts').doc(id), doc=await ref.get(), r=doc.data().reactions||{};
+  r[type]=(r[type]||0)+1; await ref.update({reactions:r});
+  btn.textContent=btn.textContent.replace(/\d+/,r[type]);
+}
+
+// ════════════════════════════════════════
+// COMMUNITY NETWORK
+// ════════════════════════════════════════
+async function joinNetwork(){
+  const inst=document.getElementById('cInst').value.trim(), loc=document.getElementById('cLoc').value.trim(), email=document.getElementById('cEmail').value.trim();
+  if(!inst||!loc||!email){notify('Please fill all fields.','error');return;}
+  await db.collection('coalitionMembers').add({institution:inst,location:loc,email,role:document.getElementById('cRole').value,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+  ['cInst','cLoc','cEmail'].forEach(id=>document.getElementById(id).value='');
+  notify(`✅ ${inst} has joined the network! Together we grow stronger.`);
+  loadNetworkStats(); loadMembers();
+}
+
+async function startDiscussion(){
+  const title=document.getElementById('discTitle').value.trim(), desc=document.getElementById('discDesc').value.trim();
+  if(!title||!desc){notify('Please fill title and description.','error');return;}
+  await db.collection('campaigns').add({title,description:desc,status:'active',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+  document.getElementById('discTitle').value=''; document.getElementById('discDesc').value='';
+  notify('✅ Discussion started! Share it with your network.'); loadNetworkStats();
+}
+
+async function loadNetworkStats(){
+  try{
+    const [members,campaigns]=await Promise.all([db.collection('coalitionMembers').get(),db.collection('campaigns').where('status','==','active').get()]);
+    const locs=[...new Set(members.docs.map(d=>d.data().location))];
+    document.getElementById('memberCount').textContent=members.size;
+    document.getElementById('stateCount').textContent=locs.length;
+    document.getElementById('campaignCount').textContent=campaigns.size;
+  }catch(e){}
+}
+
+async function loadMembers(){
+  const list=document.getElementById('memberList'); if(!list)return;
+  try{
+    const snap=await db.collection('coalitionMembers').orderBy('timestamp','desc').get();
+    if(snap.empty){list.innerHTML='';return;}
+    list.innerHTML='<div class="card" style="margin-top:8px;"><strong>Registered Members</strong><div style="margin-top:12px;">';
+    snap.forEach(doc=>{const d=doc.data();list.innerHTML+=`<div style="padding:10px 0;border-bottom:1px solid var(--border);"><strong>${esc(d.institution)}</strong> <span class="tag">${esc(d.role)}</span><br><span style="font-size:13px;color:var(--muted);">📍 ${esc(d.location)}</span></div>`;});
+    list.innerHTML+='</div></div>';
+  }catch(e){}
+}
+
+// ════════════════════════════════════════
+// COMPLIANCE TRACKER (localStorage — personal)
+// ════════════════════════════════════════
+function addCompliance(){
+  const body=document.getElementById('cBody').value, date=document.getElementById('cDate').value, docs=document.getElementById('cDocs').value, hours=document.getElementById('cHoursSpent').value;
+  if(!date||!docs||!hours){notify('Please fill all compliance fields.','error');return;}
+  complianceRecs.unshift({id:Date.now(),body,date,docs:parseInt(docs),hours:parseInt(hours)});
+  localStorage.setItem('ayv_comp',JSON.stringify(complianceRecs));
+  ['cDate','cDocs','cHoursSpent'].forEach(id=>document.getElementById(id).value='');
+  notify('✅ Compliance record added.'); displayComplianceRecs();
+}
+
+function displayComplianceRecs(){
+  const list=document.getElementById('complianceList'); if(!list)return;
+  if(!complianceRecs.length){list.innerHTML='<p style="color:var(--muted);font-size:13px;margin-top:10px;">No records yet. Start documenting!</p>';return;}
+  const total=complianceRecs.reduce((s,r)=>s+r.hours,0);
+  list.innerHTML=`<h4 style="margin-bottom:12px;">Your Records (${complianceRecs.length} entries · ${total} total hours):</h4>`;
+  complianceRecs.forEach(r=>{list.innerHTML+=`<div class="timeline-item"><div class="timeline-date">${r.date}</div><div><strong>${r.body}</strong><br><span style="font-size:13px;">Documents: ${r.docs} | Hours: ${r.hours}</span></div></div>`;});
+}
+
+function calcBurden(){
+  const h=parseFloat(document.getElementById('calcH').value)||0, s=parseFloat(document.getElementById('calcS').value)||0, c=parseFloat(document.getElementById('calcC').value)||0;
+  if(!h||!s||!c){notify('Please fill all calculator fields.','error');return;}
+  const monthly=h*s*c, annual=monthly*12, hoursYr=h*s*12, days=Math.floor(hoursYr/8);
+  document.getElementById('burdenResult').innerHTML=`<div class="alert alert-warn"><strong>Administrative Burden Analysis</strong><div class="grid2" style="margin-top:12px;"><div><strong>Monthly Cost:</strong><br>₹${monthly.toLocaleString()}</div><div><strong>Annual Cost:</strong><br>₹${annual.toLocaleString()}</div><div><strong>Hours/Year:</strong><br>${hoursYr.toLocaleString()}</div><div><strong>Working Days Lost:</strong><br>${days}</div></div><p style="margin-top:12px;font-size:13px;"><strong>Insight:</strong> ${days} full working days per year are spent on compliance activities instead of education and patient care. This data is powerful evidence for reform proposals.</p></div>`;
+}
+
+// ════════════════════════════════════════
+// REFORM PROPOSAL GENERATOR
+// ════════════════════════════════════════
+function generateProposal(){
+  const title=document.getElementById('pTitle').value.trim(), problem=document.getElementById('pProblem').value.trim(), solution=document.getElementById('pSolution').value.trim();
+  if(!title||!problem||!solution){notify('Please fill Title, Current Situation, and Proposed Solution.','error');return;}
+  const cat=document.getElementById('pCat').value, benefits=document.getElementById('pBenefits').value.trim(), data=document.getElementById('pData').value.trim(), impl=document.getElementById('pImpl').value.trim();
+  currentProposalData={title,category:cat,problem,solution,benefits,data,implementation:impl,createdDate:new Date().toLocaleDateString('en-IN'),timestamp:firebase.firestore.FieldValue.serverTimestamp()};
+  const content=`
+    <div style="text-align:center;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:20px;border-radius:10px;margin-bottom:16px;">
+      <h2 style="font-size:20px;margin:0;">${esc(title)}</h2>
+      <p style="margin:8px 0 0;opacity:.9;">Category: ${esc(cat)} · Dr. Kembhavi's Ayurveda Unfiltered Voice</p>
+      <p style="margin:4px 0 0;font-size:13px;opacity:.7;">Generated: ${new Date().toLocaleDateString('en-IN')}</p>
+    </div>
+    <div class="proposal-sec" style="border-left-color:#dc2626;"><h3 style="color:#dc2626;margin-bottom:8px;">📋 Current Situation / Challenge</h3><p style="line-height:1.7;">${esc(problem)}</p></div>
+    <div class="proposal-sec" style="border-left-color:#16a34a;"><h3 style="color:#16a34a;margin-bottom:8px;">💡 Proposed Reform / Solution</h3><p style="line-height:1.7;">${esc(solution)}</p></div>
+    ${benefits?`<div class="proposal-sec" style="border-left-color:#f59e0b;"><h3 style="color:#92400e;margin-bottom:8px;">🌟 Expected Benefits</h3><p style="line-height:1.7;">${esc(benefits)}</p></div>`:''}
+    ${data?`<div class="proposal-sec" style="border-left-color:#2563eb;"><h3 style="color:#1d4ed8;margin-bottom:8px;">📊 Supporting Evidence</h3><p style="line-height:1.7;">${esc(data)}</p></div>`:''}
+    ${impl?`<div class="proposal-sec" style="border-left-color:#7c3aed;"><h3 style="color:#7c3aed;margin-bottom:8px;">⚙️ Implementation Approach</h3><p style="line-height:1.7;">${esc(impl)}</p></div>`:''}
+    <div style="text-align:center;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:14px;border-radius:8px;font-style:italic;font-size:13px;margin-top:14px;">"Progress is impossible without change, and those who cannot change their minds cannot change anything."</div>`;
+  document.getElementById('proposalContent').innerHTML=content;
+  document.getElementById('proposalOutput').classList.remove('hidden');
+  notify(`✅ Proposal "${title}" generated! Use "Save to Platform" to store it permanently.`);
+}
+
+function copyProposal(){navigator.clipboard.writeText(document.getElementById('proposalContent').innerText).then(()=>notify('Copied to clipboard!')).catch(()=>alert('Please select and copy the text manually.'));}
+
+async function saveProposalToFirebase(){
+  if(!currentProposalData){notify('Please generate a proposal first.','error');return;}
+  try{await db.collection('proposals').add(currentProposalData);notify('💾 Proposal saved to platform!');}
+  catch(e){notify('Error saving: '+e.message,'error');}
+}
+
+// ════════════════════════════════════════
+// ADMIN FUNCTIONS
+// ════════════════════════════════════════
+async function loadAdminDash(){
+  try{
+    const [fb,ideas,forum,members]=await Promise.all([db.collection('feedback').get(),db.collection('ideas').get(),db.collection('forumPosts').get(),db.collection('coalitionMembers').get()]);
+    document.getElementById('aTot').textContent=fb.size;
+    document.getElementById('aIdeas').textContent=ideas.size;
+    document.getElementById('aForum').textContent=forum.size;
+    document.getElementById('aMembers').textContent=members.size;
+  }catch(e){}
+}
+
+async function loadAdminFB(){
+  const list=document.getElementById('adminFBList'); if(!list)return;
+  list.innerHTML='<p style="color:var(--muted);text-align:center;padding:20px;">Loading...</p>';
+  try{
+    const catF=document.getElementById('afFCat').value, typeF=document.getElementById('afFType').value;
+    const snap=await db.collection('feedback').orderBy('timestamp','desc').get();
+    const docs=snap.docs.filter(d=>(!catF||d.data().category===catF)&&(!typeF||d.data().userType===typeF));
+    if(!docs.length){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">No feedback found.</p>';return;}
+    list.innerHTML='';
+    docs.forEach(doc=>{const d=doc.data();
+      list.innerHTML+=`<div class="card"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"><span class="badge ${d.userType==='PG'?'badge-pg':'badge-ug'}">${d.userType}</span>${d.anonymous?'<span class="badge badge-anon">Anonymous</span>':`<span class="tag">${esc(d.name)}</span>`}${d.category?`<span class="tag">${esc(d.category)}</span>`:''}${d.year?`<span class="tag">${esc(d.year)}</span>`:''}${d.college?`<span class="tag">🏛️ ${esc(d.college)}</span>`:''}</div>${d.rating>0?`<div style="color:#f59e0b;margin-bottom:6px;font-size:18px;">${'★'.repeat(d.rating)}${'☆'.repeat(5-d.rating)}</div>`:''}${d.helped?`<p style="font-size:13px;margin-bottom:4px;"><strong>✅ Helped:</strong> ${esc(d.helped)}</p>`:''}${d.hindered?`<p style="font-size:13px;margin-bottom:8px;"><strong>❌ Hindered:</strong> ${esc(d.hindered)}</p>`:''}<p style="line-height:1.7;">${esc(d.feedback)}</p>${d.pg?`<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:12px;margin-top:10px;font-size:12px;line-height:1.6;"><strong>📚 PG Section:</strong><br>Synopsis: ${esc(d.pg.synopsis||'—')} | Guide: ${esc(d.pg.guide||'—')} | Infra: ${esc(d.pg.infra||'—')} | Conference: ${esc(d.pg.conference||'—')}${d.pg.comments?`<br>Comments: ${esc(d.pg.comments)}`:''}	</div>`:''}<p style="font-size:11px;color:var(--muted);margin-top:8px;">${ts(d.timestamp)}</p></div>`;
+    });
+  }catch(e){list.innerHTML=`<p style="color:red;padding:20px;">Error: ${e.message}</p>`;}
+}
+
+async function loadAdminForum(){await loadForum('admin');}
+
+async function loadAdminIdeas(){
+  const list=document.getElementById('adminIdeaList'); if(!list)return;
+  try{
+    const snap=await db.collection('ideas').orderBy('upvotes','desc').get();
+    if(snap.empty){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">No ideas yet.</p>';return;}
+    list.innerHTML='';
+    snap.forEach(doc=>{const d=doc.data();
+      list.innerHTML+=`<div class="card" style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;"><div style="flex:1;"><span class="tag">${esc(d.category||'General')}</span> <span style="font-size:12px;color:var(--muted);">${esc(d.author)} · 👍 ${d.upvotes||0} · ${ts(d.timestamp)}</span><p style="margin-top:8px;line-height:1.6;">${esc(d.text)}</p></div><button class="btn btn-danger btn-sm" onclick="deleteIdea('${doc.id}')">Delete</button></div>`;
+    });
+  }catch(e){list.innerHTML=`<p style="color:red;padding:20px;">Error: ${e.message}</p>`;}
+}
+async function deleteIdea(id){if(!confirm('Delete this idea permanently?'))return;await db.collection('ideas').doc(id).delete();notify('Idea deleted.');loadAdminIdeas();}
+
+async function loadAdminPolls(){
+  const list=document.getElementById('adminPollList'); if(!list)return;
+  try{
+    const snap=await db.collection('polls').orderBy('timestamp','desc').get();
+    if(snap.empty){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:20px;">No polls yet.</p>';return;}
+    list.innerHTML='';
+    snap.forEach(doc=>{const d=doc.data(),id=doc.id,total=(d.options||[]).reduce((s,o)=>s+(o.votes||0),0);
+      let html=`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;"><strong style="font-size:15px;">${esc(d.question)}</strong><div style="display:flex;gap:6px;align-items:center;"><span class="badge ${d.active?'badge-active':'badge-closed'}">${d.active?'Active':'Closed'}</span><button class="btn btn-outline btn-sm" onclick="togglePoll('${id}',${d.active})">${d.active?'Close':'Reopen'}</button><button class="btn btn-danger btn-sm" onclick="deletePoll('${id}')">Delete</button></div></div>`;
+      (d.options||[]).forEach(o=>{const pct=total>0?Math.round((o.votes||0)/total*100):0;html+=`<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px;"><span>${esc(o.text)}</span><span style="font-weight:700;">${o.votes||0} (${pct}%)</span></div><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></div>`;});
+      html+=`<p style="font-size:12px;color:var(--muted);margin-top:8px;">Total: ${total} votes</p></div>`;
+      list.innerHTML+=html;
+    });
+  }catch(e){}
+}
+async function createPoll(){
+  const q=document.getElementById('pollQ').value.trim(); if(!q){notify('Please enter a question.','error');return;}
+  const opts=[...document.querySelectorAll('.popt')].map(i=>i.value.trim()).filter(Boolean);
+  if(opts.length<2){notify('Please add at least 2 options.','error');return;}
+  await db.collection('polls').add({question:q,options:opts.map(t=>({text:t,votes:0})),active:true,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+  document.getElementById('pollQ').value=''; document.querySelectorAll('.popt').forEach(i=>i.value='');
+  notify('✅ Poll published and live for students!'); loadAdminPolls();
+}
+async function togglePoll(id,active){await db.collection('polls').doc(id).update({active:!active});loadAdminPolls();}
+async function deletePoll(id){if(!confirm('Delete this poll permanently?'))return;await db.collection('polls').doc(id).delete();notify('Poll deleted.');loadAdminPolls();}
+
+async function loadAdminNetwork(){
+  const list=document.getElementById('adminNetworkList'); if(!list)return;
+  try{
+    const snap=await db.collection('coalitionMembers').orderBy('timestamp','desc').get();
+    if(snap.empty){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">No members yet.</p>';return;}
+    list.innerHTML='';
+    snap.forEach(doc=>{const d=doc.data();
+      list.innerHTML+=`<div class="card"><strong>${esc(d.institution)}</strong> <span class="badge badge-fac">${esc(d.role)}</span><br><span style="font-size:13px;color:var(--muted);">📍 ${esc(d.location)} · 📧 ${esc(d.email)} · ${ts(d.timestamp)}</span></div>`;
+    });
+  }catch(e){}
+}
+
+async function loadAdminProposals(){
+  const list=document.getElementById('adminProposalList'); if(!list)return;
+  try{
+    const snap=await db.collection('proposals').orderBy('timestamp','desc').get();
+    if(snap.empty){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">No proposals saved yet.</p>';return;}
+    list.innerHTML='';
+    snap.forEach(doc=>{const d=doc.data();
+      list.innerHTML+=`<div class="card"><strong style="font-size:16px;">${esc(d.title)}</strong> <span class="tag">${esc(d.category)}</span><p style="font-size:12px;color:var(--muted);margin:6px 0;">Created: ${d.createdDate||ts(d.timestamp)}</p><p style="font-size:13px;line-height:1.6;margin-bottom:6px;"><strong>Challenge:</strong> ${esc((d.problem||'').substring(0,200))}${(d.problem||'').length>200?'...':''}</p><p style="font-size:13px;line-height:1.6;"><strong>Solution:</strong> ${esc((d.solution||'').substring(0,200))}${(d.solution||'').length>200?'...':''}</p></div>`;
+    });
+  }catch(e){}
+}
+
+// ── EXPORT CSV ──
+async function exportAllCSV(){
+  try{
+    const snap=await db.collection('feedback').orderBy('timestamp','desc').get();
+    const e=v=>`"${(v||'').toString().replace(/"/g,'""')}"`;
+    let csv='Type,Name,Anonymous,College,Year,Category,Subject,Rating,Helped,Hindered,Feedback,PG_Synopsis,PG_Guide,PG_Infra,PG_Conference,PG_Comments,Date\n';
+    snap.forEach(doc=>{const d=doc.data();csv+=[d.userType,d.name,d.anonymous,d.college,d.year,d.category,d.subject,d.rating,d.helped,d.hindered,d.feedback,d.pg?.synopsis,d.pg?.guide,d.pg?.infra,d.pg?.conference,d.pg?.comments,d.timestamp?.toDate?d.timestamp.toDate().toLocaleDateString('en-IN'):''].map(e).join(',')+'\n';});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+    a.download=`ayurveda_unfiltered_voice_${new Date().toISOString().split('T')[0]}.csv`; a.click();
+    notify('✅ CSV exported successfully!');
+  }catch(e){notify('Export error: '+e.message,'error');}
+}
+
+// ── COUNTER ──
+async function updateCounter(){
+  try{
+    const [fb,forum]=await Promise.all([db.collection('feedback').get(),db.collection('forumPosts').get()]);
+    const total=fb.size+forum.size;
+    document.getElementById('counterBanner').textContent=`🌿 ${total} voice${total!==1?'s':''} shared — Academic · Clinical · Research · Administrative · Development Reform`;
+  }catch(e){document.getElementById('counterBanner').textContent='🌿 Dr. Kembhavi\'s Ayurveda Unfiltered Voice';}
+}
+
+// ── WHATSAPP ──
+const waModal={
+  show(){document.getElementById('waModalEl').style.display='block';},
+  hide(){document.getElementById('waModalEl').style.display='none';}
+};
+const whatsapp={
+  url:window.location.href,
+  open(msg){window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`,'_blank');},
+  sharePlatform(){this.open(`🌿 *Dr. Kembhavi's Ayurveda Unfiltered Voice* 🌿\n\nA confidential platform for reform voices in Ayurveda.\n\n📚 Academic reforms\n🏥 Clinical practice\n🔬 Research priorities\n📋 Administrative processes\n🌱 Development pathways\n\n🔗 ${this.url}\n\nYour voice matters! 🎙️\n\n#AyurvedaReform #DrKembhavi #AyurvedaUnfiltered`);},
+  shareReform(){this.open(`🚨 *AYURVEDA REFORM DISCUSSION* 🚨\n\nDr. Kembhavi invites Ayurveda professionals to share perspectives on critical reforms in education and practice.\n\nJoin: ${this.url}\n\n*Together we drive meaningful change!* 🕉️\n\n#DrKembhavi #AyurvedaUnfiltered`);},
+  shareUrgent(){this.open(`⚠️ *YOUR INPUT NEEDED* ⚠️\n\nDr. Kembhavi's Ayurveda Unfiltered Voice platform needs your perspectives on critical reforms.\n\nStudents, PG scholars, faculty and professionals — all are welcome.\n\n🔗 ${this.url}\n\n*Your experience shapes the future of Ayurveda.* #AyurvedaUnfiltered`);}
+};
+// Close WA modal on backdrop click
+document.getElementById('waModalEl').addEventListener('click',function(e){if(e.target===this)waModal.hide();});
+
+// ── INIT ──
+updateCounter();
+</script>
 </body>
 </html>
