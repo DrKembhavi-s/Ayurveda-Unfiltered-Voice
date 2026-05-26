@@ -4,16 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dr. Kembhavi's Ayurveda Unfiltered Voice</title>
-<meta name="description" content="A confidential platform for reform voices in Ayurveda — Academic, Clinical, Research, Administrative, Development">
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <style>
 :root{
   --grad:linear-gradient(135deg,#667eea,#764ba2);
-  --purple:#764ba2;--blue:#667eea;
-  --orange:#f97316;--green:#25D366;
+  --purple:#764ba2;--orange:#f97316;--green:#25D366;
   --secondary:#16a34a;--accent:#2563eb;--danger:#dc2626;
-  --bg:#f0f2ff;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;
+  --card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Segoe UI',Arial,sans-serif;background:var(--grad);min-height:100vh;color:var(--text);}
@@ -21,7 +20,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--grad);min-height:1
 .container{max-width:920px;margin:0 auto;padding:20px 16px;}
 .btn{padding:10px 22px;border:none;border-radius:25px;cursor:pointer;font-size:14px;font-weight:700;transition:all .2s;}
 .btn-grad{background:var(--grad);color:#fff;} .btn-grad:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(118,75,162,.4);}
-.btn-orange{background:var(--orange);color:#fff;} .btn-orange:hover{background:#ea6c00;}
+.btn-orange{background:var(--orange);color:#fff;}
 .btn-green{background:var(--green);color:#fff;}
 .btn-accent{background:var(--accent);color:#fff;}
 .btn-danger{background:var(--danger);color:#fff;}
@@ -48,10 +47,11 @@ textarea{resize:vertical;min-height:100px;}
 .nav{display:flex;gap:4px;background:rgba(255,255,255,.15);padding:6px;border-radius:10px;margin-bottom:22px;flex-wrap:wrap;}
 .nav-btn{flex:1;min-width:80px;padding:9px 6px;background:transparent;border:none;border-radius:7px;cursor:pointer;font-weight:700;font-size:12px;color:rgba(255,255,255,.75);transition:all .2s;text-align:center;}
 .nav-btn.active{background:#fff;color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.1);}
-.white-nav{background:rgba(0,0,0,.06);}
-.white-nav .nav-btn{color:var(--muted);}
-.white-nav .nav-btn.active{background:#fff;color:var(--text);}
+.admin-tab{padding:9px 16px;background:#f1f5f9;border:2px solid var(--border);border-radius:20px;cursor:pointer;font-weight:700;font-size:13px;color:var(--muted);transition:all .2s;white-space:nowrap;}
+.admin-tab:hover{background:#e2e8f0;}
+.admin-tab.active{background:var(--grad);color:#fff;border-color:transparent;}
 .post-item{background:#fff;padding:18px;margin-bottom:12px;border-radius:10px;border-left:4px solid var(--purple);box-shadow:0 2px 5px rgba(0,0,0,.08);}
+.post-item.admin-post{border-left-color:var(--orange);}
 .post-cat{background:var(--grad);color:#fff;padding:4px 12px;border-radius:15px;font-size:11px;font-weight:700;display:inline-block;}
 .idea-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;}
 .upvote-btn{display:flex;align-items:center;gap:6px;background:#f1f5f9;border:1px solid var(--border);border-radius:20px;padding:6px 14px;cursor:pointer;font-size:13px;font-weight:700;transition:all .2s;white-space:nowrap;}
@@ -60,47 +60,56 @@ textarea{resize:vertical;min-height:100px;}
 .poll-opt:hover{border-color:var(--purple);background:#f5f3ff;}
 .bar-bg{height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;flex:1;}
 .bar-fill{height:8px;background:var(--grad);border-radius:4px;transition:width .5s;}
-.stat-card{background:rgba(255,255,255,.15);border-radius:12px;padding:20px;text-align:center;backdrop-filter:blur(5px);}
+.stat-card{background:rgba(255,255,255,.15);border-radius:12px;padding:20px;text-align:center;}
 .stat-num{font-size:30px;font-weight:900;color:#fff;}
 .stat-lbl{font-size:12px;color:rgba(255,255,255,.8);margin-top:4px;}
 .alert{padding:12px 16px;border-radius:8px;margin-bottom:14px;font-size:14px;}
 .alert-info{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;}
 .alert-warn{background:#fffbeb;border:1px solid #fde68a;color:#92400e;}
 .alert-success{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;}
+.alert-err{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;}
+/* ANNOUNCEMENTS */
+.ann-wrap{padding:0 16px;max-width:920px;margin:0 auto 4px;}
+.ann-card{border-radius:12px;padding:14px 18px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;animation:slideIn .3s ease;}
+.ann-info{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;}
+.ann-warn{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fde68a;}
+.ann-important{background:linear-gradient(135deg,#fff1f2,#ffe4e6);border:1px solid #fecdd3;}
+.ann-title{font-weight:700;font-size:14px;margin-bottom:3px;}
+.ann-msg{font-size:13px;line-height:1.6;color:var(--text);}
+.ann-from{font-size:11px;color:var(--muted);margin-top:4px;}
+.ann-dismiss{background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);flex-shrink:0;padding:0;}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
 .sec-title{font-size:19px;font-weight:700;margin-bottom:4px;color:#fff;}
 .sec-sub{color:rgba(255,255,255,.7);font-size:13px;margin-bottom:16px;}
 .sec-title-dark{font-size:18px;font-weight:700;margin-bottom:4px;color:var(--text);}
-.sec-sub-dark{color:var(--muted);font-size:13px;margin-bottom:16px;}
 .reaction-btn{background:#f8f9fa;border:1px solid var(--border);padding:5px 12px;border-radius:15px;cursor:pointer;font-size:12px;transition:all .2s;margin-right:5px;}
 .reaction-btn:hover{background:#e9ecef;}
 .timeline-item{display:flex;margin-bottom:14px;padding:14px;background:#f8f9fa;border-radius:10px;border-left:4px solid var(--secondary);}
 .timeline-date{font-weight:700;margin-right:16px;min-width:100px;font-size:13px;}
 .proposal-sec{background:#f8f9fa;padding:16px;margin:12px 0;border-left:4px solid var(--purple);border-radius:5px;}
-.notification{position:fixed;top:20px;right:20px;background:#2ecc71;color:#fff;padding:14px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.3);z-index:9999;max-width:300px;font-size:14px;animation:slideIn .3s ease-out;}
+.notification{position:fixed;top:20px;right:20px;background:#2ecc71;color:#fff;padding:14px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.3);z-index:9999;max-width:320px;font-size:14px;animation:slideIn .3s ease-out;}
 .notification.error{background:#e74c3c;}
 @keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
-/* REQUEST & CREDENTIAL MODALS */
-.overlay-modal{display:none;position:fixed;z-index:10002;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.75);}
-.overlay-inner{background:#fff;margin:5% auto;padding:28px;border-radius:20px;width:90%;max-width:500px;max-height:88vh;overflow-y:auto;position:relative;}
-.cred-box{background:#f8fafc;border:2px solid var(--border);border-radius:10px;padding:16px;font-size:14px;margin:12px 0;line-height:1.8;}
-.msg-preview{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px;font-size:13px;line-height:1.7;white-space:pre-line;margin:10px 0;max-height:220px;overflow-y:auto;}
-.req-card{background:#fff;border-radius:10px;padding:18px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
-/* COUNTER */
 .counter{background:linear-gradient(135deg,var(--orange),#f43f5e);color:#fff;text-align:center;padding:10px;font-size:14px;font-weight:700;}
 /* LOGIN */
 #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
-.login-box{background:#fff;border-radius:20px;padding:36px;max-width:460px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.15);}
+.login-box{background:#fff;border-radius:20px;padding:36px;max-width:420px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.15);}
 .logo{text-align:center;margin-bottom:24px;}
-.logo h1{font-size:24px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.3;}
+.logo h1{font-size:22px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.3;}
 .logo p{color:var(--muted);font-size:12px;margin-top:6px;}
-.tab-toggle{display:flex;background:#f1f5f9;border-radius:8px;padding:4px;margin-bottom:16px;gap:2px;}
-.tab-toggle button{flex:1;padding:8px 4px;border:none;border-radius:6px;cursor:pointer;font-weight:700;font-size:12px;background:transparent;color:var(--muted);transition:all .2s;}
-.tab-toggle button.active{background:#fff;color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1);}
 .privacy-note{font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5;}
+.link-btn{color:var(--purple);cursor:pointer;font-weight:700;font-size:13px;background:none;border:none;padding:0;text-decoration:underline;}
+.email-note{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--secondary);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.pw-strength{height:4px;border-radius:2px;margin-top:6px;transition:all .3s;}
+/* HEADER */
 .app-header{background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .app-header h2{font-size:17px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+/* MODALS */
+.overlay-modal{display:none;position:fixed;z-index:10002;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.75);}
+.overlay-inner{background:#fff;margin:4% auto;padding:28px;border-radius:20px;width:90%;max-width:520px;max-height:90vh;overflow-y:auto;position:relative;}
+.msg-preview{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px;font-size:13px;line-height:1.7;white-space:pre-line;margin:10px 0;max-height:200px;overflow-y:auto;}
+.req-card{background:#fff;border-radius:10px;padding:18px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
 .cta-banner{background:linear-gradient(135deg,#ff9a9e,#fecfef);border-radius:20px;padding:28px;text-align:center;margin:20px 0;}
 .wa-float{position:fixed;bottom:28px;right:28px;width:56px;height:56px;background:linear-gradient(45deg,#25D366,#20B955);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 5px 20px rgba(37,211,102,.5);z-index:999;animation:waPulse 2s infinite;}
 @keyframes waPulse{0%,100%{box-shadow:0 5px 20px rgba(37,211,102,.4);}50%{box-shadow:0 5px 30px rgba(37,211,102,.8);}}
@@ -109,47 +118,53 @@ textarea{resize:vertical;min-height:100px;}
 .wa-card{background:#f0fdf4;padding:16px;margin:12px 0;border-radius:12px;border-left:4px solid var(--green);}
 .wa-preview{background:#fff;padding:12px;border-radius:8px;font-size:13px;line-height:1.6;border:1px solid var(--border);max-height:90px;overflow-y:auto;margin:8px 0;white-space:pre-line;color:#333;}
 footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;text-align:center;margin-top:28px;}
-@media(max-width:600px){.grid2,.grid4{grid-template-columns:1fr;}.nav-btn{min-width:60px;font-size:11px;padding:8px 4px;}}
+@media(max-width:600px){.grid2,.grid4{grid-template-columns:1fr;}.nav-btn{min-width:60px;font-size:11px;}}
 </style>
 </head>
 <body>
 
 <div class="counter" id="counterBanner">🌿 Loading platform data...</div>
 
-<!-- ═══════════════ LOGIN SCREEN ═══════════════ -->
+<!-- ═══ LOGIN SCREEN ═══ -->
 <div id="loginScreen">
   <div class="login-box">
     <div class="logo">
       <h1>🌿 Dr. Kembhavi's<br>Ayurveda Unfiltered Voice</h1>
       <p>Academic · Clinical · Research · Administrative · Development Reform</p>
     </div>
-    <div class="alert alert-info">🔒 A confidential platform for reform voices in Ayurveda.</div>
-    <div class="tab-toggle" id="loginTabs">
-      <button class="active" onclick="setRole('ug')">🎓 UG Student</button>
-      <button onclick="setRole('pg')">📚 PG Scholar</button>
-      <button onclick="setRole('fac')">👨‍🏫 Faculty</button>
-      <button onclick="setRole('admin')">🔐 Admin</button>
+    <div class="alert alert-info" style="font-size:13px;">🔒 A confidential platform for reform voices in Ayurveda.</div>
+    <div id="loginErr" class="alert alert-err hidden" style="font-size:13px;"></div>
+    <div class="form-group">
+      <label>Email Address / Username</label>
+      <input type="text" id="lu" placeholder="your@email.com or preset username" autocomplete="username" />
     </div>
-    <div class="form-group"><label>Username</label><input type="text" id="lu" placeholder="Enter your username" /></div>
-    <div class="form-group"><label>Password</label><input type="password" id="lp" placeholder="Enter your password" onkeypress="if(event.key==='Enter')doLogin()" /></div>
-    <button class="btn btn-grad" style="width:100%;padding:14px;font-size:15px;" onclick="doLogin()">Sign In →</button>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="lp" placeholder="Your password" autocomplete="current-password" onkeypress="if(event.key==='Enter')doLogin()" />
+    </div>
+    <div style="text-align:right;margin-bottom:14px;">
+      <button class="link-btn" onclick="openForgotModal()">Forgot Password?</button>
+    </div>
+    <button class="btn btn-grad" style="width:100%;padding:14px;font-size:15px;" id="loginBtn" onclick="doLogin()">Sign In →</button>
     <div style="text-align:center;margin-top:16px;">
-      <span style="font-size:13px;color:var(--muted);">Don't have access? </span>
-      <span style="color:var(--purple);cursor:pointer;font-weight:700;font-size:13px;" onclick="openReqModal()">Request Access →</span>
+      <span style="font-size:13px;color:var(--muted);">New to the platform? </span>
+      <button class="link-btn" onclick="openRegModal()">Register Here →</button>
     </div>
     <p class="privacy-note">By signing in you agree to use this platform respectfully.<br>All data is stored securely with complete confidentiality.</p>
   </div>
 </div>
 
-<!-- ═══════════════ MAIN APP ═══════════════ -->
+<!-- ═══ MAIN APP ═══ -->
 <div id="mainApp" class="hidden">
   <div class="app-header">
     <h2>🌿 Ayurveda Unfiltered Voice</h2>
     <div style="display:flex;align-items:center;gap:10px;">
       <span id="userBadge" style="font-size:12px;color:var(--muted);"></span>
-      <button class="btn btn-outline btn-sm" onclick="location.reload()">Logout</button>
+      <button class="btn btn-outline btn-sm" onclick="doLogout()">Logout</button>
     </div>
   </div>
+
+  <div id="annBanner"></div>
 
   <!-- STUDENT / PG VIEW -->
   <div id="studentView" class="hidden">
@@ -205,7 +220,7 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
                   <div class="form-group"><label>Research Infrastructure</label><select id="pgInfra"><option value="">Select...</option><option>Excellent</option><option>Good</option><option>Adequate</option><option>Poor</option><option>Very Poor</option></select></div>
                   <div class="form-group"><label>Conference / Publication Support</label><select id="pgConf"><option value="">Select...</option><option>Actively encouraged</option><option>Supported when I initiated</option><option>No support, no obstacle</option><option>Discouraged from publishing independently</option></select></div>
                 </div>
-                <div class="form-group"><label>Additional Comments</label><textarea id="pgComments" placeholder="Ethical concerns, authorship issues, etc. — be factual." style="min-height:80px;"></textarea></div>
+                <div class="form-group"><label>Additional Comments</label><textarea id="pgComments" style="min-height:80px;"></textarea></div>
               </div>
             </div>
           </div>
@@ -215,7 +230,7 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
       </div>
       <div id="s-ideas" class="hidden">
         <div class="sec-title">💡 Reform Idea Board</div>
-        <div class="sec-sub">Post ideas, read others', upvote what resonates. Visible to all users.</div>
+        <div class="sec-sub">Post ideas, read others', upvote what resonates.</div>
         <div class="card">
           <div class="form-group"><label>Category</label><select id="ideaCat"><option value="">Select...</option><option>Curriculum Reform</option><option>Teaching Methods</option><option>Research Infrastructure</option><option>Clinical Training</option><option>Student Welfare</option><option>Digital Learning</option><option>Assessment Reform</option><option>PG Scholar Issues</option><option>Other</option></select></div>
           <div class="form-group"><textarea id="ideaText" placeholder="Share your reform idea — be specific and actionable..." style="min-height:100px;"></textarea></div>
@@ -257,9 +272,9 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
             <div class="form-group"><label>Post As</label><select id="fAnon" onchange="toggleFacName()"><option value="anon">Anonymous (Recommended)</option><option value="named">With name / institution</option></select></div>
             <div class="form-group"><label>Reform Category</label><select id="fCat"><option value="academic">Academic Reforms</option><option value="clinical">Clinical Practice</option><option value="research">Research & Development</option><option value="administrative">Administrative Issues</option><option value="development">Development Initiatives</option><option value="regulatory">Regulatory Challenges</option></select></div>
           </div>
-          <div class="form-group hidden" id="fNameRow"><label>Your Name / Institution</label><input type="text" id="fAuthorName" placeholder="Dr. Name, Institution" /></div>
-          <div class="form-group"><label>Subject</label><input type="text" id="fSubject" placeholder="Brief topic description" /></div>
-          <div class="form-group"><label>Your Views & Suggestions</label><textarea id="fMessage" style="min-height:130px;" placeholder="Share your experiences, observations, challenges, or reform suggestions..."></textarea></div>
+          <div class="form-group hidden" id="fNameRow"><label>Your Name / Institution</label><input type="text" id="fAuthorName" /></div>
+          <div class="form-group"><label>Subject</label><input type="text" id="fSubject" /></div>
+          <div class="form-group"><label>Your Views & Suggestions</label><textarea id="fMessage" style="min-height:130px;"></textarea></div>
           <button class="btn btn-grad" onclick="submitForumPost()">📢 Share Your Views</button>
         </div>
         <div style="display:flex;gap:8px;margin-bottom:14px;">
@@ -289,7 +304,7 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
         <div class="card">
           <div class="sec-title-dark" style="margin-bottom:12px;">📢 Start a Discussion</div>
           <div class="form-group"><input type="text" id="discTitle" placeholder="Discussion Topic" /></div>
-          <div class="form-group"><textarea id="discDesc" placeholder="Describe the topic..." style="min-height:80px;"></textarea></div>
+          <div class="form-group"><textarea id="discDesc" style="min-height:80px;"></textarea></div>
           <button class="btn btn-grad" onclick="startDiscussion()">Start Discussion →</button>
         </div>
         <div id="memberList"></div>
@@ -298,13 +313,11 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
         <div class="sec-title">📋 Compliance Tracker</div>
         <div class="sec-sub">Document administrative requirements — build evidence for reform discussions.</div>
         <div class="card">
-          <div class="sec-title-dark" style="margin-bottom:12px;">Record Compliance Activity</div>
-          <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Records are stored locally on your device.</p>
           <div class="grid2">
             <div class="form-group"><label>Regulatory Body</label><select id="cBody"><option>NCISM</option><option>QCI</option><option>NAAC</option><option>NABH</option><option>State Board</option><option>University</option><option>Other</option></select></div>
             <div class="form-group"><label>Activity Date</label><input type="date" id="cDate" /></div>
-            <div class="form-group"><label>Documents Required</label><input type="number" id="cDocs" placeholder="Number" /></div>
-            <div class="form-group"><label>Time Spent (Hours)</label><input type="number" id="cHoursSpent" placeholder="Hours" /></div>
+            <div class="form-group"><label>Documents Required</label><input type="number" id="cDocs" /></div>
+            <div class="form-group"><label>Time Spent (Hours)</label><input type="number" id="cHoursSpent" /></div>
           </div>
           <button class="btn btn-grad" onclick="addCompliance()">Add Record</button>
           <div id="complianceList" style="margin-top:20px;"></div>
@@ -312,9 +325,9 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
         <div class="card">
           <div class="sec-title-dark" style="margin-bottom:12px;">💰 Administrative Burden Calculator</div>
           <div class="grid2">
-            <div class="form-group"><label>Avg. hours/month on documentation</label><input type="number" id="calcH" placeholder="e.g., 120" /></div>
-            <div class="form-group"><label>Staff involved</label><input type="number" id="calcS" placeholder="e.g., 8" /></div>
-            <div class="form-group"><label>Avg. hourly cost per staff (₹)</label><input type="number" id="calcC" placeholder="e.g., 500" /></div>
+            <div class="form-group"><label>Avg. hours/month on documentation</label><input type="number" id="calcH" /></div>
+            <div class="form-group"><label>Staff involved</label><input type="number" id="calcS" /></div>
+            <div class="form-group"><label>Avg. hourly cost per staff (₹)</label><input type="number" id="calcC" /></div>
             <div></div>
           </div>
           <button class="btn btn-grad" onclick="calcBurden()">Calculate Impact</button>
@@ -323,16 +336,15 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
       </div>
       <div id="f-proposals" class="hidden">
         <div class="sec-title">📝 Reform Proposal Generator</div>
-        <div class="sec-sub">Create structured proposals for Ayurveda education and practice reform.</div>
         <div class="card">
-          <div class="form-group"><label>Proposal Title <span style="color:var(--danger);">*</span></label><input type="text" id="pTitle" placeholder="e.g., Enhancing Clinical Training in Ayurveda Curriculum" /></div>
+          <div class="form-group"><label>Proposal Title *</label><input type="text" id="pTitle" /></div>
           <div class="form-group"><label>Reform Area</label><select id="pCat"><option>Academic Reforms</option><option>Clinical Practice</option><option>Research & Development</option><option>Administrative Improvements</option><option>Development Initiatives</option><option>Regulatory Reform</option></select></div>
-          <div class="form-group"><label>Current Situation / Challenge <span style="color:var(--danger);">*</span></label><textarea id="pProblem"></textarea></div>
-          <div class="form-group"><label>Proposed Reform / Solution <span style="color:var(--danger);">*</span></label><textarea id="pSolution"></textarea></div>
+          <div class="form-group"><label>Current Situation / Challenge *</label><textarea id="pProblem"></textarea></div>
+          <div class="form-group"><label>Proposed Reform / Solution *</label><textarea id="pSolution"></textarea></div>
           <div class="form-group"><label>Expected Benefits</label><textarea id="pBenefits"></textarea></div>
-          <div class="form-group"><label>Supporting Evidence / Examples</label><textarea id="pData"></textarea></div>
+          <div class="form-group"><label>Supporting Evidence</label><textarea id="pData"></textarea></div>
           <div class="form-group"><label>Implementation Approach</label><textarea id="pImpl"></textarea></div>
-          <button class="btn btn-grad" onclick="generateProposal()">📄 Generate Proposal Document</button>
+          <button class="btn btn-grad" onclick="generateProposal()">📄 Generate Proposal</button>
           <div id="proposalOutput" class="hidden" style="margin-top:20px;background:#f8f9fa;border-radius:10px;padding:20px;">
             <div id="proposalContent"></div>
             <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
@@ -344,10 +356,9 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
       </div>
       <div id="f-fideas" class="hidden">
         <div class="sec-title">💡 Idea Board</div>
-        <div class="sec-sub">Share and upvote reform ideas — visible to all users.</div>
         <div class="card">
           <div class="form-group"><label>Category</label><select id="fIdeaCat"><option value="">Select...</option><option>Curriculum Reform</option><option>Teaching Methods</option><option>Research Infrastructure</option><option>Clinical Training</option><option>Faculty Welfare</option><option>Student Welfare</option><option>Assessment Reform</option><option>Regulatory Reform</option><option>Other</option></select></div>
-          <div class="form-group"><textarea id="fIdeaText" placeholder="Your reform idea..." style="min-height:100px;"></textarea></div>
+          <div class="form-group"><textarea id="fIdeaText" style="min-height:100px;"></textarea></div>
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
             <label style="display:flex;align-items:center;gap:6px;cursor:pointer;margin:0;font-size:13px;"><input type="checkbox" id="fIdeaAnon" checked style="width:14px;height:14px;"> Post anonymously</label>
             <input type="text" id="fIdeaAuthor" placeholder="Your name" style="width:180px;display:none;" />
@@ -360,29 +371,25 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
     <div class="container">
       <div class="cta-banner">
         <h2 style="color:var(--text);margin-bottom:10px;">🕉️ Join the Conversation on Ayurveda Reform</h2>
-        <p style="color:#555;max-width:600px;margin:0 auto 16px;font-size:15px;">Your perspectives shape the future of Ayurvedic education and practice.</p>
         <button class="btn btn-grad" onclick="waModal.show()">📱 Share via WhatsApp</button>
       </div>
-      <footer>
-        <h3>Dr. Kembhavi's Ayurveda Unfiltered Voice</h3>
-        <p style="margin:10px 0;opacity:.8;">Empowering Ayurveda professionals to share perspectives and drive meaningful reform</p>
-        <p style="font-size:12px;opacity:.6;margin-top:10px;">© 2025 Dr. Kembhavi's Ayurveda Unfiltered Voice | All Rights Reserved</p>
-      </footer>
+      <footer><h3>Dr. Kembhavi's Ayurveda Unfiltered Voice</h3><p style="margin:10px 0;opacity:.8;">Empowering Ayurveda professionals to share perspectives and drive meaningful reform</p><p style="font-size:12px;opacity:.6;margin-top:10px;">© 2025 Dr. Kembhavi's Ayurveda Unfiltered Voice</p></footer>
     </div>
   </div>
 
   <!-- ADMIN VIEW -->
   <div id="adminView" class="hidden">
     <div class="container">
-      <div class="nav white-nav" id="aNav">
-        <button class="nav-btn active" onclick="aTab('dashboard')">📊 Dashboard</button>
-        <button class="nav-btn" onclick="aTab('afeedback')">📬 Feedback</button>
-        <button class="nav-btn" onclick="aTab('aforum')">📢 Forum</button>
-        <button class="nav-btn" onclick="aTab('aideas')">💡 Ideas</button>
-        <button class="nav-btn" onclick="aTab('apolls')">📋 Polls</button>
-        <button class="nav-btn" onclick="aTab('anetwork')">👥 Network</button>
-        <button class="nav-btn" onclick="aTab('aproposals')">📝 Proposals</button>
-        <button class="nav-btn" onclick="aTab('arequests')" id="reqTabBtn">🔔 Requests</button>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px;">
+        <button class="admin-tab active" onclick="aTab('dashboard')" id="atb-dashboard">📊 Dashboard</button>
+        <button class="admin-tab" onclick="aTab('afeedback')" id="atb-afeedback">📬 Feedback</button>
+        <button class="admin-tab" onclick="aTab('aforum')" id="atb-aforum">📢 Forum</button>
+        <button class="admin-tab" onclick="aTab('aideas')" id="atb-aideas">💡 Ideas</button>
+        <button class="admin-tab" onclick="aTab('apolls')" id="atb-apolls">📋 Polls</button>
+        <button class="admin-tab" onclick="aTab('anetwork')" id="atb-anetwork">👥 Network</button>
+        <button class="admin-tab" onclick="aTab('aproposals')" id="atb-aproposals">📝 Proposals</button>
+        <button class="admin-tab" onclick="aTab('arequests')" id="reqTabBtn">🔔 Requests</button>
+        <button class="admin-tab" onclick="aTab('apost')" id="atb-apost">📣 Post & Announce</button>
       </div>
 
       <div id="a-dashboard">
@@ -393,8 +400,9 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
           <div class="stat-card"><div class="stat-num" id="aPending">—</div><div class="stat-lbl">Pending Requests</div></div>
         </div>
         <div class="card-glass">
-          <strong>🔑 Preset Login Credentials</strong>
-          <table style="font-size:13px;border-collapse:collapse;width:100%;margin-top:10px;">
+          <strong>🔑 Preset Shared Credentials</strong>
+          <p style="font-size:12px;color:var(--muted);margin:6px 0 10px;">These are shared logins. Self-registered users log in with their own email and password.</p>
+          <table style="font-size:13px;border-collapse:collapse;width:100%;">
             <tr style="border-bottom:1px solid var(--border);"><td style="padding:7px;font-weight:700;">UG Student</td><td style="padding:7px;"><code>ayurstudent2025</code></td><td style="padding:7px;"><code>vaidya@123</code></td></tr>
             <tr style="border-bottom:1px solid var(--border);"><td style="padding:7px;font-weight:700;">PG Scholar</td><td style="padding:7px;"><code>aypgscholar2025</code></td><td style="padding:7px;"><code>pgvaidya@123</code></td></tr>
             <tr style="border-bottom:1px solid var(--border);"><td style="padding:7px;font-weight:700;">Faculty</td><td style="padding:7px;"><code>ayurfaculty2025</code></td><td style="padding:7px;"><code>faculty@ayur</code></td></tr>
@@ -416,22 +424,13 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
         </div>
         <div id="adminFBList"></div>
       </div>
-
-      <div id="a-aforum" class="hidden">
-        <div class="sec-title-dark" style="margin-bottom:14px;">Faculty Discussion Forum</div>
-        <div id="adminForumList"></div>
-      </div>
-
-      <div id="a-aideas" class="hidden">
-        <div class="sec-title-dark" style="margin-bottom:14px;">Idea Board — All Ideas</div>
-        <div id="adminIdeaList"></div>
-      </div>
-
+      <div id="a-aforum" class="hidden"><div class="sec-title-dark" style="margin-bottom:14px;">Faculty Discussion Forum</div><div id="adminForumList"></div></div>
+      <div id="a-aideas" class="hidden"><div class="sec-title-dark" style="margin-bottom:14px;">Idea Board — All Ideas</div><div id="adminIdeaList"></div></div>
       <div id="a-apolls" class="hidden">
         <div class="sec-title-dark" style="margin-bottom:14px;">Poll Management</div>
         <div class="card">
           <strong style="display:block;margin-bottom:12px;">Create New Poll</strong>
-          <div class="form-group"><label>Poll Question</label><input type="text" id="pollQ" placeholder="e.g., What is the biggest gap in PG research support?" /></div>
+          <div class="form-group"><label>Poll Question</label><input type="text" id="pollQ" /></div>
           <div class="form-group"><label>Options</label>
             <input type="text" class="popt" placeholder="Option 1" style="margin-bottom:7px;" />
             <input type="text" class="popt" placeholder="Option 2" style="margin-bottom:7px;" />
@@ -442,205 +441,463 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
         </div>
         <div id="adminPollList"></div>
       </div>
+      <div id="a-anetwork" class="hidden"><div class="sec-title-dark" style="margin-bottom:14px;">Network Members</div><div id="adminNetworkList"></div></div>
+      <div id="a-aproposals" class="hidden"><div class="sec-title-dark" style="margin-bottom:14px;">Reform Proposals Submitted</div><div id="adminProposalList"></div></div>
 
-      <div id="a-anetwork" class="hidden">
-        <div class="sec-title-dark" style="margin-bottom:14px;">Network Members</div>
-        <div id="adminNetworkList"></div>
-      </div>
-
-      <div id="a-aproposals" class="hidden">
-        <div class="sec-title-dark" style="margin-bottom:14px;">Reform Proposals Submitted</div>
-        <div id="adminProposalList"></div>
-      </div>
-
-      <!-- ACCESS REQUESTS TAB -->
+      <!-- REQUESTS TAB -->
       <div id="a-arequests" class="hidden">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
           <div class="sec-title-dark" style="margin:0;">🔔 Access Requests</div>
           <span id="pendingBadge" class="badge badge-anon" style="font-size:13px;"></span>
         </div>
-        <div class="alert alert-info" style="font-size:13px;">When you approve a request, unique credentials are auto-generated and you get a ready-to-send WhatsApp and email message.</div>
-        <div id="accessRequestList"><p style="color:var(--muted);text-align:center;padding:40px;">Loading requests...</p></div>
+        <div class="alert alert-info" style="font-size:13px;">Self-registered users create their own email/password. On approval, they can log in immediately. You just send a confirmation message.</div>
+        <div id="accessRequestList"></div>
+      </div>
+
+      <!-- POST & ANNOUNCE TAB -->
+      <div id="a-apost" class="hidden">
+        <div class="card">
+          <strong style="display:block;margin-bottom:6px;font-size:16px;">📣 Create Pinned Announcement</strong>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Appears at the top of every user's screen when they log in.</p>
+          <div class="form-group"><label>Title *</label><input type="text" id="annTitle" placeholder="e.g., Welcome to Ayurveda Unfiltered Voice!" /></div>
+          <div class="form-group"><label>Message *</label><textarea id="annMsg" style="min-height:90px;"></textarea></div>
+          <div class="form-group"><label>Priority</label>
+            <select id="annType"><option value="info">🔵 Information (Blue)</option><option value="warn">🟡 Notice (Yellow)</option><option value="important">🔴 Important (Red)</option></select>
+          </div>
+          <button class="btn btn-grad" onclick="createAnnouncement()">📣 Publish Announcement</button>
+        </div>
+        <div class="card">
+          <strong style="display:block;margin-bottom:6px;font-size:16px;">📢 Post to Discussion Forum</strong>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Post appears as <strong>Dr. Kembhavi (Admin)</strong> with orange highlight.</p>
+          <div class="form-group"><label>Reform Category</label>
+            <select id="adminForumCat"><option value="academic">Academic Reforms</option><option value="clinical">Clinical Practice</option><option value="research">Research & Development</option><option value="administrative">Administrative Issues</option><option value="development">Development Initiatives</option><option value="regulatory">Regulatory Challenges</option></select>
+          </div>
+          <div class="form-group"><label>Subject *</label><input type="text" id="adminForumSubj" /></div>
+          <div class="form-group"><label>Message *</label><textarea id="adminForumMsg" style="min-height:120px;"></textarea></div>
+          <button class="btn btn-grad" onclick="postAdminForum()">📢 Post to Forum</button>
+        </div>
+        <div class="card">
+          <strong style="display:block;margin-bottom:6px;font-size:16px;">💡 Post to Idea Board</strong>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Appears as <strong>Dr. Kembhavi</strong> on the public Idea Board.</p>
+          <div class="form-group"><label>Category</label><select id="adminIdeaCat"><option value="">Select...</option><option>Curriculum Reform</option><option>Teaching Methods</option><option>Research Infrastructure</option><option>Clinical Training</option><option>Faculty Welfare</option><option>Student Welfare</option><option>Assessment Reform</option><option>Regulatory Reform</option><option>Other</option></select></div>
+          <div class="form-group"><textarea id="adminIdeaText" style="min-height:100px;"></textarea></div>
+          <button class="btn btn-grad" onclick="postAdminIdea()">💡 Post Idea</button>
+        </div>
+        <div class="card"><strong style="display:block;margin-bottom:12px;font-size:16px;">📋 Manage Announcements</strong><div id="adminAnnList"></div></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- REQUEST ACCESS MODAL -->
-<div class="overlay-modal" id="reqModal">
+<!-- ★ REGISTER MODAL ★ -->
+<div class="overlay-modal" id="regModal">
   <div class="overlay-inner">
-    <button onclick="closeReqModal()" style="position:absolute;right:14px;top:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#999;">×</button>
-    <h3 style="margin-bottom:6px;">🌿 Request Platform Access</h3>
-    <p style="color:var(--muted);font-size:13px;margin-bottom:18px;">Fill in your details. Dr. Kembhavi will review your request and send your personal login credentials.</p>
-    <div class="form-group"><label>Full Name <span style="color:var(--danger);">*</span></label><input type="text" id="rName" placeholder="Dr. / Vd. Your Full Name" /></div>
-    <div class="form-group"><label>Institution <span style="color:var(--danger);">*</span></label><input type="text" id="rInst" placeholder="Your college or organization" /></div>
+    <button onclick="closeRegModal()" style="position:absolute;right:14px;top:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#999;">×</button>
+    <h3 style="margin-bottom:4px;">🌿 Register for Access</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Create your account. Dr. Kembhavi will review and approve your request.</p>
+
+    <!-- EMAIL AS USERNAME NOTE -->
+    <div class="email-note">
+      📧 <strong>Your email address will be your username</strong> on this platform.
+    </div>
+
+    <div id="regErr" class="alert alert-err hidden" style="font-size:13px;"></div>
+    <div class="form-group"><label>Full Name *</label><input type="text" id="rName" placeholder="Dr. / Vd. Your Full Name" /></div>
+    <div class="form-group"><label>Institution *</label><input type="text" id="rInst" placeholder="Your college or organization" /></div>
     <div class="grid2">
-      <div class="form-group"><label>State <span style="color:var(--danger);">*</span></label><input type="text" id="rState" placeholder="Your state" /></div>
-      <div class="form-group"><label>Role <span style="color:var(--danger);">*</span></label>
+      <div class="form-group"><label>State *</label><input type="text" id="rState" placeholder="Your state" /></div>
+      <div class="form-group"><label>Role *</label>
         <select id="rRole"><option value="">Select your role...</option><option value="UG">UG Student (BAMS)</option><option value="PG">PG Scholar</option><option value="FAC">Faculty / Professional</option></select>
       </div>
     </div>
-    <div class="form-group"><label>WhatsApp Number / Email <span style="color:var(--danger);">*</span></label><input type="text" id="rContact" placeholder="Dr. Kembhavi will send credentials here" /></div>
-    <div class="form-group"><label>Why do you want to join? <span style="color:var(--muted);font-weight:400;">(optional)</span></label><textarea id="rReason" placeholder="Brief reason..." style="min-height:70px;"></textarea></div>
-    <button class="btn btn-grad" style="width:100%;padding:13px;font-size:15px;" onclick="submitAccessRequest()">Submit Request →</button>
-    <p class="privacy-note">Your details are shared only with Dr. Kembhavi for verification. You will be contacted once approved.</p>
+    <div class="form-group"><label>Email Address * <span style="color:var(--secondary);font-weight:400;">(this will be your username)</span></label><input type="email" id="rEmail" placeholder="your@email.com" autocomplete="email" /></div>
+    <div class="form-group">
+      <label>Choose Password * <span style="color:var(--muted);font-weight:400;">(min. 8 characters)</span></label>
+      <input type="password" id="rPw" placeholder="Choose a strong password" autocomplete="new-password" oninput="checkPwStrength(this.value)" />
+      <div id="pwStrengthBar" class="pw-strength" style="width:0%;background:#e2e8f0;"></div>
+      <p id="pwStrengthLbl" style="font-size:11px;color:var(--muted);margin-top:4px;"></p>
+    </div>
+    <div class="form-group"><label>Confirm Password *</label><input type="password" id="rPwConf" placeholder="Re-enter your password" autocomplete="new-password" /></div>
+    <div class="form-group"><label>WhatsApp Number *</label><input type="text" id="rContact" placeholder="Dr. Kembhavi will send approval notification here" /></div>
+    <div class="form-group"><label>Why do you want to join? <span style="color:var(--muted);font-weight:400;">(optional)</span></label><textarea id="rReason" style="min-height:60px;"></textarea></div>
+    <button class="btn btn-grad" style="width:100%;padding:13px;font-size:15px;" id="regBtn" onclick="submitRegistration()">Create My Account →</button>
+    <p class="privacy-note">Your account is created securely via Firebase Authentication.<br>Your password is never visible to anyone — including Dr. Kembhavi.</p>
   </div>
 </div>
 
-<!-- CREDENTIAL DISPLAY MODAL -->
-<div class="overlay-modal" id="credModal">
+<!-- FORGOT PASSWORD MODAL -->
+<div class="overlay-modal" id="forgotModal">
+  <div class="overlay-inner" style="max-width:420px;">
+    <button onclick="closeForgotModal()" style="position:absolute;right:14px;top:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#999;">×</button>
+    <h3 style="margin-bottom:6px;">🔑 Forgot Password</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:18px;">Enter your registered email address. Firebase will send a password reset link directly to your inbox.</p>
+    <div id="forgotErr" class="alert alert-err hidden" style="font-size:13px;"></div>
+    <div id="forgotSuccess" class="alert alert-success hidden" style="font-size:13px;"></div>
+    <div class="form-group"><label>Your Registered Email Address</label><input type="email" id="forgotEmail" placeholder="your@email.com" /></div>
+    <button class="btn btn-grad" style="width:100%;padding:13px;" onclick="sendPasswordReset()">Send Reset Link →</button>
+    <p class="privacy-note" style="margin-top:12px;">A password reset email will be sent by Firebase (noreply@ayurveda-unfiltered-voice.firebaseapp.com). Check your spam folder if you don't see it.</p>
+  </div>
+</div>
+
+<!-- APPROVAL MESSAGE MODAL -->
+<div class="overlay-modal" id="approvalModal">
   <div class="overlay-inner">
-    <button onclick="closeCredModal()" style="position:absolute;right:14px;top:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#999;">×</button>
+    <button onclick="document.getElementById('approvalModal').style.display='none';" style="position:absolute;right:14px;top:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#999;">×</button>
     <h3 style="color:var(--secondary);margin-bottom:4px;">✅ Request Approved</h3>
-    <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Unique credentials generated for <strong id="credName"></strong></p>
-    <div class="cred-box">
-      <div style="margin-bottom:6px;">👤 <strong>Username:</strong> <span id="credUser" style="color:var(--purple);font-family:monospace;"></span></div>
-      <div>🔑 <strong>Password:</strong> <span id="credPass" style="color:var(--purple);font-family:monospace;"></span></div>
-    </div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Choose how to share with the user:</p>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Send a confirmation to <strong id="approvedName"></strong> — they can now log in with their own email and password.</p>
     <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
       <button class="btn btn-green btn-sm" onclick="showAndCopyMsg('wa')">📱 Copy WhatsApp Message</button>
       <button class="btn btn-accent btn-sm" onclick="showAndCopyMsg('email')">📧 Copy Email Message</button>
     </div>
-    <div id="waMsgBlock" class="hidden">
-      <p style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:4px;">📱 WhatsApp Message — copied to clipboard:</p>
-      <div class="msg-preview" id="waMsgText"></div>
-    </div>
-    <div id="emailMsgBlock" class="hidden">
-      <p style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:4px;">📧 Email Message — copied to clipboard:</p>
-      <div class="msg-preview" id="emailMsgText"></div>
-    </div>
+    <div id="waMsgBlock" class="hidden"><p style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:4px;">📱 WhatsApp — copied:</p><div class="msg-preview" id="waMsgText"></div></div>
+    <div id="emailMsgBlock" class="hidden"><p style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:4px;">📧 Email — copied:</p><div class="msg-preview" id="emailMsgText"></div></div>
   </div>
 </div>
 
-<!-- WHATSAPP FLOATING BUTTON -->
-<div class="wa-float" onclick="waModal.show()" title="Share via WhatsApp">
+<!-- WHATSAPP -->
+<div class="wa-float" onclick="waModal.show()">
   <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.886 3.488"/></svg>
 </div>
-
-<!-- WHATSAPP SHARE MODAL -->
 <div class="wa-modal" id="waModalEl">
   <div class="wa-modal-inner">
     <button onclick="waModal.hide()" style="position:absolute;right:14px;top:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#999;">×</button>
     <h3 style="text-align:center;color:var(--green);margin-bottom:18px;">📱 Share via WhatsApp</h3>
-    <div class="wa-card">
-      <div style="font-weight:700;margin-bottom:6px;">🕉️ Platform Invitation</div>
+    <div class="wa-card"><div style="font-weight:700;margin-bottom:6px;">🕉️ Platform Invitation</div>
       <div class="wa-preview">🌿 *Dr. Kembhavi's Ayurveda Unfiltered Voice* 🌿
 
-A confidential platform for reform voices in Ayurveda — Academic, Clinical, Research, Administrative & Development.
+A confidential platform for reform voices in Ayurveda.
 
-🔗 [PLATFORM_URL]
+Register with your own email and password at:
+🔗 [YOUR PLATFORM URL]
 
-To request access, visit the platform and click "Request Access". Your voice matters! 🎙️</div>
-      <button class="btn btn-green btn-sm" onclick="whatsapp.sharePlatform()">Share →</button>
-    </div>
-    <div class="wa-card">
-      <div style="font-weight:700;margin-bottom:6px;">📜 Reform Discussion</div>
+Your voice matters! 🎙️ #AyurvedaReform</div>
+      <button class="btn btn-green btn-sm" onclick="whatsapp.sharePlatform()">Share →</button></div>
+    <div class="wa-card"><div style="font-weight:700;margin-bottom:6px;">📜 Reform Discussion</div>
       <div class="wa-preview">🚨 *AYURVEDA REFORM DISCUSSION* 🚨
 
-Dr. Kembhavi invites professionals to discuss reforms in:
-📚 Academic · 🏥 Clinical · 🔬 Research
-📋 Administrative · 🌱 Development
+Dr. Kembhavi invites professionals to discuss reforms in Ayurveda education and practice.
 
-Join: [PLATFORM_URL]
+Register at: [YOUR PLATFORM URL]
 *Together we drive meaningful change!* 🕉️</div>
-      <button class="btn btn-green btn-sm" onclick="whatsapp.shareReform()">Share →</button>
-    </div>
-    <div class="wa-card">
-      <div style="font-weight:700;margin-bottom:6px;">🚨 Urgent Call to Action</div>
-      <div class="wa-preview">⚠️ *YOUR INPUT NEEDED* ⚠️
-
-Dr. Kembhavi's Ayurveda Unfiltered Voice needs your perspectives on critical reforms in Ayurveda education and practice.
-
-Request access at: [PLATFORM_URL]
-
-*Your experience shapes the future of Ayurveda* #AyurvedaUnfiltered</div>
-      <button class="btn btn-green btn-sm" onclick="whatsapp.shareUrgent()">Share →</button>
-    </div>
+      <button class="btn btn-green btn-sm" onclick="whatsapp.shareReform()">Share →</button></div>
   </div>
 </div>
 
 <script>
-// ╔════════════════════════════════════════════════╗
-// ║  FIREBASE CONFIG — REPLACE WITH YOUR OWN      ║
-// ╚════════════════════════════════════════════════╝
+// ╔════════════════════════════════════════╗
+// ║  FIREBASE CONFIG                       ║
+// ╚════════════════════════════════════════╝
 const firebaseConfig = {
-  apiKey: "AIzaSyDqNQne9mqtSSJdMGZxv-4y-tMGRehs02g",
-  authDomain: "ayurveda-unfiltered-voice.firebaseapp.com",
-  projectId: "ayurveda-unfiltered-voice",
-  storageBucket: "ayurveda-unfiltered-voice.firebasestorage.app",
+  apiKey:            "AIzaSyDqNQne9mqtSSJdMGZxv-4y-tMGRehs02g",
+  authDomain:        "ayurveda-unfiltered-voice.firebaseapp.com",
+  projectId:         "ayurveda-unfiltered-voice",
+  storageBucket:     "ayurveda-unfiltered-voice.firebasestorage.app",
   messagingSenderId: "220882680704",
-  appId: "1:220882680704:web:dd866513680c256e101f65"
+  appId:             "1:220882680704:web:dd866513680c256e101f65"
 };
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const db   = firebase.firestore();
+const auth = firebase.auth();
 
-// ── PRESET CREDENTIALS (for direct sharing) ──
-const CREDS = {
-  ug:    {u:'ayurstudent2025', p:'vaidya@123',   role:'UG'},
-  pg:    {u:'aypgscholar2025', p:'pgvaidya@123', role:'PG'},
-  fac:   {u:'ayurfaculty2025', p:'faculty@ayur',  role:'FAC'},
-  admin: {u:'ayuradmin2025',   p:'admin@vaidya',  role:'ADMIN'}
+// ── PRESET CREDENTIALS (bypass Firebase Auth) ──
+const PRESETS = {
+  'ayurstudent2025': {p:'vaidya@123',   role:'UG'},
+  'aypgscholar2025': {p:'pgvaidya@123', role:'PG'},
+  'ayurfaculty2025': {p:'faculty@ayur', role:'FAC'},
+  'ayuradmin2025':   {p:'admin@vaidya', role:'ADMIN'}
 };
 const CAT_LABELS={academic:'Academic Reforms',clinical:'Clinical Practice',research:'Research & Dev',administrative:'Administrative',development:'Development',regulatory:'Regulatory'};
 
 // ── STATE ──
-let userRole='', rating=0, selectedRole='ug';
+let userRole='', rating=0;
 let votedIdeas=JSON.parse(localStorage.getItem('ayv_vi')||'[]');
 let votedPolls=JSON.parse(localStorage.getItem('ayv_vp')||'{}');
 let complianceRecs=JSON.parse(localStorage.getItem('ayv_comp')||'[]');
-let currentProposalData=null;
-let requestsMap={};
+let dismissedAnns=JSON.parse(sessionStorage.getItem('ayv_dann')||'[]');
+let currentProposalData=null, requestsMap={};
 
 // ── UTILITY ──
 const esc=s=>(s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const ts=t=>t?.toDate?t.toDate().toLocaleDateString('en-IN'):'Just now';
 const notify=(msg,type='success')=>{const n=document.createElement('div');n.className=`notification${type==='error'?' error':''}`;n.innerHTML=esc(msg)+'<button onclick="this.parentElement.remove()" style="background:none;border:none;color:#fff;float:right;font-size:16px;cursor:pointer;margin-left:10px;">×</button>';document.body.appendChild(n);setTimeout(()=>n.remove&&n.remove(),5000);};
+const showErr=(id,msg)=>{const el=document.getElementById(id);if(el){el.textContent=msg;el.classList.remove('hidden');}};
+const hideErr=(id)=>{const el=document.getElementById(id);if(el)el.classList.add('hidden');};
 
-// ── LOGIN ──
-function setRole(r){
-  selectedRole=r;
-  document.querySelectorAll('#loginTabs button').forEach((b,i)=>b.classList.toggle('active',['ug','pg','fac','admin'][i]===r));
-}
-setRole('ug');
-
+// ════════════════════════════════════════
+// LOGIN
+// ════════════════════════════════════════
 async function doLogin(){
-  const u=document.getElementById('lu').value.trim(), p=document.getElementById('lp').value.trim();
-  if(!u||!p){alert('Please enter username and password.');return;}
+  const u=document.getElementById('lu').value.trim();
+  const p=document.getElementById('lp').value.trim();
+  hideErr('loginErr');
+  if(!u||!p){showErr('loginErr','Please enter your email/username and password.');return;}
+  const btn=document.getElementById('loginBtn');
+  btn.textContent='Signing in...'; btn.disabled=true;
 
-  // Check preset credentials
-  const found=Object.values(CREDS).find(c=>c.u===u&&c.p===p);
-  if(found){_initView(found.role, found.role);return;}
+  // Check preset credentials first
+  if(PRESETS[u]){
+    if(PRESETS[u].p===p){btn.textContent='Sign In →';btn.disabled=false;_initView(PRESETS[u].role);return;}
+    else{showErr('loginErr','Invalid credentials. Please check your password.');btn.textContent='Sign In →';btn.disabled=false;return;}
+  }
 
-  // Check Firebase registered users (self-registered)
+  // Firebase Auth for self-registered users
   try{
-    const snap=await db.collection('registeredUsers')
-      .where('username','==',u).where('password','==',p).get();
-    if(!snap.empty){
-      const d=snap.docs[0].data();
-      _initView(d.role, d.name);
-      return;
+    await auth.signInWithEmailAndPassword(u, p);
+    const user = auth.currentUser;
+    // Check approval in Firestore
+    const snap = await db.collection('accessRequests').where('email','==',u).limit(1).get();
+    if(snap.empty){
+      await auth.signOut();
+      showErr('loginErr','Account not found in the system. Please register first.');
+      btn.textContent='Sign In →'; btn.disabled=false; return;
     }
-  }catch(e){console.error(e);}
-
-  alert('❌ Invalid credentials. Please check your username and password, or click "Request Access" to apply for access.');
+    const data = snap.docs[0].data();
+    if(data.status==='pending'){
+      await auth.signOut();
+      showErr('loginErr','⏳ Your account is pending approval from Dr. Kembhavi. Please wait — you will be notified once approved.');
+      btn.textContent='Sign In →'; btn.disabled=false; return;
+    }
+    if(data.status==='declined'){
+      await auth.signOut();
+      showErr('loginErr','Your access request was not approved. Please contact Dr. Kembhavi directly.');
+      btn.textContent='Sign In →'; btn.disabled=false; return;
+    }
+    btn.textContent='Sign In →'; btn.disabled=false;
+    _initView(data.role);
+  } catch(e){
+    let msg='Invalid email or password. Please try again.';
+    if(e.code==='auth/user-not-found') msg='No account found with this email. Please register first.';
+    if(e.code==='auth/wrong-password') msg='Incorrect password. Use "Forgot Password?" to reset it.';
+    if(e.code==='auth/too-many-requests') msg='Too many failed attempts. Please try again later.';
+    showErr('loginErr', msg);
+    btn.textContent='Sign In →'; btn.disabled=false;
+  }
 }
 
-function _initView(role, displayName){
+function _initView(role){
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('mainApp').classList.remove('hidden');
   userRole=role;
   const badges={UG:'🎓 UG Student',PG:'📚 PG Scholar',FAC:'👨‍🏫 Faculty / Professional',ADMIN:'🔐 Admin'};
-  document.getElementById('userBadge').textContent=badges[role]||('👤 '+displayName);
+  document.getElementById('userBadge').textContent=badges[role]||'👤 User';
   if(role==='UG'){showView('studentView');loadIdeas();loadStudentPolls();}
   else if(role==='PG'){showView('studentView');document.getElementById('pgSection').classList.remove('hidden');loadIdeas();loadStudentPolls();}
   else if(role==='FAC'){showView('facultyView');loadForum();loadNetworkStats();displayComplianceRecs();}
   else if(role==='ADMIN'){showView('adminView');loadAdminDash();}
+  if(role!=='ADMIN') loadAnnouncements();
   updateCounter();
 }
+
 function showView(v){['studentView','facultyView','adminView'].forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById(v).classList.remove('hidden');}
 
-// ── FORM HELPERS ──
+async function doLogout(){
+  try{await auth.signOut();}catch(e){}
+  location.reload();
+}
+
+// ════════════════════════════════════════
+// REGISTRATION (Firebase Auth)
+// ════════════════════════════════════════
+function openRegModal(){document.getElementById('regModal').style.display='block';hideErr('regErr');}
+function closeRegModal(){document.getElementById('regModal').style.display='none';}
+document.getElementById('regModal').addEventListener('click',function(e){if(e.target===this)closeRegModal();});
+
+function checkPwStrength(pw){
+  const bar=document.getElementById('pwStrengthBar');
+  const lbl=document.getElementById('pwStrengthLbl');
+  if(!pw){bar.style.width='0%';lbl.textContent='';return;}
+  let score=0;
+  if(pw.length>=8)score++;
+  if(pw.length>=12)score++;
+  if(/[A-Z]/.test(pw))score++;
+  if(/[0-9]/.test(pw))score++;
+  if(/[^A-Za-z0-9]/.test(pw))score++;
+  const levels=[['0%','#e2e8f0',''],['25%','#ef4444','Weak'],['50%','#f97316','Fair'],['75%','#eab308','Good'],['90%','#22c55e','Strong'],['100%','#16a34a','Very Strong']];
+  bar.style.width=levels[score][0]; bar.style.background=levels[score][1];
+  lbl.textContent=levels[score][2]; lbl.style.color=levels[score][1];
+}
+
+async function submitRegistration(){
+  hideErr('regErr');
+  const name=document.getElementById('rName').value.trim();
+  const inst=document.getElementById('rInst').value.trim();
+  const state=document.getElementById('rState').value.trim();
+  const role=document.getElementById('rRole').value;
+  const email=document.getElementById('rEmail').value.trim();
+  const pw=document.getElementById('rPw').value;
+  const pwConf=document.getElementById('rPwConf').value;
+  const contact=document.getElementById('rContact').value.trim();
+  const reason=document.getElementById('rReason').value.trim();
+
+  if(!name||!inst||!state||!role||!email||!pw||!pwConf||!contact){showErr('regErr','Please fill in all required fields.');return;}
+  if(pw.length<8){showErr('regErr','Password must be at least 8 characters long.');return;}
+  if(pw!==pwConf){showErr('regErr','Passwords do not match. Please re-enter.');return;}
+
+  const btn=document.getElementById('regBtn');
+  btn.textContent='Creating account...'; btn.disabled=true;
+
+  try{
+    // Create Firebase Auth account
+    await auth.createUserWithEmailAndPassword(email, pw);
+    // Sign out immediately — they can't use the platform until approved
+    await auth.signOut();
+    // Save request to Firestore
+    await db.collection('accessRequests').add({
+      name, institution:inst, state, role, email, contact, reason,
+      status:'pending', registeredViaAuth:true,
+      timestamp:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    closeRegModal();
+    ['rName','rInst','rState','rEmail','rPw','rPwConf','rContact','rReason'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('rRole').value='';
+    btn.textContent='Create My Account →'; btn.disabled=false;
+    alert('✅ Your account has been created successfully!\n\nYour request is now pending approval from Dr. Kembhavi.\n\nYou will be notified on your WhatsApp once approved. Please do not attempt to log in until you receive confirmation.');
+  } catch(e){
+    let msg='Registration failed. Please try again.';
+    if(e.code==='auth/email-already-in-use') msg='This email is already registered. Please log in or use Forgot Password.';
+    if(e.code==='auth/invalid-email') msg='Please enter a valid email address.';
+    if(e.code==='auth/weak-password') msg='Please choose a stronger password (minimum 8 characters).';
+    showErr('regErr', msg);
+    btn.textContent='Create My Account →'; btn.disabled=false;
+  }
+}
+
+// ════════════════════════════════════════
+// FORGOT PASSWORD
+// ════════════════════════════════════════
+function openForgotModal(){document.getElementById('forgotModal').style.display='block';hideErr('forgotErr');document.getElementById('forgotSuccess').classList.add('hidden');}
+function closeForgotModal(){document.getElementById('forgotModal').style.display='none';}
+document.getElementById('forgotModal').addEventListener('click',function(e){if(e.target===this)closeForgotModal();});
+
+async function sendPasswordReset(){
+  hideErr('forgotErr');
+  document.getElementById('forgotSuccess').classList.add('hidden');
+  const email=document.getElementById('forgotEmail').value.trim();
+  if(!email){showErr('forgotErr','Please enter your registered email address.');return;}
+  try{
+    await auth.sendPasswordResetEmail(email);
+    document.getElementById('forgotSuccess').textContent='✅ Password reset link sent! Please check your inbox (and spam folder). Click the link in the email to set a new password, then return here to log in.';
+    document.getElementById('forgotSuccess').classList.remove('hidden');
+    document.getElementById('forgotEmail').value='';
+  }catch(e){
+    let msg='Could not send reset email. Please try again.';
+    if(e.code==='auth/user-not-found') msg='No account found with this email. Please check the address or register first.';
+    if(e.code==='auth/invalid-email') msg='Please enter a valid email address.';
+    showErr('forgotErr', msg);
+  }
+}
+
+// ════════════════════════════════════════
+// ADMIN: ACCESS REQUESTS
+// ════════════════════════════════════════
+async function loadAccessRequests(){
+  const list=document.getElementById('accessRequestList'); if(!list)return;
+  list.innerHTML='<p style="color:var(--muted);text-align:center;padding:30px;">Loading...</p>'; requestsMap={};
+  try{
+    const snap=await db.collection('accessRequests').orderBy('timestamp','desc').get();
+    const pending=snap.docs.filter(d=>d.data().status==='pending').length;
+    const badge=document.getElementById('pendingBadge');
+    if(badge)badge.textContent=pending>0?`${pending} pending`:'All reviewed';
+    if(snap.empty){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">No access requests yet.</p>';return;}
+    list.innerHTML='';
+    snap.forEach(doc=>{
+      const d=doc.data(); requestsMap[doc.id]=d;
+      const isPending=d.status==='pending';
+      const borderCol=isPending?'var(--orange)':d.status==='approved'?'var(--secondary)':'var(--danger)';
+      const authBadge=d.registeredViaAuth?'<span style="background:#eff6ff;color:#1d4ed8;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:700;">Firebase Auth</span>':'<span style="background:#f3e8ff;color:#7c3aed;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:700;">Manual</span>';
+      list.innerHTML+=`
+        <div class="req-card" style="border-left:4px solid ${borderCol};">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;">
+            <div style="flex:1;">
+              <strong style="font-size:15px;">${esc(d.name)}</strong>
+              <span class="badge ${d.role==='PG'?'badge-pg':d.role==='UG'?'badge-ug':'badge-fac'}" style="margin-left:6px;">${esc(d.role)}</span>
+              <span class="badge ${isPending?'badge-anon':d.status==='approved'?'badge-active':'badge-closed'}" style="margin-left:4px;">${esc(d.status)}</span>
+              ${authBadge}
+              <p style="font-size:13px;color:var(--muted);margin-top:6px;">🏛️ ${esc(d.institution)} · 📍 ${esc(d.state)}</p>
+              ${d.email?`<p style="font-size:13px;color:var(--muted);">📧 ${esc(d.email)}</p>`:''}
+              <p style="font-size:13px;color:var(--muted);">📱 ${esc(d.contact)} · 🕐 ${ts(d.timestamp)}</p>
+              ${d.reason?`<p style="font-size:13px;font-style:italic;margin-top:6px;">"${esc(d.reason)}"</p>`:''}
+            </div>
+            ${isPending?`<div style="display:flex;gap:6px;flex-shrink:0;">
+              <button class="btn btn-secondary btn-sm" onclick="approveRequest('${doc.id}')">✅ Approve</button>
+              <button class="btn btn-danger btn-sm" onclick="declineRequest('${doc.id}')">✗ Decline</button>
+            </div>`:''}
+          </div>
+        </div>`;
+    });
+  }catch(e){list.innerHTML=`<p style="color:red;padding:20px;">Error: ${e.message}</p>`;}
+}
+
+async function approveRequest(docId){
+  const d=requestsMap[docId]; if(!d){notify('Request data not found.','error');return;}
+  try{
+    await db.collection('accessRequests').doc(docId).update({status:'approved',approvedDate:new Date().toLocaleDateString('en-IN')});
+    showApprovalModal(d.name, d.email, d.contact, d.role);
+    loadAccessRequests(); loadAdminDash();
+  }catch(e){notify('Error: '+e.message,'error');}
+}
+
+async function declineRequest(docId){
+  if(!confirm('Decline this access request?'))return;
+  await db.collection('accessRequests').doc(docId).update({status:'declined'});
+  notify('Request declined.'); loadAccessRequests();
+}
+
+function showApprovalModal(name, email, contact, role){
+  const url=window.location.href.split('?')[0];
+  const roleLabel={UG:'UG Student (BAMS)',PG:'PG Scholar',FAC:'Faculty / Professional'}[role]||role;
+  document.getElementById('approvedName').textContent=name;
+  document.getElementById('waMsgText').textContent=
+`🌿 *Dr. Kembhavi's Ayurveda Unfiltered Voice* 🌿
+
+Dear ${name},
+
+Your access request has been approved! 🎉
+
+You can now log in to the platform using:
+📧 *Username:* Your registered email (${email||'your email address'})
+🔑 *Password:* The password you chose during registration
+
+🔗 *Platform:* ${url}
+
+Welcome to the community!
+
+— Dr. Kembhavi`;
+  document.getElementById('emailMsgText').textContent=
+`Subject: Access Approved — Dr. Kembhavi's Ayurveda Unfiltered Voice
+
+Dear ${name},
+
+Your access request has been approved.
+
+You can now log in using:
+Email (Username): ${email||'your registered email'}
+Password: The password you chose during registration
+
+Platform URL: ${url}
+
+If you have forgotten your password, use the "Forgot Password?" option on the login screen — a reset link will be sent to your email automatically.
+
+Welcome to the community!
+
+Best regards,
+Dr. Kembhavi`;
+  document.getElementById('approvalModal').style.display='block';
+}
+
+function showAndCopyMsg(type){
+  document.getElementById('waMsgBlock').classList.add('hidden');
+  document.getElementById('emailMsgBlock').classList.add('hidden');
+  const block=type==='wa'?'waMsgBlock':'emailMsgBlock', textId=type==='wa'?'waMsgText':'emailMsgText';
+  document.getElementById(block).classList.remove('hidden');
+  navigator.clipboard.writeText(document.getElementById(textId).textContent)
+    .then(()=>notify(`✅ ${type==='wa'?'WhatsApp':'Email'} message copied! Paste and send to ${document.getElementById('approvedName').textContent}.`))
+    .catch(()=>notify('Please select and copy the message text manually.','error'));
+}
+
+// ════════════════════════════════════════
+// FORM HELPERS
+// ════════════════════════════════════════
 document.getElementById('chkAnon').addEventListener('change',function(){document.getElementById('nameRow').classList.toggle('hidden',this.checked);});
 document.getElementById('ideaAnon').addEventListener('change',function(){document.getElementById('ideaAuthor').style.display=this.checked?'none':'block';});
 document.getElementById('fIdeaAnon').addEventListener('change',function(){document.getElementById('fIdeaAuthor').style.display=this.checked?'none':'block';});
@@ -653,200 +910,77 @@ function setRating(n){rating=n;document.querySelectorAll('.star').forEach((s,i)=
 function sTab(s){['feedback','ideas','polls'].forEach(id=>document.getElementById('s-'+id).classList.add('hidden'));document.getElementById('s-'+s).classList.remove('hidden');document.querySelectorAll('#sNav .nav-btn').forEach((b,i)=>b.classList.toggle('active',['feedback','ideas','polls'][i]===s));if(s==='ideas')loadIdeas();if(s==='polls')loadStudentPolls();}
 function fTab(s){['forum','network','compliance','proposals','fideas'].forEach(id=>document.getElementById('f-'+id).classList.add('hidden'));document.getElementById('f-'+s).classList.remove('hidden');document.querySelectorAll('#fNav .nav-btn').forEach((b,i)=>b.classList.toggle('active',['forum','network','compliance','proposals','fideas'][i]===s));if(s==='forum')loadForum();if(s==='network'){loadNetworkStats();loadMembers();}if(s==='fideas')loadFacultyIdeas();if(s==='compliance')displayComplianceRecs();}
 function aTab(s){
-  ['dashboard','afeedback','aforum','aideas','apolls','anetwork','aproposals','arequests'].forEach(id=>document.getElementById('a-'+id).classList.add('hidden'));
+  ['dashboard','afeedback','aforum','aideas','apolls','anetwork','aproposals','arequests','apost'].forEach(id=>document.getElementById('a-'+id).classList.add('hidden'));
   document.getElementById('a-'+s).classList.remove('hidden');
-  document.querySelectorAll('#aNav .nav-btn').forEach((b,i)=>b.classList.toggle('active',['dashboard','afeedback','aforum','aideas','apolls','anetwork','aproposals','arequests'][i]===s));
-  const fns={afeedback:loadAdminFB,aforum:loadAdminForum,aideas:loadAdminIdeas,apolls:loadAdminPolls,anetwork:loadAdminNetwork,aproposals:loadAdminProposals,arequests:loadAccessRequests};
+  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById('atb-'+s)||document.getElementById('reqTabBtn');
+  if(btn)btn.classList.add('active');
+  const fns={afeedback:loadAdminFB,aforum:loadAdminForum,aideas:loadAdminIdeas,apolls:loadAdminPolls,anetwork:loadAdminNetwork,aproposals:loadAdminProposals,arequests:loadAccessRequests,apost:loadAdminAnnouncements};
   if(fns[s])fns[s]();
 }
 
 // ════════════════════════════════════════
-// REQUEST ACCESS SYSTEM
+// ANNOUNCEMENTS
 // ════════════════════════════════════════
-function openReqModal(){document.getElementById('reqModal').style.display='block';}
-function closeReqModal(){document.getElementById('reqModal').style.display='none';}
-function closeCredModal(){
-  document.getElementById('credModal').style.display='none';
-  document.getElementById('waMsgBlock').classList.add('hidden');
-  document.getElementById('emailMsgBlock').classList.add('hidden');
+async function createAnnouncement(){
+  const title=document.getElementById('annTitle').value.trim(), msg=document.getElementById('annMsg').value.trim(), type=document.getElementById('annType').value;
+  if(!title||!msg){notify('Please fill in title and message.','error');return;}
+  await db.collection('announcements').add({title,message:msg,type,active:true,author:'Dr. Kembhavi',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+  document.getElementById('annTitle').value=''; document.getElementById('annMsg').value='';
+  notify('📣 Announcement published!'); loadAdminAnnouncements();
 }
 
-async function submitAccessRequest(){
-  const name=document.getElementById('rName').value.trim();
-  const inst=document.getElementById('rInst').value.trim();
-  const state=document.getElementById('rState').value.trim();
-  const role=document.getElementById('rRole').value;
-  const contact=document.getElementById('rContact').value.trim();
-  const reason=document.getElementById('rReason').value.trim();
-  if(!name||!inst||!state||!role||!contact){notify('Please fill all required fields.','error');return;}
+async function loadAdminAnnouncements(){
+  const list=document.getElementById('adminAnnList'); if(!list)return;
   try{
-    await db.collection('accessRequests').add({name,institution:inst,state,role,contact,reason,status:'pending',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-    closeReqModal();
-    ['rName','rInst','rState','rContact','rReason'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('rRole').value='';
-    alert('✅ Your request has been submitted!\n\nDr. Kembhavi will review it and send your personal login credentials to the contact details you provided.');
-  }catch(e){notify('Error submitting: '+e.message,'error');}
-}
-
-function generateCreds(name, role){
-  const clean=name.toLowerCase().replace(/[^a-z]/g,'').substring(0,8);
-  const num=Math.floor(1000+Math.random()*9000);
-  const rp={UG:'ug',PG:'pg',FAC:'fac'}[role]||'usr';
-  const username=`${clean}_${rp}_${num}`;
-  const chars='abcdefghijklmnopqrstuvwxyz0123456789';
-  let pw=''; for(let i=0;i<6;i++)pw+=chars[Math.floor(Math.random()*chars.length)];
-  return {username, password:pw+'@ayur'};
-}
-
-async function approveRequest(docId){
-  const d=requestsMap[docId];
-  if(!d){notify('Request data not found. Please reload.','error');return;}
-  const creds=generateCreds(d.name, d.role);
-  try{
-    await db.collection('registeredUsers').add({
-      name:d.name, institution:d.institution, state:d.state,
-      role:d.role, contact:d.contact,
-      username:creds.username, password:creds.password,
-      approvedDate:new Date().toLocaleDateString('en-IN'),
-      timestamp:firebase.firestore.FieldValue.serverTimestamp()
-    });
-    await db.collection('accessRequests').doc(docId).update({status:'approved',username:creds.username});
-    showCredModal(d.name, creds.username, creds.password, d.contact);
-    loadAccessRequests();
-    loadAdminDash();
-  }catch(e){notify('Error approving: '+e.message,'error');}
-}
-
-async function declineRequest(docId){
-  if(!confirm('Decline this access request?'))return;
-  await db.collection('accessRequests').doc(docId).update({status:'declined'});
-  notify('Request declined.'); loadAccessRequests();
-}
-
-function showCredModal(name, username, password, contact){
-  document.getElementById('credName').textContent=name;
-  document.getElementById('credUser').textContent=username;
-  document.getElementById('credPass').textContent=password;
-  const url=window.location.href.split('?')[0];
-  const roleLabel=username.includes('_ug_')?'UG Student (BAMS)':username.includes('_pg_')?'PG Scholar':'Faculty / Professional';
-
-  document.getElementById('waMsgText').textContent=
-`🌿 *Dr. Kembhavi's Ayurveda Unfiltered Voice* 🌿
-
-Dear ${name},
-
-Your access request has been approved! Welcome to the platform.
-
-*Your Personal Login Credentials:*
-👤 Username: ${username}
-🔑 Password: ${password}
-🎓 Role: ${roleLabel}
-
-🔗 Platform: ${url}
-
-Please keep these credentials confidential and do not share them with others.
-
-Looking forward to your valuable inputs!
-
-— Dr. Kembhavi`;
-
-  document.getElementById('emailMsgText').textContent=
-`Subject: Access Approved — Dr. Kembhavi's Ayurveda Unfiltered Voice
-
-Dear ${name},
-
-Your request to join Dr. Kembhavi's Ayurveda Unfiltered Voice platform has been approved.
-
-Your Personal Login Credentials:
-Username: ${username}
-Password: ${password}
-Role: ${roleLabel}
-
-Platform URL: ${url}
-
-Please keep these credentials confidential and do not share them with others.
-
-I look forward to your valuable contributions to the reform dialogue.
-
-Best regards,
-Dr. Kembhavi`;
-
-  document.getElementById('credModal').style.display='block';
-}
-
-function showAndCopyMsg(type){
-  document.getElementById('waMsgBlock').classList.add('hidden');
-  document.getElementById('emailMsgBlock').classList.add('hidden');
-  const block=type==='wa'?'waMsgBlock':'emailMsgBlock';
-  const textId=type==='wa'?'waMsgText':'emailMsgText';
-  document.getElementById(block).classList.remove('hidden');
-  navigator.clipboard.writeText(document.getElementById(textId).textContent)
-    .then(()=>notify(`✅ ${type==='wa'?'WhatsApp':'Email'} message copied to clipboard! Paste and send to ${document.getElementById('credName').textContent}.`))
-    .catch(()=>notify('Please select and copy the message text manually.','error'));
-}
-
-async function loadAccessRequests(){
-  const list=document.getElementById('accessRequestList'); if(!list)return;
-  list.innerHTML='<p style="color:var(--muted);text-align:center;padding:30px;">Loading...</p>';
-  requestsMap={};
-  try{
-    const snap=await db.collection('accessRequests').orderBy('timestamp','desc').get();
-    const pending=snap.docs.filter(d=>d.data().status==='pending').length;
-    const badge=document.getElementById('pendingBadge');
-    if(badge)badge.textContent=pending>0?`${pending} pending`:'All reviewed';
-
-    if(snap.empty){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">No access requests yet.</p>';return;}
+    const snap=await db.collection('announcements').orderBy('timestamp','desc').get();
+    if(snap.empty){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:20px;">No announcements yet.</p>';return;}
     list.innerHTML='';
-    snap.forEach(doc=>{
-      const d=doc.data(); requestsMap[doc.id]=d;
-      const isPending=d.status==='pending';
-      const borderCol=isPending?'var(--orange)':d.status==='approved'?'var(--secondary)':'var(--danger)';
-      list.innerHTML+=`
-        <div class="req-card" style="border-left:4px solid ${borderCol};">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;">
-            <div style="flex:1;">
-              <strong style="font-size:15px;">${esc(d.name)}</strong>
-              <span class="badge ${d.role==='PG'?'badge-pg':d.role==='UG'?'badge-ug':'badge-fac'}" style="margin-left:6px;">${esc(d.role)}</span>
-              <span class="badge ${isPending?'badge-anon':d.status==='approved'?'badge-active':'badge-closed'}" style="margin-left:4px;">${esc(d.status)}</span>
-              <p style="font-size:13px;color:var(--muted);margin-top:6px;">🏛️ ${esc(d.institution)} · 📍 ${esc(d.state)}</p>
-              <p style="font-size:13px;color:var(--muted);">📱 ${esc(d.contact)} · 🕐 ${ts(d.timestamp)}</p>
-              ${d.reason?`<p style="font-size:13px;font-style:italic;margin-top:6px;color:var(--text);">"${esc(d.reason)}"</p>`:''}
-              ${d.username?`<p style="font-size:12px;color:var(--secondary);margin-top:6px;">✅ Approved · Username: <code>${esc(d.username)}</code></p>`:''}
-            </div>
-            ${isPending?`<div style="display:flex;gap:6px;flex-shrink:0;">
-              <button class="btn btn-secondary btn-sm" onclick="approveRequest('${doc.id}')">✅ Approve</button>
-              <button class="btn btn-danger btn-sm" onclick="declineRequest('${doc.id}')">✗ Decline</button>
-            </div>`:''}
+    snap.forEach(doc=>{const d=doc.data();
+      const borderCol=d.type==='important'?'var(--danger)':d.type==='warn'?'#f59e0b':'var(--accent)';
+      list.innerHTML+=`<div style="background:#f8fafc;border-radius:10px;padding:16px;margin-bottom:10px;border-left:4px solid ${borderCol};">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+          <div style="flex:1;">
+            <span class="badge ${d.active?'badge-active':'badge-closed'}">${d.active?'Active':'Inactive'}</span>
+            <p style="font-weight:700;margin-top:4px;">${esc(d.title)}</p>
+            <p style="font-size:13px;color:var(--muted);margin-top:4px;">${esc(d.message)}</p>
+            <p style="font-size:11px;color:var(--muted);margin-top:6px;">${ts(d.timestamp)}</p>
           </div>
-        </div>`;
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-outline btn-sm" onclick="toggleAnn('${doc.id}',${d.active})">${d.active?'Deactivate':'Activate'}</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteAnn('${doc.id}')">Delete</button>
+          </div>
+        </div>
+      </div>`;
     });
-  }catch(e){list.innerHTML=`<p style="color:red;padding:20px;">Error: ${e.message}</p>`;}
+  }catch(e){}
 }
 
-// Close modals on backdrop click
-document.getElementById('reqModal').addEventListener('click',function(e){if(e.target===this)closeReqModal();});
-document.getElementById('credModal').addEventListener('click',function(e){if(e.target===this)closeCredModal();});
+async function toggleAnn(id,active){await db.collection('announcements').doc(id).update({active:!active});notify(active?'Deactivated.':'Activated!');loadAdminAnnouncements();}
+async function deleteAnn(id){if(!confirm('Delete this announcement?'))return;await db.collection('announcements').doc(id).delete();notify('Deleted.');loadAdminAnnouncements();}
+
+async function loadAnnouncements(){
+  try{
+    const snap=await db.collection('announcements').where('active','==',true).orderBy('timestamp','desc').get();
+    const banner=document.getElementById('annBanner'); if(!banner)return;
+    const active=snap.docs.filter(d=>!dismissedAnns.includes(d.id));
+    if(!active.length){banner.innerHTML='';return;}
+    const typeClass={info:'ann-info',warn:'ann-warn',important:'ann-important'};
+    const typeIcon={info:'🔵',warn:'🟡',important:'🔴'};
+    banner.innerHTML=`<div class="ann-wrap">`+active.map(doc=>{const d=doc.data();return `<div class="ann-card ${typeClass[d.type]||'ann-info'}"><div style="flex:1;"><div class="ann-title">${typeIcon[d.type]||'🔵'} ${esc(d.title)}</div><div class="ann-msg">${esc(d.message)}</div><div class="ann-from">📌 Pinned by ${esc(d.author||'Dr. Kembhavi')}</div></div><button class="ann-dismiss" onclick="dismissAnn('${doc.id}')">×</button></div>`;}).join('')+`</div>`;
+  }catch(e){}
+}
+
+function dismissAnn(id){dismissedAnns.push(id);sessionStorage.setItem('ayv_dann',JSON.stringify(dismissedAnns));loadAnnouncements();}
 
 // ════════════════════════════════════════
-// STUDENT PRIVATE FEEDBACK
+// STUDENT FEEDBACK
 // ════════════════════════════════════════
 async function submitFeedback(){
   const main=document.getElementById('fbMain').value.trim();
-  if(!main){alert('Please enter your feedback before submitting.');return;}
-  const isAnon=document.getElementById('chkAnon').checked;
-  const pgOn=document.getElementById('chkPG')?.checked;
-  const data={
-    userType:userRole, anonymous:isAnon,
-    name:isAnon?'Anonymous':(document.getElementById('fbName').value.trim()||'Anonymous'),
-    college:document.getElementById('fbCollege').value.trim(),
-    year:document.getElementById('fbYear').value,
-    category:document.getElementById('fbCat').value,
-    subject:document.getElementById('fbSubject').value,
-    rating, helped:document.getElementById('fbHelped').value.trim(),
-    hindered:document.getElementById('fbHindered').value.trim(),
-    feedback:main, timestamp:firebase.firestore.FieldValue.serverTimestamp(),
-    pg:pgOn?{synopsis:document.getElementById('pgSyn').value,guide:document.getElementById('pgGuide').value,infra:document.getElementById('pgInfra').value,conference:document.getElementById('pgConf').value,comments:document.getElementById('pgComments').value.trim()}:null
-  };
+  if(!main){alert('Please enter your feedback.');return;}
+  const isAnon=document.getElementById('chkAnon').checked, pgOn=document.getElementById('chkPG')?.checked;
+  const data={userType:userRole,anonymous:isAnon,name:isAnon?'Anonymous':(document.getElementById('fbName').value.trim()||'Anonymous'),college:document.getElementById('fbCollege').value.trim(),year:document.getElementById('fbYear').value,category:document.getElementById('fbCat').value,subject:document.getElementById('fbSubject').value,rating,helped:document.getElementById('fbHelped').value.trim(),hindered:document.getElementById('fbHindered').value.trim(),feedback:main,timestamp:firebase.firestore.FieldValue.serverTimestamp(),pg:pgOn?{synopsis:document.getElementById('pgSyn').value,guide:document.getElementById('pgGuide').value,infra:document.getElementById('pgInfra').value,conference:document.getElementById('pgConf').value,comments:document.getElementById('pgComments').value.trim()}:null};
   try{
     await db.collection('feedback').add(data);
     notify('✅ Your voice has been recorded. Thank you!');
@@ -855,7 +989,7 @@ async function submitFeedback(){
     rating=0; document.querySelectorAll('.star').forEach(s=>s.classList.remove('active'));
     document.getElementById('ratingLbl').textContent='Not rated';
     updateCounter();
-  }catch(e){notify('Error submitting: '+e.message,'error');}
+  }catch(e){notify('Error: '+e.message,'error');}
 }
 
 // ════════════════════════════════════════
@@ -865,16 +999,15 @@ async function loadIdeas(){
   const list=document.getElementById('ideaList'); if(!list)return;
   list.innerHTML='<p style="color:rgba(255,255,255,.6);text-align:center;padding:40px;">Loading...</p>';
   try{
-    const cat=document.getElementById('ideaFilter')?.value;
-    const sort=document.getElementById('ideaSort')?.value||'upvotes';
-    let q=db.collection('ideas');
-    if(cat)q=q.where('category','==',cat);
+    const cat=document.getElementById('ideaFilter')?.value, sort=document.getElementById('ideaSort')?.value||'upvotes';
+    let q=db.collection('ideas'); if(cat)q=q.where('category','==',cat);
     q=q.orderBy(sort==='upvotes'?'upvotes':'timestamp','desc');
     const snap=await q.get();
     if(snap.empty){list.innerHTML='<p style="color:rgba(255,255,255,.6);text-align:center;padding:40px;">No ideas yet. Be the first!</p>';return;}
     list.innerHTML='';
     snap.forEach(doc=>{const d=doc.data(),id=doc.id,voted=votedIdeas.includes(id);
-      list.innerHTML+=`<div class="idea-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;"><div style="flex:1;"><span class="tag">${esc(d.category||'General')}</span> <span style="font-size:12px;color:var(--muted);">${esc(d.author||'Anonymous')} · ${ts(d.timestamp)}</span><p style="margin-top:10px;line-height:1.6;">${esc(d.text)}</p></div><button class="upvote-btn ${voted?'voted':''}" id="up-${id}" onclick="upvote('${id}')">👍 <span id="upc-${id}">${d.upvotes||0}</span></button></div></div>`;
+      const aB=d.isAdmin?'<span style="background:var(--orange);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:4px;">Dr. Kembhavi</span>':'';
+      list.innerHTML+=`<div class="idea-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;"><div style="flex:1;"><span class="tag">${esc(d.category||'General')}</span>${aB} <span style="font-size:12px;color:var(--muted);">${esc(d.author||'Anonymous')} · ${ts(d.timestamp)}</span><p style="margin-top:10px;line-height:1.6;">${esc(d.text)}</p></div><button class="upvote-btn ${voted?'voted':''}" id="up-${id}" onclick="upvote('${id}')">👍 <span id="upc-${id}">${d.upvotes||0}</span></button></div></div>`;
     });
   }catch(e){list.innerHTML=`<p style="color:red;text-align:center;padding:20px;">Error: ${e.message}</p>`;}
 }
@@ -887,15 +1020,15 @@ async function loadFacultyIdeas(){
     if(snap.empty){list.innerHTML='<p style="color:rgba(255,255,255,.6);text-align:center;padding:40px;">No ideas yet.</p>';return;}
     list.innerHTML='';
     snap.forEach(doc=>{const d=doc.data(),id=doc.id,voted=votedIdeas.includes(id);
-      list.innerHTML+=`<div class="idea-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;"><div style="flex:1;"><span class="tag">${esc(d.category||'General')}</span> <span style="font-size:12px;color:var(--muted);">${esc(d.author||'Anonymous')} · 👍 ${d.upvotes||0} · ${ts(d.timestamp)}</span><p style="margin-top:10px;line-height:1.6;">${esc(d.text)}</p></div><button class="upvote-btn ${voted?'voted':''}" id="fup-${id}" onclick="upvote('${id}','f')">👍 <span id="fupc-${id}">${d.upvotes||0}</span></button></div></div>`;
+      const aB=d.isAdmin?'<span style="background:var(--orange);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:4px;">Dr. Kembhavi</span>':'';
+      list.innerHTML+=`<div class="idea-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;"><div style="flex:1;"><span class="tag">${esc(d.category||'General')}</span>${aB} <span style="font-size:12px;color:var(--muted);">${esc(d.author||'Anonymous')} · 👍 ${d.upvotes||0} · ${ts(d.timestamp)}</span><p style="margin-top:10px;line-height:1.6;">${esc(d.text)}</p></div><button class="upvote-btn ${voted?'voted':''}" id="fup-${id}" onclick="upvote('${id}','f')">👍 <span id="fupc-${id}">${d.upvotes||0}</span></button></div></div>`;
     });
   }catch(e){}
 }
 
 async function _submitIdea(tId,cId,aId,auId){
   const text=document.getElementById(tId).value.trim(), cat=document.getElementById(cId).value;
-  if(!text){notify('Please write your idea first.','error');return;}
-  if(!cat){notify('Please select a category.','error');return;}
+  if(!text){notify('Please write your idea.','error');return;} if(!cat){notify('Please select a category.','error');return;}
   const isAnon=document.getElementById(aId).checked;
   await db.collection('ideas').add({text,category:cat,author:isAnon?'Anonymous':(document.getElementById(auId).value.trim()||'Anonymous'),upvotes:0,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
   document.getElementById(tId).value=''; document.getElementById(cId).value='';
@@ -905,7 +1038,7 @@ function submitIdea(){_submitIdea('ideaText','ideaCat','ideaAnon','ideaAuthor').
 function submitFacultyIdea(){_submitIdea('fIdeaText','fIdeaCat','fIdeaAnon','fIdeaAuthor').then(loadFacultyIdeas);}
 
 async function upvote(id,pfx=''){
-  if(votedIdeas.includes(id)){notify('You have already upvoted this idea.','error');return;}
+  if(votedIdeas.includes(id)){notify('Already upvoted.','error');return;}
   votedIdeas.push(id); localStorage.setItem('ayv_vi',JSON.stringify(votedIdeas));
   await db.collection('ideas').doc(id).update({upvotes:firebase.firestore.FieldValue.increment(1)});
   const btn=document.getElementById((pfx?'f':'')+'up-'+id), cnt=document.getElementById((pfx?'f':'')+'upc-'+id);
@@ -919,9 +1052,9 @@ async function loadStudentPolls(){
   const list=document.getElementById('pollListStudent'); if(!list)return;
   try{
     const snap=await db.collection('polls').where('active','==',true).orderBy('timestamp','desc').get();
-    if(snap.empty){list.innerHTML='<p style="color:rgba(255,255,255,.6);text-align:center;padding:40px;">No active polls right now. Check back soon!</p>';return;}
+    if(snap.empty){list.innerHTML='<p style="color:rgba(255,255,255,.6);text-align:center;padding:40px;">No active polls yet.</p>';return;}
     list.innerHTML=''; snap.forEach(doc=>{list.innerHTML+=buildPollCard(doc);});
-  }catch(e){list.innerHTML=`<p style="color:red;padding:20px;">Error: ${e.message}</p>`;}
+  }catch(e){}
 }
 
 function buildPollCard(doc,isAdmin=false){
@@ -938,8 +1071,7 @@ async function votePoll(pollId,optIdx){
   if(votedPolls[pollId]!==undefined)return;
   votedPolls[pollId]=optIdx; localStorage.setItem('ayv_vp',JSON.stringify(votedPolls));
   const ref=db.collection('polls').doc(pollId), doc=await ref.get(), opts=doc.data().options;
-  opts[optIdx].votes=(opts[optIdx].votes||0)+1;
-  await ref.update({options:opts}); loadStudentPolls();
+  opts[optIdx].votes=(opts[optIdx].votes||0)+1; await ref.update({options:opts}); loadStudentPolls();
 }
 
 // ════════════════════════════════════════
@@ -947,16 +1079,11 @@ async function votePoll(pollId,optIdx){
 // ════════════════════════════════════════
 async function submitForumPost(){
   const subj=document.getElementById('fSubject').value.trim(), msg=document.getElementById('fMessage').value.trim();
-  if(!subj||!msg){notify('Please fill in subject and message.','error');return;}
+  if(!subj||!msg){notify('Please fill subject and message.','error');return;}
   const isAnon=document.getElementById('fAnon').value==='anon';
-  await db.collection('forumPosts').add({
-    author:isAnon?'Anonymous Contributor':(document.getElementById('fAuthorName').value.trim()||'Anonymous'),
-    category:document.getElementById('fCat').value, subject:subj, content:msg,
-    reactions:{support:0,helpful:0,concerned:0},
-    timestamp:firebase.firestore.FieldValue.serverTimestamp()
-  });
+  await db.collection('forumPosts').add({author:isAnon?'Anonymous Contributor':(document.getElementById('fAuthorName').value.trim()||'Anonymous'),category:document.getElementById('fCat').value,subject:subj,content:msg,reactions:{support:0,helpful:0,concerned:0},timestamp:firebase.firestore.FieldValue.serverTimestamp()});
   document.getElementById('fSubject').value=''; document.getElementById('fMessage').value='';
-  notify('✅ Your views have been shared!'); loadForum(); updateCounter();
+  notify('✅ Views shared!'); loadForum(); updateCounter();
 }
 
 async function loadForum(target){
@@ -967,18 +1094,35 @@ async function loadForum(target){
     const catF=document.getElementById('fFilterCat')?.value;
     const snap=await db.collection('forumPosts').orderBy('timestamp','desc').get();
     const filtered=snap.docs.filter(d=>!catF||d.data().category===catF);
-    if(!filtered.length){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">No posts yet. Be the first to share!</p>';return;}
+    if(!filtered.length){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">No posts yet.</p>';return;}
     list.innerHTML='';
     filtered.forEach(doc=>{const d=doc.data();
-      list.innerHTML+=`<div class="post-item"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin-bottom:8px;"><span style="font-weight:700;">${esc(d.author)}</span><span style="font-size:12px;color:var(--muted);">${ts(d.timestamp)}</span></div><h4 style="margin-bottom:8px;">${esc(d.subject)}</h4><p style="line-height:1.7;margin-bottom:12px;">${esc(d.content)}</p><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"><span class="post-cat">${CAT_LABELS[d.category]||d.category}</span><div><button class="reaction-btn" onclick="reactPost('${doc.id}','support',this)">💪 ${d.reactions?.support||0}</button><button class="reaction-btn" onclick="reactPost('${doc.id}','helpful',this)">👍 ${d.reactions?.helpful||0}</button><button class="reaction-btn" onclick="reactPost('${doc.id}','concerned',this)">😟 ${d.reactions?.concerned||0}</button></div></div></div>`;
+      const aL=d.isAdmin?'<span style="background:var(--orange);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;margin-left:6px;font-weight:700;">Admin</span>':'';
+      list.innerHTML+=`<div class="post-item ${d.isAdmin?'admin-post':''}"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin-bottom:8px;"><span style="font-weight:700;">${esc(d.author)}${aL}</span><span style="font-size:12px;color:var(--muted);">${ts(d.timestamp)}</span></div><h4 style="margin-bottom:8px;">${esc(d.subject)}</h4><p style="line-height:1.7;margin-bottom:12px;">${esc(d.content)}</p><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"><span class="post-cat">${CAT_LABELS[d.category]||d.category}</span><div><button class="reaction-btn" onclick="reactPost('${doc.id}','support',this)">💪 ${d.reactions?.support||0}</button><button class="reaction-btn" onclick="reactPost('${doc.id}','helpful',this)">👍 ${d.reactions?.helpful||0}</button><button class="reaction-btn" onclick="reactPost('${doc.id}','concerned',this)">😟 ${d.reactions?.concerned||0}</button></div></div></div>`;
     });
   }catch(e){list.innerHTML=`<p style="color:red;padding:20px;">Error: ${e.message}</p>`;}
 }
 
 async function reactPost(id,type,btn){
   const ref=db.collection('forumPosts').doc(id), doc=await ref.get(), r=doc.data().reactions||{};
-  r[type]=(r[type]||0)+1; await ref.update({reactions:r});
-  btn.textContent=btn.textContent.replace(/\d+/,r[type]);
+  r[type]=(r[type]||0)+1; await ref.update({reactions:r}); btn.textContent=btn.textContent.replace(/\d+/,r[type]);
+}
+
+// ADMIN POSTING
+async function postAdminForum(){
+  const subj=document.getElementById('adminForumSubj').value.trim(), msg=document.getElementById('adminForumMsg').value.trim();
+  if(!subj||!msg){notify('Please fill subject and message.','error');return;}
+  await db.collection('forumPosts').add({author:'Dr. Kembhavi (Admin)',isAdmin:true,category:document.getElementById('adminForumCat').value,subject:subj,content:msg,reactions:{support:0,helpful:0,concerned:0},timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+  document.getElementById('adminForumSubj').value=''; document.getElementById('adminForumMsg').value='';
+  notify('✅ Posted to Forum as Dr. Kembhavi!'); updateCounter();
+}
+
+async function postAdminIdea(){
+  const text=document.getElementById('adminIdeaText').value.trim(), cat=document.getElementById('adminIdeaCat').value;
+  if(!text){notify('Please write your idea.','error');return;} if(!cat){notify('Please select a category.','error');return;}
+  await db.collection('ideas').add({text,category:cat,author:'Dr. Kembhavi',isAdmin:true,upvotes:0,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+  document.getElementById('adminIdeaText').value=''; document.getElementById('adminIdeaCat').value='';
+  notify('✅ Idea posted as Dr. Kembhavi!');
 }
 
 // ════════════════════════════════════════
@@ -994,7 +1138,7 @@ async function joinNetwork(){
 
 async function startDiscussion(){
   const title=document.getElementById('discTitle').value.trim(), desc=document.getElementById('discDesc').value.trim();
-  if(!title||!desc){notify('Please fill title and description.','error');return;}
+  if(!title||!desc){notify('Please fill all fields.','error');return;}
   await db.collection('campaigns').add({title,description:desc,status:'active',timestamp:firebase.firestore.FieldValue.serverTimestamp()});
   document.getElementById('discTitle').value=''; document.getElementById('discDesc').value='';
   notify('✅ Discussion started!'); loadNetworkStats();
@@ -1003,9 +1147,8 @@ async function startDiscussion(){
 async function loadNetworkStats(){
   try{
     const [members,campaigns]=await Promise.all([db.collection('coalitionMembers').get(),db.collection('campaigns').where('status','==','active').get()]);
-    const locs=[...new Set(members.docs.map(d=>d.data().location))];
     document.getElementById('memberCount').textContent=members.size;
-    document.getElementById('stateCount').textContent=locs.length;
+    document.getElementById('stateCount').textContent=[...new Set(members.docs.map(d=>d.data().location))].length;
     document.getElementById('campaignCount').textContent=campaigns.size;
   }catch(e){}
 }
@@ -1022,7 +1165,7 @@ async function loadMembers(){
 }
 
 // ════════════════════════════════════════
-// COMPLIANCE TRACKER
+// COMPLIANCE
 // ════════════════════════════════════════
 function addCompliance(){
   const body=document.getElementById('cBody').value, date=document.getElementById('cDate').value, docs=document.getElementById('cDocs').value, hours=document.getElementById('cHoursSpent').value;
@@ -1037,7 +1180,7 @@ function displayComplianceRecs(){
   const list=document.getElementById('complianceList'); if(!list)return;
   if(!complianceRecs.length){list.innerHTML='<p style="color:var(--muted);font-size:13px;margin-top:10px;">No records yet.</p>';return;}
   const total=complianceRecs.reduce((s,r)=>s+r.hours,0);
-  list.innerHTML=`<h4 style="margin-bottom:12px;">${complianceRecs.length} records · ${total} total hours documented</h4>`;
+  list.innerHTML=`<h4 style="margin-bottom:12px;">${complianceRecs.length} records · ${total} total hours</h4>`;
   complianceRecs.forEach(r=>{list.innerHTML+=`<div class="timeline-item"><div class="timeline-date">${r.date}</div><div><strong>${r.body}</strong><br><span style="font-size:13px;">Documents: ${r.docs} | Hours: ${r.hours}</span></div></div>`;});
 }
 
@@ -1045,7 +1188,7 @@ function calcBurden(){
   const h=parseFloat(document.getElementById('calcH').value)||0, s=parseFloat(document.getElementById('calcS').value)||0, c=parseFloat(document.getElementById('calcC').value)||0;
   if(!h||!s||!c){notify('Please fill all fields.','error');return;}
   const monthly=h*s*c, annual=monthly*12, hoursYr=h*s*12, days=Math.floor(hoursYr/8);
-  document.getElementById('burdenResult').innerHTML=`<div class="alert alert-warn"><strong>Administrative Burden Analysis</strong><div class="grid2" style="margin-top:12px;"><div><strong>Monthly Cost:</strong><br>₹${monthly.toLocaleString()}</div><div><strong>Annual Cost:</strong><br>₹${annual.toLocaleString()}</div><div><strong>Hours/Year:</strong><br>${hoursYr.toLocaleString()}</div><div><strong>Working Days Lost:</strong><br>${days}</div></div><p style="margin-top:12px;font-size:13px;"><strong>Insight:</strong> ${days} full working days per year spent on compliance instead of education and patient care.</p></div>`;
+  document.getElementById('burdenResult').innerHTML=`<div class="alert alert-warn"><strong>Administrative Burden Analysis</strong><div class="grid2" style="margin-top:12px;"><div><strong>Monthly Cost:</strong><br>₹${monthly.toLocaleString()}</div><div><strong>Annual Cost:</strong><br>₹${annual.toLocaleString()}</div><div><strong>Hours/Year:</strong><br>${hoursYr.toLocaleString()}</div><div><strong>Days Lost:</strong><br>${days}</div></div></div>`;
 }
 
 // ════════════════════════════════════════
@@ -1056,49 +1199,30 @@ function generateProposal(){
   if(!title||!problem||!solution){notify('Please fill Title, Current Situation, and Proposed Solution.','error');return;}
   const cat=document.getElementById('pCat').value, benefits=document.getElementById('pBenefits').value.trim(), data=document.getElementById('pData').value.trim(), impl=document.getElementById('pImpl').value.trim();
   currentProposalData={title,category:cat,problem,solution,benefits,data,implementation:impl,createdDate:new Date().toLocaleDateString('en-IN'),timestamp:firebase.firestore.FieldValue.serverTimestamp()};
-  const content=`
-    <div style="text-align:center;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:20px;border-radius:10px;margin-bottom:16px;">
-      <h2 style="font-size:20px;margin:0;">${esc(title)}</h2>
-      <p style="margin:8px 0 0;opacity:.9;">Category: ${esc(cat)} · Dr. Kembhavi's Ayurveda Unfiltered Voice</p>
-      <p style="margin:4px 0 0;font-size:13px;opacity:.7;">Generated: ${new Date().toLocaleDateString('en-IN')}</p>
-    </div>
-    <div class="proposal-sec" style="border-left-color:#dc2626;"><h3 style="color:#dc2626;margin-bottom:8px;">📋 Current Situation / Challenge</h3><p style="line-height:1.7;">${esc(problem)}</p></div>
-    <div class="proposal-sec" style="border-left-color:#16a34a;"><h3 style="color:#16a34a;margin-bottom:8px;">💡 Proposed Reform / Solution</h3><p style="line-height:1.7;">${esc(solution)}</p></div>
-    ${benefits?`<div class="proposal-sec" style="border-left-color:#f59e0b;"><h3 style="color:#92400e;margin-bottom:8px;">🌟 Expected Benefits</h3><p style="line-height:1.7;">${esc(benefits)}</p></div>`:''}
-    ${data?`<div class="proposal-sec" style="border-left-color:#2563eb;"><h3 style="color:#1d4ed8;margin-bottom:8px;">📊 Supporting Evidence</h3><p style="line-height:1.7;">${esc(data)}</p></div>`:''}
-    ${impl?`<div class="proposal-sec" style="border-left-color:#7c3aed;"><h3 style="color:#7c3aed;margin-bottom:8px;">⚙️ Implementation Approach</h3><p style="line-height:1.7;">${esc(impl)}</p></div>`:''}
-    <div style="text-align:center;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:14px;border-radius:8px;font-style:italic;font-size:13px;margin-top:14px;">"Progress is impossible without change."</div>`;
-  document.getElementById('proposalContent').innerHTML=content;
+  document.getElementById('proposalContent').innerHTML=`
+    <div style="text-align:center;background:var(--grad);color:#fff;padding:18px;border-radius:10px;margin-bottom:14px;"><h2 style="font-size:19px;margin:0;">${esc(title)}</h2><p style="margin:6px 0 0;opacity:.9;">${esc(cat)}</p></div>
+    <div class="proposal-sec" style="border-left-color:#dc2626;"><h3 style="color:#dc2626;margin-bottom:8px;">📋 Current Situation</h3><p style="line-height:1.7;">${esc(problem)}</p></div>
+    <div class="proposal-sec" style="border-left-color:#16a34a;"><h3 style="color:#16a34a;margin-bottom:8px;">💡 Proposed Solution</h3><p style="line-height:1.7;">${esc(solution)}</p></div>
+    ${benefits?`<div class="proposal-sec" style="border-left-color:#f59e0b;"><h3 style="color:#92400e;margin-bottom:8px;">🌟 Benefits</h3><p>${esc(benefits)}</p></div>`:''}
+    ${data?`<div class="proposal-sec" style="border-left-color:#2563eb;"><h3 style="color:#1d4ed8;margin-bottom:8px;">📊 Evidence</h3><p>${esc(data)}</p></div>`:''}
+    ${impl?`<div class="proposal-sec" style="border-left-color:#7c3aed;"><h3 style="color:#7c3aed;margin-bottom:8px;">⚙️ Implementation</h3><p>${esc(impl)}</p></div>`:''}`;
   document.getElementById('proposalOutput').classList.remove('hidden');
-  notify(`✅ Proposal "${title}" generated! Use "Save to Platform" to store it.`);
+  notify(`✅ Proposal generated!`);
 }
-function copyProposal(){navigator.clipboard.writeText(document.getElementById('proposalContent').innerText).then(()=>notify('Copied to clipboard!')).catch(()=>alert('Please select and copy manually.'));}
-async function saveProposalToFirebase(){
-  if(!currentProposalData){notify('Please generate a proposal first.','error');return;}
-  try{await db.collection('proposals').add(currentProposalData);notify('💾 Proposal saved to platform!');}
-  catch(e){notify('Error saving: '+e.message,'error');}
-}
+function copyProposal(){navigator.clipboard.writeText(document.getElementById('proposalContent').innerText).then(()=>notify('Copied!')).catch(()=>alert('Please select and copy manually.'));}
+async function saveProposalToFirebase(){if(!currentProposalData){notify('Generate a proposal first.','error');return;}try{await db.collection('proposals').add(currentProposalData);notify('💾 Proposal saved!');}catch(e){notify('Error: '+e.message,'error');}}
 
 // ════════════════════════════════════════
 // ADMIN FUNCTIONS
 // ════════════════════════════════════════
 async function loadAdminDash(){
   try{
-    const [fb,ideas,forum,pending]=await Promise.all([
-      db.collection('feedback').get(),
-      db.collection('ideas').get(),
-      db.collection('forumPosts').get(),
-      db.collection('accessRequests').where('status','==','pending').get()
-    ]);
+    const [fb,ideas,forum,pending]=await Promise.all([db.collection('feedback').get(),db.collection('ideas').get(),db.collection('forumPosts').get(),db.collection('accessRequests').where('status','==','pending').get()]);
     document.getElementById('aTot').textContent=fb.size;
     document.getElementById('aIdeas').textContent=ideas.size;
     document.getElementById('aForum').textContent=forum.size;
     document.getElementById('aPending').textContent=pending.size;
-    // Highlight requests tab if pending
-    if(pending.size>0){
-      const btn=document.getElementById('reqTabBtn');
-      if(btn)btn.textContent=`🔔 Requests (${pending.size})`;
-    }
+    if(pending.size>0){const btn=document.getElementById('reqTabBtn');if(btn)btn.textContent=`🔔 Requests (${pending.size})`;}
   }catch(e){}
 }
 
@@ -1111,9 +1235,7 @@ async function loadAdminFB(){
     const docs=snap.docs.filter(d=>(!catF||d.data().category===catF)&&(!typeF||d.data().userType===typeF));
     if(!docs.length){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">No feedback found.</p>';return;}
     list.innerHTML='';
-    docs.forEach(doc=>{const d=doc.data();
-      list.innerHTML+=`<div class="card"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"><span class="badge ${d.userType==='PG'?'badge-pg':'badge-ug'}">${d.userType}</span>${d.anonymous?'<span class="badge badge-anon">Anonymous</span>':`<span class="tag">${esc(d.name)}</span>`}${d.category?`<span class="tag">${esc(d.category)}</span>`:''}${d.year?`<span class="tag">${esc(d.year)}</span>`:''}${d.college?`<span class="tag">🏛️ ${esc(d.college)}</span>`:''}</div>${d.rating>0?`<div style="color:#f59e0b;margin-bottom:6px;font-size:18px;">${'★'.repeat(d.rating)}${'☆'.repeat(5-d.rating)}</div>`:''}${d.helped?`<p style="font-size:13px;margin-bottom:4px;"><strong>✅</strong> ${esc(d.helped)}</p>`:''}${d.hindered?`<p style="font-size:13px;margin-bottom:8px;"><strong>❌</strong> ${esc(d.hindered)}</p>`:''}<p style="line-height:1.7;">${esc(d.feedback)}</p>${d.pg?`<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:12px;margin-top:10px;font-size:12px;line-height:1.6;"><strong>📚 PG Section:</strong> Synopsis: ${esc(d.pg.synopsis||'—')} | Guide: ${esc(d.pg.guide||'—')} | Infra: ${esc(d.pg.infra||'—')}${d.pg.comments?`<br>Comments: ${esc(d.pg.comments)}`:''}	</div>`:''}<p style="font-size:11px;color:var(--muted);margin-top:8px;">${ts(d.timestamp)}</p></div>`;
-    });
+    docs.forEach(doc=>{const d=doc.data();list.innerHTML+=`<div class="card"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"><span class="badge ${d.userType==='PG'?'badge-pg':'badge-ug'}">${d.userType}</span>${d.anonymous?'<span class="badge badge-anon">Anonymous</span>':`<span class="tag">${esc(d.name)}</span>`}${d.category?`<span class="tag">${esc(d.category)}</span>`:''}${d.year?`<span class="tag">${esc(d.year)}</span>`:''}${d.college?`<span class="tag">🏛️ ${esc(d.college)}</span>`:''}</div>${d.rating>0?`<div style="color:#f59e0b;margin-bottom:6px;">${'★'.repeat(d.rating)}${'☆'.repeat(5-d.rating)}</div>`:''}${d.helped?`<p style="font-size:13px;margin-bottom:4px;"><strong>✅</strong> ${esc(d.helped)}</p>`:''}${d.hindered?`<p style="font-size:13px;margin-bottom:8px;"><strong>❌</strong> ${esc(d.hindered)}</p>`:''}<p style="line-height:1.7;">${esc(d.feedback)}</p>${d.pg?`<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:12px;margin-top:10px;font-size:12px;"><strong>📚 PG:</strong> Synopsis: ${esc(d.pg.synopsis||'—')} | Guide: ${esc(d.pg.guide||'—')} | Infra: ${esc(d.pg.infra||'—')}${d.pg.comments?`<br>${esc(d.pg.comments)}`:''}</div>`:''}<p style="font-size:11px;color:var(--muted);margin-top:8px;">${ts(d.timestamp)}</p></div>`;});
   }catch(e){list.innerHTML=`<p style="color:red;padding:20px;">Error: ${e.message}</p>`;}
 }
 
@@ -1125,12 +1247,10 @@ async function loadAdminIdeas(){
     const snap=await db.collection('ideas').orderBy('upvotes','desc').get();
     if(snap.empty){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">No ideas yet.</p>';return;}
     list.innerHTML='';
-    snap.forEach(doc=>{const d=doc.data();
-      list.innerHTML+=`<div class="card" style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;"><div style="flex:1;"><span class="tag">${esc(d.category||'General')}</span> <span style="font-size:12px;color:var(--muted);">${esc(d.author)} · 👍 ${d.upvotes||0} · ${ts(d.timestamp)}</span><p style="margin-top:8px;line-height:1.6;">${esc(d.text)}</p></div><button class="btn btn-danger btn-sm" onclick="deleteIdea('${doc.id}')">Delete</button></div>`;
-    });
+    snap.forEach(doc=>{const d=doc.data();const aB=d.isAdmin?'<span style="background:var(--orange);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:4px;">Dr. Kembhavi</span>':'';list.innerHTML+=`<div class="card" style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;"><div style="flex:1;"><span class="tag">${esc(d.category||'General')}</span>${aB} <span style="font-size:12px;color:var(--muted);">${esc(d.author)} · 👍 ${d.upvotes||0} · ${ts(d.timestamp)}</span><p style="margin-top:8px;line-height:1.6;">${esc(d.text)}</p></div><button class="btn btn-danger btn-sm" onclick="deleteIdea('${doc.id}')">Delete</button></div>`;});
   }catch(e){}
 }
-async function deleteIdea(id){if(!confirm('Delete this idea permanently?'))return;await db.collection('ideas').doc(id).delete();notify('Idea deleted.');loadAdminIdeas();}
+async function deleteIdea(id){if(!confirm('Delete this idea?'))return;await db.collection('ideas').doc(id).delete();notify('Deleted.');loadAdminIdeas();}
 
 async function loadAdminPolls(){
   const list=document.getElementById('adminPollList'); if(!list)return;
@@ -1139,7 +1259,7 @@ async function loadAdminPolls(){
     if(snap.empty){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:20px;">No polls yet.</p>';return;}
     list.innerHTML='';
     snap.forEach(doc=>{const d=doc.data(),id=doc.id,total=(d.options||[]).reduce((s,o)=>s+(o.votes||0),0);
-      let html=`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;"><strong style="font-size:15px;">${esc(d.question)}</strong><div style="display:flex;gap:6px;align-items:center;"><span class="badge ${d.active?'badge-active':'badge-closed'}">${d.active?'Active':'Closed'}</span><button class="btn btn-outline btn-sm" onclick="togglePoll('${id}',${d.active})">${d.active?'Close':'Reopen'}</button><button class="btn btn-danger btn-sm" onclick="deletePoll('${id}')">Delete</button></div></div>`;
+      let html=`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;"><strong>${esc(d.question)}</strong><div style="display:flex;gap:6px;"><span class="badge ${d.active?'badge-active':'badge-closed'}">${d.active?'Active':'Closed'}</span><button class="btn btn-outline btn-sm" onclick="togglePoll('${id}',${d.active})">${d.active?'Close':'Reopen'}</button><button class="btn btn-danger btn-sm" onclick="deletePoll('${id}')">Delete</button></div></div>`;
       (d.options||[]).forEach(o=>{const pct=total>0?Math.round((o.votes||0)/total*100):0;html+=`<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px;"><span>${esc(o.text)}</span><span style="font-weight:700;">${o.votes||0} (${pct}%)</span></div><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></div>`;});
       html+=`<p style="font-size:12px;color:var(--muted);margin-top:8px;">Total: ${total} votes</p></div>`;
       list.innerHTML+=html;
@@ -1155,7 +1275,7 @@ async function createPoll(){
   notify('✅ Poll published!'); loadAdminPolls();
 }
 async function togglePoll(id,active){await db.collection('polls').doc(id).update({active:!active});loadAdminPolls();}
-async function deletePoll(id){if(!confirm('Delete this poll?'))return;await db.collection('polls').doc(id).delete();notify('Poll deleted.');loadAdminPolls();}
+async function deletePoll(id){if(!confirm('Delete this poll?'))return;await db.collection('polls').doc(id).delete();notify('Deleted.');loadAdminPolls();}
 
 async function loadAdminNetwork(){
   const list=document.getElementById('adminNetworkList'); if(!list)return;
@@ -1171,9 +1291,9 @@ async function loadAdminProposals(){
   const list=document.getElementById('adminProposalList'); if(!list)return;
   try{
     const snap=await db.collection('proposals').orderBy('timestamp','desc').get();
-    if(snap.empty){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">No proposals saved yet.</p>';return;}
+    if(snap.empty){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">No proposals yet.</p>';return;}
     list.innerHTML='';
-    snap.forEach(doc=>{const d=doc.data();list.innerHTML+=`<div class="card"><strong style="font-size:16px;">${esc(d.title)}</strong> <span class="tag">${esc(d.category)}</span><p style="font-size:12px;color:var(--muted);margin:6px 0;">Created: ${d.createdDate||ts(d.timestamp)}</p><p style="font-size:13px;line-height:1.6;margin-bottom:6px;"><strong>Challenge:</strong> ${esc((d.problem||'').substring(0,200))}${(d.problem||'').length>200?'...':''}</p><p style="font-size:13px;line-height:1.6;"><strong>Solution:</strong> ${esc((d.solution||'').substring(0,200))}${(d.solution||'').length>200?'...':''}</p></div>`;});
+    snap.forEach(doc=>{const d=doc.data();list.innerHTML+=`<div class="card"><strong style="font-size:16px;">${esc(d.title)}</strong> <span class="tag">${esc(d.category)}</span><p style="font-size:12px;color:var(--muted);margin:6px 0;">Created: ${d.createdDate||ts(d.timestamp)}</p><p style="font-size:13px;line-height:1.6;">${esc((d.problem||'').substring(0,200))}...</p></div>`;});
   }catch(e){}
 }
 
@@ -1181,21 +1301,20 @@ async function exportAllCSV(){
   try{
     const snap=await db.collection('feedback').orderBy('timestamp','desc').get();
     const e=v=>`"${(v||'').toString().replace(/"/g,'""')}"`;
-    let csv='Type,Name,Anonymous,College,Year,Category,Subject,Rating,Helped,Hindered,Feedback,PG_Synopsis,PG_Guide,PG_Infra,PG_Conference,PG_Comments,Date\n';
-    snap.forEach(doc=>{const d=doc.data();csv+=[d.userType,d.name,d.anonymous,d.college,d.year,d.category,d.subject,d.rating,d.helped,d.hindered,d.feedback,d.pg?.synopsis,d.pg?.guide,d.pg?.infra,d.pg?.conference,d.pg?.comments,d.timestamp?.toDate?d.timestamp.toDate().toLocaleDateString('en-IN'):''].map(e).join(',')+'\n';});
+    let csv='Type,Name,Anonymous,College,Year,Category,Subject,Rating,Helped,Hindered,Feedback,PG_Synopsis,PG_Guide,PG_Infra,PG_Comments,Date\n';
+    snap.forEach(doc=>{const d=doc.data();csv+=[d.userType,d.name,d.anonymous,d.college,d.year,d.category,d.subject,d.rating,d.helped,d.hindered,d.feedback,d.pg?.synopsis,d.pg?.guide,d.pg?.infra,d.pg?.comments,d.timestamp?.toDate?d.timestamp.toDate().toLocaleDateString('en-IN'):''].map(e).join(',')+'\n';});
     const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
     a.download=`ayurveda_unfiltered_voice_${new Date().toISOString().split('T')[0]}.csv`; a.click();
     notify('✅ CSV exported!');
-  }catch(e){notify('Export error: '+e.message,'error');}
+  }catch(e){notify('Error: '+e.message,'error');}
 }
 
-// ── COUNTER ──
 async function updateCounter(){
   try{
     const [fb,forum]=await Promise.all([db.collection('feedback').get(),db.collection('forumPosts').get()]);
     const total=fb.size+forum.size;
     document.getElementById('counterBanner').textContent=`🌿 ${total} voice${total!==1?'s':''} shared — Academic · Clinical · Research · Administrative · Development Reform`;
-  }catch(e){document.getElementById('counterBanner').textContent='🌿 Dr. Kembhavi\'s Ayurveda Unfiltered Voice';}
+  }catch(e){}
 }
 
 // ── WHATSAPP ──
@@ -1203,13 +1322,11 @@ const waModal={show(){document.getElementById('waModalEl').style.display='block'
 const whatsapp={
   url:window.location.href.split('?')[0],
   open(msg){window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`,'_blank');},
-  sharePlatform(){this.open(`🌿 *Dr. Kembhavi's Ayurveda Unfiltered Voice* 🌿\n\nA confidential platform for reform voices in Ayurveda.\n\nVisit the platform and click "Request Access" to apply for your personal login.\n\n🔗 ${this.url}\n\n#AyurvedaReform #DrKembhavi #AyurvedaUnfiltered`);},
-  shareReform(){this.open(`🚨 *AYURVEDA REFORM DISCUSSION* 🚨\n\nDr. Kembhavi invites professionals to discuss reforms in:\n📚 Academic · 🏥 Clinical · 🔬 Research · 📋 Administrative · 🌱 Development\n\nJoin: ${this.url}\n\n*Together we drive meaningful change!* 🕉️`);},
-  shareUrgent(){this.open(`⚠️ *YOUR INPUT NEEDED* ⚠️\n\nDr. Kembhavi's Ayurveda Unfiltered Voice needs your perspectives on critical reforms.\n\nRequest access at: ${this.url}\n\n*Your experience shapes the future of Ayurveda.* #AyurvedaUnfiltered`);}
+  sharePlatform(){this.open(`🌿 *Dr. Kembhavi's Ayurveda Unfiltered Voice* 🌿\n\nA confidential platform for reform voices in Ayurveda.\n\nRegister with your own email and password at:\n🔗 ${this.url}\n\n#AyurvedaReform #DrKembhavi`);},
+  shareReform(){this.open(`🚨 *AYURVEDA REFORM DISCUSSION* 🚨\n\nDr. Kembhavi invites professionals to discuss reforms in Ayurveda.\n\nRegister at: ${this.url}\n\n*Together we drive meaningful change!* 🕉️`);}
 };
 document.getElementById('waModalEl').addEventListener('click',function(e){if(e.target===this)waModal.hide();});
 
-// ── INIT ──
 updateCounter();
 </script>
 </body>
