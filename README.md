@@ -2,8 +2,8 @@
 
 > *A confidential, Firebase-secured platform for reform voices in Ayurveda education — Academic, Clinical, Research, Administrative, and Development.*
 
-**Live Platform:** [https://yourusername.github.io/ayurveda-unfiltered-voice](https://yourusername.github.io/ayurveda-unfiltered-voice)  
-**Blog:** [drkembhavi-s.github.io](https://drkembhavi-s.github.io)  
+**Live Platform:** [https:/DrKembhavi-s.github.io/ayurveda-unfiltered-voice](https://yourusername.github.io/ayurveda-unfiltered-voice)  
+**Blog:** [DrKembhavi-s.github.io](https://DrKembhavi-s.github.io)  
 **Developed by:** Dr. Aakash Kembhavi, MD Ayurveda | MS Counselling & Psychotherapy
 
 ---
@@ -299,8 +299,8 @@ Principal, Jain AGM Ayurvedic Medical College & Hospital, Varur
 Director of PG Studies, SJG Ayurvedic Medical College, Koppal  
 PhD Guide, RGUHS | Chief Editor, International Journal of Ayurveda  
 
-📝 Blog: [drkembhavi-s.github.io](https://drkembhavi-s.github.io)  
-🌿 Platform: [YOUR GITHUB LINK]
+📝 Blog: [DrKembhavi-s.github.io](https://DrKembhavi-s.github.io)  
+🌿 Platform: (https://drkembhavi-s.github.io/Ayurveda-Unfiltered-Voice/)
 
 ---
 
