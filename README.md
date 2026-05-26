@@ -2,8 +2,8 @@
 
 > *A confidential, Firebase-secured platform for reform voices in Ayurveda education — Academic, Clinical, Research, Administrative, and Development.*
 
-**Live Platform:** [https:/DrKembhavi-s.github.io/ayurveda-unfiltered-voice](https://yourusername.github.io/ayurveda-unfiltered-voice)  
-**Blog:** [DrKembhavi-s.github.io](https://DrKembhavi-s.github.io)  
+**Live Platform:** (https://DrKembhavi-s.github.io/ayurveda-unfiltered-voice)  
+**Blog:** [drkembhavi-s.github.io](https://drkembhavi-s.github.io)  
 **Developed by:** Dr. Aakash Kembhavi, MD Ayurveda | MS Counselling & Psychotherapy
 
 ---
@@ -196,9 +196,11 @@ service cloud.firestore {
 
 ---
 
-## 🔑 Login Credentials
+## 🔑 Login & Registration System
 
-### Preset Credentials (for direct sharing)
+### Two ways to access the platform
+
+**1 — Preset shared credentials** (for general access, shared directly by Dr. Kembhavi)
 
 | Role | Username | Password |
 |---|---|---|
@@ -207,10 +209,24 @@ service cloud.firestore {
 | Faculty / Professional | `ayurfaculty2025` | `faculty@ayur` |
 | Admin | `ayuradmin2025` | `admin@vaidya` |
 
-### Self-Registered Users
-Users who apply through the **Request Access** system receive auto-generated personal credentials in the format:
-- **Username:** `firstname_role_4digitnumber` (e.g. `suresh_pg_4821`)
-- **Password:** `6randomchars@ayur` (e.g. `kx7r2m@ayur`)
+**2 — Self-registration via Firebase Authentication** (recommended for individual access)
+
+Users register directly on the platform with their own email and chosen password:
+- Visit the platform → click **Register Here →**
+- Fill in: Full Name, Institution, State, Role, Email, Password, WhatsApp number
+- **Email address becomes their username** — displayed clearly on the registration form
+- **Live password strength indicator** guides them to choose a strong password
+- Firebase Auth creates their account securely — password is never visible to anyone
+- Their request appears in the Admin → Requests tab as **pending**
+- On approval by Dr. Kembhavi, they can log in immediately with their email and password
+- **Forgot Password** — fully automated: Firebase sends a reset link directly to their email, no admin involvement needed
+
+### Authentication Architecture
+- Preset credentials are checked first (hardcoded in JS, bypass Firebase Auth)
+- Self-registered users authenticate via `firebase.auth().signInWithEmailAndPassword()`
+- After Firebase Auth succeeds, approval status is verified in Firestore `accessRequests` collection
+- Pending or declined users are signed out with an appropriate message
+- Passwords are stored as secure cryptographic hashes by Firebase — nobody can read them
 
 ---
 
@@ -230,11 +246,12 @@ Users who apply through the **Request Access** system receive auto-generated per
 | Component | Technology |
 |---|---|
 | Frontend | HTML5, CSS3, Vanilla JavaScript |
+| Authentication | Firebase Authentication (Email/Password) |
 | Database | Google Firebase Firestore |
 | Hosting | GitHub Pages |
 | Analytics Charts | Chart.js (analytics.html) |
 | WhatsApp Integration | WhatsApp API (wa.me) |
-| Storage (local) | Browser localStorage (compliance records only) |
+| Storage (local) | Browser localStorage (compliance records, vote tracking) |
 
 ---
 
@@ -288,6 +305,8 @@ Built with Chart.js 3.9.1 via CDN and Firebase Firestore. No dummy or hardcoded 
 | v1.0 | Original AyurVoice — student feedback platform with Firebase |
 | v2.0 | Merged platform — added faculty forum, compliance tracker, reform proposals, WhatsApp integration |
 | v3.0 | Full unified platform — self-registration system, auto-generated credentials, WhatsApp + email credential sharing, pending request notifications |
+| v3.1 | Analytics dashboard rebuilt — admin-login-protected, all dummy data removed, live Firebase charts and real data tables |
+| v3.2 | Firebase Authentication integrated — users register with their own email and password, automated Forgot Password, live password strength indicator, admin approval workflow |
 
 ---
 
@@ -299,8 +318,8 @@ Principal, Jain AGM Ayurvedic Medical College & Hospital, Varur
 Director of PG Studies, SJG Ayurvedic Medical College, Koppal  
 PhD Guide, RGUHS | Chief Editor, International Journal of Ayurveda  
 
-📝 Blog: [DrKembhavi-s.github.io](https://DrKembhavi-s.github.io)  
-🌿 Platform: (https://drkembhavi-s.github.io/Ayurveda-Unfiltered-Voice/)
+📝 Blog: [drkembhavi-s.github.io](https://drkembhavi-s.github.io)  
+🌿 Platform: (https://DrKembhavi-s.github.io/ayurveda-unfiltered-voice)  
 
 ---
 
