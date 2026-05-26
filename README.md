@@ -2,7 +2,7 @@
 
 > *A confidential, Firebase-secured platform for reform voices in Ayurveda education — Academic, Clinical, Research, Administrative, and Development.*
 
-**Live Platform:** [https://drkembhavi-s.github.io/ayurveda-unfiltered-voice](https://drkembhavi-s.github.io/ayurveda-unfiltered-voice)  
+**Live Platform:** [https://yourusername.github.io/ayurveda-unfiltered-voice](https://yourusername.github.io/ayurveda-unfiltered-voice)  
 **Blog:** [drkembhavi-s.github.io](https://drkembhavi-s.github.io)  
 **Developed by:** Dr. Aakash Kembhavi, MD Ayurveda | MS Counselling & Psychotherapy
 
@@ -192,7 +192,7 @@ service cloud.firestore {
 1. Create a new repository named `ayurveda-unfiltered-voice`
 2. Upload `index.html` and `analytics.html`
 3. Go to Settings → Pages → Deploy from branch → main → / (root)
-4. Platform is live at `https://drkembhavi-s.github.io/ayurveda-unfiltered-voice`
+4. Platform is live at `https://yourusername.github.io/ayurveda-unfiltered-voice`
 
 ---
 
@@ -238,18 +238,46 @@ Users who apply through the **Request Access** system receive auto-generated per
 
 ---
 
-## 📊 Analytics Dashboard
+## 📊 Analytics Dashboard (analytics.html)
 
-The separate `analytics.html` file provides a data visualisation dashboard with:
-- Movement growth charts (Chart.js)
-- Issue category distribution
-- Regulatory body impact analysis
-- Time distribution charts
-- State-wise participation data
-- Report generation for policy submission
+The analytics dashboard is a **separate, admin-login-protected** page that connects directly to Firebase and displays live real data. It is not accessible without the admin username and password.
 
-Access it directly at: `https://drkembhavi-s.github.io/ayurveda-unfiltered-voice/analytics.html`
-Or via the admin dashboard → Quick Actions → Analytics Dashboard.
+**Access:** `https://yourusername.github.io/ayurveda-unfiltered-voice/analytics.html`
+Or via: Admin Dashboard → Quick Actions → Analytics Dashboard
+
+**Login required:** `ayuradmin2025` / `admin@vaidya`
+
+### Live Charts (all powered by real Firebase data)
+- Feedback by Category (bar chart)
+- UG vs PG Submissions (doughnut)
+- Student Rating Distribution (bar chart)
+- Ideas by Category (doughnut)
+- Forum Posts by Reform Category (bar chart)
+- Access Requests Status — Pending / Approved / Declined (doughnut)
+- Network Members by Location (bar chart)
+- Active Poll Vote Results (bar chart)
+
+### Live Data Tables
+- Recent 10 feedback submissions with category, rating, and excerpt
+- Top 10 upvoted ideas from the Idea Board
+- Access requests summary with role and status badges
+
+### PG Scholar Section Analysis
+Visual breakdown of responses to the confidential PG section:
+- Synopsis writing experience distribution
+- Guide-scholar relationship quality
+- Research infrastructure ratings
+
+### Reform Movement Timeline
+Auto-generated from real platform milestones — grows dynamically as the community grows.
+
+### Report Generation (downloads real data)
+- **Policy Impact Report** — formatted text file for submission to NCISM, educational boards, and policy makers
+- **Reform Movement Summary** — overview with top ideas, forum categories, and movement statistics
+- **Full Data Export** — complete JSON export of all Firebase collections for archival or analysis
+
+### Technology
+Built with Chart.js 3.9.1 via CDN and Firebase Firestore. No dummy or hardcoded data — all numbers reflect actual platform activity.
 
 ---
 
@@ -272,7 +300,7 @@ Director of PG Studies, SJG Ayurvedic Medical College, Koppal
 PhD Guide, RGUHS | Chief Editor, International Journal of Ayurveda  
 
 📝 Blog: [drkembhavi-s.github.io](https://drkembhavi-s.github.io)  
-🌿 Platform: (https://drkembhavi-s.github.io/Ayurveda-Unfiltered-Voice/)
+🌿 Platform: [YOUR GITHUB LINK]
 
 ---
 
