@@ -730,7 +730,7 @@ async function doLogin(){
     if(e.code==='auth/user-not-found') msg='No account found with this email. Please register first.';
     if(e.code==='auth/wrong-password') msg='Incorrect password. Use "Forgot Password?" to reset it.';
     if(e.code==='auth/too-many-requests') msg='Too many failed attempts. Please try again later.';
-    showErr('loginErr', msg);
+    showErr('loginErr', msg+' ('+(e.code||'unknown error')+')');
     btn.textContent='Sign In →'; btn.disabled=false;
   }
 }
