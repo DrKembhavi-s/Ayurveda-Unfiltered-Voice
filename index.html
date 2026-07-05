@@ -158,8 +158,12 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
 <div id="mainApp" class="hidden">
   <div class="app-header">
     <h2>🌿 Ayurveda Unfiltered Voice</h2>
-    <div style="display:flex;align-items:center;gap:10px;">
+    <div style="display:flex;align-items:center;gap:10px;position:relative;">
       <span id="userBadge" style="font-size:12px;color:var(--muted);"></span>
+      <div id="notifBellWrap" class="hidden" style="position:relative;">
+        <button class="btn btn-outline btn-sm" onclick="toggleNotifPanel()" style="position:relative;">🔔<span id="notifBadge" class="hidden" style="position:absolute;top:-6px;right:-6px;background:var(--danger);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 5px;">0</span></button>
+        <div id="notifPanel" class="hidden" style="position:absolute;right:0;top:36px;width:300px;max-height:360px;overflow-y:auto;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:200;padding:10px;"></div>
+      </div>
       <button class="btn btn-outline btn-sm" onclick="doLogout()">Logout</button>
     </div>
   </div>
@@ -173,6 +177,7 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
         <button class="nav-btn active" onclick="sTab('feedback')">📝 Private Feedback</button>
         <button class="nav-btn" onclick="sTab('ideas')">💡 Idea Board</button>
         <button class="nav-btn" onclick="sTab('polls')">📊 Polls</button>
+        <button class="nav-btn" onclick="showFeed()">🌍 Feed</button>
       </div>
       <div id="s-feedback">
         <div class="sec-title">Private Feedback</div>
@@ -263,6 +268,7 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
         <button class="nav-btn" onclick="fTab('compliance')">📋 Compliance</button>
         <button class="nav-btn" onclick="fTab('proposals')">📝 Proposals</button>
         <button class="nav-btn" onclick="fTab('fideas')">💡 Ideas</button>
+        <button class="nav-btn" onclick="showFeed()">🌍 Feed</button>
       </div>
       <div id="f-forum">
         <div class="sec-title">📢 Discussion Forum</div>
@@ -503,6 +509,16 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
   <div id="profileView" class="hidden">
     <div class="container" id="profileContent"></div>
   </div>
+
+  <!-- ACTIVITY FEED (Stage 2) -->
+  <div id="feedView" class="hidden">
+    <div class="container">
+      <button class="btn btn-outline btn-sm" onclick="closeFeed()" style="margin-bottom:16px;">← Back</button>
+      <div class="sec-title">🌍 Activity Feed</div>
+      <div class="sec-sub">Recent forum posts and ideas from across the platform.</div>
+      <div id="feedList"></div>
+    </div>
+  </div>
 </div>
 
 <!-- ★ REGISTER MODAL ★ -->
@@ -733,9 +749,20 @@ function _initView(role){
   updateCounter();
   window.addEventListener('hashchange', routeHash);
   routeHash();
+  if(auth.currentUser){
+    document.getElementById('notifBellWrap').classList.remove('hidden');
+    refreshNotifBadge();
+  }
 }
 
-function showView(v){['studentView','facultyView','adminView','profileView'].forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById(v).classList.remove('hidden');}
+function showView(v){['studentView','facultyView','adminView','profileView','feedView'].forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById(v).classList.remove('hidden');}
+
+function backToRoleView(){
+  location.hash='';
+  if(userRole==='UG'||userRole==='PG') showView('studentView');
+  else if(userRole==='FAC') showView('facultyView');
+  else if(userRole==='ADMIN') showView('adminView');
+}
 
 // ════════════════════════════════════════
 // PUBLIC PROFILE (Stage 1) — simple hash routing: #/profile/<uid>
@@ -746,11 +773,73 @@ function routeHash(){
 }
 function viewProfile(uid){location.hash='#/profile/'+uid;}
 function showProfile(uid){showView('profileView');renderProfileView(uid);}
-function closeProfile(){
-  location.hash='';
-  if(userRole==='UG'||userRole==='PG') showView('studentView');
-  else if(userRole==='FAC') showView('facultyView');
-  else if(userRole==='ADMIN') showView('adminView');
+function closeProfile(){backToRoleView();}
+
+// ════════════════════════════════════════
+// ACTIVITY FEED (Stage 2)
+// ════════════════════════════════════════
+function showFeed(){showView('feedView');loadFeed();}
+function closeFeed(){backToRoleView();}
+async function loadFeed(){
+  const list=document.getElementById('feedList'); if(!list)return;
+  list.innerHTML='<p style="color:var(--muted);text-align:center;padding:30px;">Loading feed...</p>';
+  try{
+    const [postsSnap,ideasSnap]=await Promise.all([
+      db.collection('forumPosts').orderBy('timestamp','desc').limit(20).get(),
+      db.collection('ideas').orderBy('timestamp','desc').limit(20).get()
+    ]);
+    const items=[
+      ...postsSnap.docs.map(d=>({type:'post',data:d.data()})),
+      ...ideasSnap.docs.map(d=>({type:'idea',data:d.data()}))
+    ].sort((a,b)=>(b.data.timestamp?.toMillis?.()||0)-(a.data.timestamp?.toMillis?.()||0)).slice(0,25);
+    if(!items.length){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">No activity yet.</p>';return;}
+    list.innerHTML=items.map(item=>{
+      const d=item.data;
+      const authorHtml=d.authorUid?`<span style="cursor:pointer;text-decoration:underline;" onclick="viewProfile('${d.authorUid}')">${esc(d.author)}</span>`:esc(d.author||'Anonymous');
+      if(item.type==='post'){
+        return `<div class="post-item"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin-bottom:6px;"><span>📢 <strong>${authorHtml}</strong> posted in Forum</span><span style="font-size:12px;color:var(--muted);">${ts(d.timestamp)}</span></div><h4 style="margin-bottom:6px;">${esc(d.subject)}</h4><p style="font-size:13px;color:var(--muted);">${esc((d.content||'').substring(0,140))}${(d.content||'').length>140?'...':''}</p></div>`;
+      }
+      return `<div class="idea-card"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin-bottom:6px;"><span>💡 <strong>${authorHtml}</strong> shared an idea</span><span style="font-size:12px;color:var(--muted);">${ts(d.timestamp)}</span></div><span class="tag">${esc(d.category||'General')}</span><p style="margin-top:8px;font-size:13px;">${esc((d.text||'').substring(0,140))}${(d.text||'').length>140?'...':''}</p></div>`;
+    }).join('');
+  }catch(e){list.innerHTML=`<p style="color:red;text-align:center;padding:20px;">Error: ${e.message}</p>`;}
+}
+
+// ════════════════════════════════════════
+// NOTIFICATIONS (Stage 2) — in-app only, hidden for preset-credential logins (no uid)
+// ════════════════════════════════════════
+async function refreshNotifBadge(){
+  const me=auth.currentUser; if(!me)return;
+  try{
+    const snap=await db.collection('notifications').where('recipient_uid','==',me.uid).where('read','==',false).get();
+    const badge=document.getElementById('notifBadge');
+    if(snap.size>0){badge.textContent=snap.size;badge.classList.remove('hidden');}
+    else{badge.classList.add('hidden');}
+  }catch(e){}
+}
+async function toggleNotifPanel(){
+  const panel=document.getElementById('notifPanel');
+  if(!panel.classList.contains('hidden')){panel.classList.add('hidden');return;}
+  panel.classList.remove('hidden');
+  panel.innerHTML='<p style="color:var(--muted);text-align:center;padding:16px;font-size:13px;">Loading...</p>';
+  const me=auth.currentUser; if(!me)return;
+  try{
+    const snap=await db.collection('notifications').where('recipient_uid','==',me.uid).orderBy('timestamp','desc').limit(20).get();
+    if(snap.empty){panel.innerHTML='<p style="color:var(--muted);text-align:center;padding:16px;font-size:13px;">No notifications yet.</p>';return;}
+    panel.innerHTML=snap.docs.map(doc=>{
+      const d=doc.data();
+      const icon=d.type==='follow'?'🤝':d.type==='approval'?'✅':'🔔';
+      const clickable=d.type==='follow'&&d.actor_uid?`onclick="toggleNotifPanel();viewProfile('${d.actor_uid}')" style="cursor:pointer;"`:'';
+      return `<div ${clickable} style="padding:8px 6px;border-bottom:1px solid var(--border);font-size:13px;${d.read?'opacity:.6;':''}">${icon} ${esc(d.message)}<div style="font-size:11px;color:var(--muted);margin-top:2px;">${ts(d.timestamp)}</div></div>`;
+    }).join('');
+    // Bulk mark-as-read (simplest UX — opening the panel clears the badge)
+    const unread=snap.docs.filter(doc=>!doc.data().read);
+    if(unread.length){
+      const batch=db.batch();
+      unread.forEach(doc=>batch.update(doc.ref,{read:true}));
+      await batch.commit();
+      document.getElementById('notifBadge').classList.add('hidden');
+    }
+  }catch(e){panel.innerHTML=`<p style="color:red;text-align:center;padding:16px;font-size:13px;">Error: ${e.message}</p>`;}
 }
 async function renderProfileView(uid){
   const el=document.getElementById('profileContent');
@@ -770,6 +859,16 @@ async function renderProfileView(uid){
         postsHtml=postsSnap.docs.map(pd=>{const p=pd.data();return `<div class="post-item" style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;"><span class="post-cat">${CAT_LABELS[p.category]||p.category}</span><span style="font-size:12px;color:var(--muted);">${ts(p.timestamp)}</span></div><h4 style="margin:8px 0 4px;">${esc(p.subject)}</h4><p style="font-size:13px;color:var(--muted);">${esc((p.content||'').substring(0,140))}${(p.content||'').length>140?'...':''}</p></div>`;}).join('');
       }
     }catch(e){}
+    // Follow button (Stage 2) — hidden for your own profile and for preset-credential logins (no uid)
+    let followBtnHtml='';
+    const me=auth.currentUser;
+    if(me && me.uid!==uid){
+      let isFollowing=false;
+      try{const fDoc=await db.collection('follows').doc(me.uid+'_'+uid).get(); isFollowing=fDoc.exists;}catch(e){}
+      followBtnHtml=isFollowing
+        ? `<button class="btn btn-secondary btn-sm" style="margin-top:16px;" onclick="toggleFollow('${uid}',true)">✅ Following</button>`
+        : `<button class="btn btn-outline btn-sm" style="margin-top:16px;" onclick="toggleFollow('${uid}',false)">🤝 Follow</button>`;
+    }
     el.innerHTML=`
       <button class="btn btn-outline btn-sm" onclick="closeProfile()" style="margin-bottom:16px;">← Back</button>
       <div class="card-glass" style="text-align:center;">
@@ -780,14 +879,38 @@ async function renderProfileView(uid){
         <p style="color:var(--muted);font-size:13px;">🏛️ ${esc(d.institution)} · 📍 ${esc(d.state)}</p>
         ${d.bio?`<p style="margin-top:14px;font-size:14px;line-height:1.6;">${esc(d.bio)}</p>`:''}
         <p style="font-size:12px;color:var(--muted);margin-top:12px;">Member since ${memberSince}</p>
-        <div class="grid2" style="max-width:260px;margin:16px auto 0;">
-          <div class="stat-card" style="background:#f1f5f9;"><div class="stat-num" style="color:var(--text);">${d.post_count||0}</div><div class="stat-lbl" style="color:var(--muted);">Forum Posts</div></div>
-          <div class="stat-card" style="background:#f1f5f9;"><div class="stat-num" style="color:var(--text);">${d.idea_count||0}</div><div class="stat-lbl" style="color:var(--muted);">Ideas Shared</div></div>
+        <div class="grid4" style="max-width:420px;margin:16px auto 0;">
+          <div class="stat-card" style="background:#f1f5f9;"><div class="stat-num" style="color:var(--text);">${d.post_count||0}</div><div class="stat-lbl" style="color:var(--muted);">Posts</div></div>
+          <div class="stat-card" style="background:#f1f5f9;"><div class="stat-num" style="color:var(--text);">${d.idea_count||0}</div><div class="stat-lbl" style="color:var(--muted);">Ideas</div></div>
+          <div class="stat-card" style="background:#f1f5f9;"><div class="stat-num" style="color:var(--text);">${d.follower_count||0}</div><div class="stat-lbl" style="color:var(--muted);">Followers</div></div>
+          <div class="stat-card" style="background:#f1f5f9;"><div class="stat-num" style="color:var(--text);">${d.following_count||0}</div><div class="stat-lbl" style="color:var(--muted);">Following</div></div>
         </div>
-        <button class="btn btn-outline btn-sm" style="margin-top:16px;" onclick="notify('🤝 Connections are coming in Stage 2!')">🤝 Connect</button>
+        ${followBtnHtml}
       </div>
       <div class="card" style="margin-top:16px;"><strong style="display:block;margin-bottom:12px;">Recent Forum Posts</strong>${postsHtml}</div>`;
   }catch(e){el.innerHTML=`<p style="color:red;text-align:center;padding:30px;">Error loading profile: ${e.message}</p>`;}
+}
+
+async function toggleFollow(targetUid,currentlyFollowing){
+  const me=auth.currentUser; if(!me)return;
+  const followId=me.uid+'_'+targetUid;
+  try{
+    if(currentlyFollowing){
+      await db.collection('follows').doc(followId).delete();
+      await db.collection('users').doc(targetUid).update({follower_count:firebase.firestore.FieldValue.increment(-1)});
+      await db.collection('users').doc(me.uid).update({following_count:firebase.firestore.FieldValue.increment(-1)});
+      notify('Unfollowed.');
+    }else{
+      await db.collection('follows').doc(followId).set({follower_uid:me.uid,following_uid:targetUid,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+      await db.collection('users').doc(targetUid).update({follower_count:firebase.firestore.FieldValue.increment(1)});
+      await db.collection('users').doc(me.uid).update({following_count:firebase.firestore.FieldValue.increment(1)});
+      let myName=me.email;
+      try{const myDoc=await db.collection('users').doc(me.uid).get(); myName=myDoc.data()?.display_name||myName;}catch(e){}
+      await db.collection('notifications').add({recipient_uid:targetUid,type:'follow',message:`${myName} started following you.`,actor_uid:me.uid,actor_name:myName,read:false,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+      notify('🤝 Now following!');
+    }
+    renderProfileView(targetUid);
+  }catch(e){notify('Error: '+e.message,'error');}
 }
 
 async function doLogout(){
@@ -962,6 +1085,7 @@ async function approveRequest(docId){
     if(d.uid){
       await db.collection('users').doc(d.uid).update({status:'active',verified:true,approved_at:firebase.firestore.FieldValue.serverTimestamp(),approved_by:'Dr. Kembhavi'});
       await db.collection('adminLog').add({action:'approve',targetUid:d.uid,targetEmail:d.email||null,targetName:d.name,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+      try{await db.collection('notifications').add({recipient_uid:d.uid,type:'approval',message:'🎉 Your registration has been approved! You now have full access.',actor_uid:null,actor_name:'Dr. Kembhavi',read:false,timestamp:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){}
     }
     showApprovalModal(d.name, d.email, d.contact, d.role);
     loadAccessRequests(); loadAdminDash();

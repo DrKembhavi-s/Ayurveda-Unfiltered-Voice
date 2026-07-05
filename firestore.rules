@@ -66,7 +66,9 @@ service cloud.firestore {
       allow update: if isAdmin()
                     || (request.auth != null && request.auth.uid == uid
                         && request.resource.data.diff(resource.data).affectedKeys()
-                             .hasOnly(['display_name','degree','institution','state','registration_number','year','specialization','bio','avatar_url']));
+                             .hasOnly(['display_name','degree','institution','state','registration_number','year','specialization','bio','avatar_url','post_count','idea_count','following_count']))
+                    || (request.auth != null
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['follower_count']));
       allow delete: if isAdmin();
     }
 
@@ -74,6 +76,22 @@ service cloud.firestore {
     match /adminLog/{doc} {
       allow create: if isAdmin();
       allow read, update, delete: if false;
+    }
+
+    // ── Stage 2: one-way follow graph ──
+    match /follows/{doc} {
+      allow create: if request.auth != null
+                    && request.auth.uid == request.resource.data.follower_uid
+                    && request.resource.data.following_uid != request.resource.data.follower_uid;
+      allow read: if true;
+      allow update: if false;
+      allow delete: if request.auth != null && request.auth.uid == resource.data.follower_uid;
+    }
+
+    // ── Stage 2: in-app notifications ──
+    match /notifications/{doc} {
+      allow create: if request.auth != null;
+      allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.recipient_uid || isAdmin();
     }
 
     // ── Alumni Tool ──────────────────────────────
