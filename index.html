@@ -162,7 +162,7 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
       <span id="userBadge" style="font-size:12px;color:var(--muted);"></span>
       <div id="notifBellWrap" class="hidden" style="position:relative;">
         <button class="btn btn-outline btn-sm" onclick="toggleNotifPanel()" style="position:relative;">🔔<span id="notifBadge" class="hidden" style="position:absolute;top:-6px;right:-6px;background:var(--danger);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 5px;">0</span></button>
-        <div id="notifPanel" class="hidden" style="position:absolute;right:0;top:36px;width:300px;max-height:360px;overflow-y:auto;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:200;padding:10px;"></div>
+        <div id="notifPanel" class="hidden" style="position:fixed;right:12px;top:56px;width:300px;max-width:calc(100vw - 24px);max-height:360px;overflow-y:auto;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:200;padding:10px;"></div>
       </div>
       <button class="btn btn-outline btn-sm" onclick="doLogout()">Logout</button>
     </div>
