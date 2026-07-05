@@ -41,7 +41,8 @@ service cloud.firestore {
     }
     match /accessRequests/{doc} {
       allow create: if true;
-      allow read, update: if isAdmin();
+      allow read: if isAdmin() || (request.auth != null && resource.data.email == request.auth.token.email);
+      allow update: if isAdmin();
       allow delete: if false;
     }
     match /registeredUsers/{doc} {
