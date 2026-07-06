@@ -739,14 +739,14 @@ async function submitRegistration(){
   try{
     // Create Firebase Auth account
     await auth.createUserWithEmailAndPassword(email, pw);
-    // Sign out immediately — they can't use the platform until approved
-    await auth.signOut();
-    // Save request to Firestore
+    // Save to Firestore WHILE still authenticated (before signOut)
     await db.collection('accessRequests').add({
       name, institution:inst, state, role, email, contact, reason,
       status:'pending', registeredViaAuth:true,
       timestamp:firebase.firestore.FieldValue.serverTimestamp()
     });
+    // Now sign out — they must wait for admin approval before logging in
+    await auth.signOut();
     closeRegModal();
     ['rName','rInst','rState','rEmail','rPw','rPwConf','rContact','rReason'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('rRole').value='';
