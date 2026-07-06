@@ -158,12 +158,8 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
 <div id="mainApp" class="hidden">
   <div class="app-header">
     <h2>🌿 Ayurveda Unfiltered Voice</h2>
-    <div style="display:flex;align-items:center;gap:10px;position:relative;">
+    <div style="display:flex;align-items:center;gap:10px;">
       <span id="userBadge" style="font-size:12px;color:var(--muted);"></span>
-      <div id="notifBellWrap" class="hidden" style="position:relative;">
-        <button class="btn btn-outline btn-sm" onclick="toggleNotifPanel()" style="position:relative;">🔔<span id="notifBadge" class="hidden" style="position:absolute;top:-6px;right:-6px;background:var(--danger);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 5px;">0</span></button>
-        <div id="notifPanel" class="hidden" style="position:fixed;right:12px;top:56px;width:300px;max-width:calc(100vw - 24px);max-height:360px;overflow-y:auto;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:200;padding:10px;"></div>
-      </div>
       <button class="btn btn-outline btn-sm" onclick="doLogout()">Logout</button>
     </div>
   </div>
@@ -177,7 +173,6 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
         <button class="nav-btn active" onclick="sTab('feedback')">📝 Private Feedback</button>
         <button class="nav-btn" onclick="sTab('ideas')">💡 Idea Board</button>
         <button class="nav-btn" onclick="sTab('polls')">📊 Polls</button>
-        <button class="nav-btn" onclick="showFeed()">🌍 Feed</button>
       </div>
       <div id="s-feedback">
         <div class="sec-title">Private Feedback</div>
@@ -268,7 +263,6 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
         <button class="nav-btn" onclick="fTab('compliance')">📋 Compliance</button>
         <button class="nav-btn" onclick="fTab('proposals')">📝 Proposals</button>
         <button class="nav-btn" onclick="fTab('fideas')">💡 Ideas</button>
-        <button class="nav-btn" onclick="showFeed()">🌍 Feed</button>
       </div>
       <div id="f-forum">
         <div class="sec-title">📢 Discussion Forum</div>
@@ -395,7 +389,6 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
         <button class="admin-tab" onclick="aTab('anetwork')" id="atb-anetwork">👥 Network</button>
         <button class="admin-tab" onclick="aTab('aproposals')" id="atb-aproposals">📝 Proposals</button>
         <button class="admin-tab" onclick="aTab('arequests')" id="reqTabBtn">🔔 Requests</button>
-        <button class="admin-tab" onclick="aTab('amembers')" id="atb-amembers">✅ Verified Members</button>
         <button class="admin-tab" onclick="aTab('apost')" id="atb-apost">📣 Post & Announce</button>
       </div>
 
@@ -412,9 +405,9 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
           <table style="font-size:13px;border-collapse:collapse;width:100%;">
             <tr style="border-bottom:1px solid var(--border);"><td style="padding:7px;font-weight:700;">UG Student</td><td style="padding:7px;"><code>ayurstudent2025</code></td><td style="padding:7px;"><code>vaidya@123</code></td></tr>
             <tr style="border-bottom:1px solid var(--border);"><td style="padding:7px;font-weight:700;">PG Scholar</td><td style="padding:7px;"><code>aypgscholar2025</code></td><td style="padding:7px;"><code>pgvaidya@123</code></td></tr>
-            <tr><td style="padding:7px;font-weight:700;">Faculty</td><td style="padding:7px;"><code>ayurfaculty2025</code></td><td style="padding:7px;"><code>faculty@ayur</code></td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:7px;font-weight:700;">Faculty</td><td style="padding:7px;"><code>ayurfaculty2025</code></td><td style="padding:7px;"><code>faculty@ayur</code></td></tr>
+            <tr><td style="padding:7px;font-weight:700;">Admin</td><td style="padding:7px;"><code>ayuradmin2025</code></td><td style="padding:7px;"><code>admin@vaidya</code></td></tr>
           </table>
-          <p style="font-size:12px;color:var(--muted);margin-top:10px;">🔐 Admin logs in with her own Firebase email + password (not a shared preset) so Firestore rules can verify her identity.</p>
         </div>
         <div class="card-glass">
           <strong>Quick Actions</strong><br><br>
@@ -461,16 +454,6 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
         <div id="accessRequestList"></div>
       </div>
 
-      <!-- VERIFIED MEMBERS TAB (Stage 1) -->
-      <div id="a-amembers" class="hidden">
-        <div class="sec-title-dark" style="margin-bottom:14px;">✅ Verified Members</div>
-        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
-          <select id="amFRole" onchange="loadAdminMembers()" style="padding:8px 12px;border:2px solid var(--border);border-radius:8px;font-size:13px;"><option value="">All Roles</option><option value="UG">UG Student</option><option value="PG">PG Scholar</option><option value="FAC">Faculty / Professional</option></select>
-          <input type="text" id="amFState" placeholder="Filter by state..." oninput="loadAdminMembers()" style="padding:8px 12px;border:2px solid var(--border);border-radius:8px;font-size:13px;" />
-        </div>
-        <div id="adminMembersList"></div>
-      </div>
-
       <!-- POST & ANNOUNCE TAB -->
       <div id="a-apost" class="hidden">
         <div class="card">
@@ -504,21 +487,6 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
       </div>
     </div>
   </div>
-
-  <!-- PUBLIC PROFILE VIEW (Stage 1) -->
-  <div id="profileView" class="hidden">
-    <div class="container" id="profileContent"></div>
-  </div>
-
-  <!-- ACTIVITY FEED (Stage 2) -->
-  <div id="feedView" class="hidden">
-    <div class="container">
-      <button class="btn btn-outline btn-sm" onclick="closeFeed()" style="margin-bottom:16px;">← Back</button>
-      <div class="sec-title">🌍 Activity Feed</div>
-      <div class="sec-sub">Recent forum posts and ideas from across the platform.</div>
-      <div id="feedList"></div>
-    </div>
-  </div>
 </div>
 
 <!-- ★ REGISTER MODAL ★ -->
@@ -539,21 +507,9 @@ footer{background:rgba(44,62,80,.9);color:#fff;border-radius:15px;padding:24px;t
     <div class="grid2">
       <div class="form-group"><label>State *</label><input type="text" id="rState" placeholder="Your state" /></div>
       <div class="form-group"><label>Role *</label>
-        <select id="rRole" onchange="toggleRoleFields()"><option value="">Select your role...</option><option value="UG">UG Student (BAMS)</option><option value="PG">PG Scholar</option><option value="FAC">Faculty / Professional</option></select>
+        <select id="rRole"><option value="">Select your role...</option><option value="UG">UG Student (BAMS)</option><option value="PG">PG Scholar</option><option value="FAC">Faculty / Professional</option><option value="PRAC">Ayurveda Practitioner</option><option value="RETD">Retd. Ayurveda Faculty</option></select>
       </div>
     </div>
-    <div class="form-group"><label>Degree / Qualification *</label><input type="text" id="rDegree" placeholder="e.g. BAMS, MD (Ayu), PhD" /></div>
-    <div class="grid2" id="rYearRow" style="display:none;">
-      <div class="form-group"><label>Year / Stage</label>
-        <select id="rYear"><option value="">Select...</option><option>1st Year BAMS</option><option>2nd Year BAMS</option><option>3rd Year BAMS</option><option>Final Year BAMS</option><option>Internship</option><option>1st Year PG</option><option>2nd Year PG</option><option>3rd Year PG</option><option>PhD Scholar</option></select>
-      </div>
-      <div></div>
-    </div>
-    <div class="grid2" id="rSpecRow" style="display:none;">
-      <div class="form-group"><label>Specialization <span style="color:var(--muted);font-weight:400;">(optional)</span></label><input type="text" id="rSpecialization" placeholder="e.g. Panchakarma, Kayachikitsa" /></div>
-      <div class="form-group"><label>Registration Number <span style="color:var(--muted);font-weight:400;">(optional)</span></label><input type="text" id="rRegNo" placeholder="State Board / Council reg. no." /></div>
-    </div>
-    <div class="form-group"><label>Short Bio <span style="color:var(--muted);font-weight:400;">(optional, max 200 characters)</span></label><textarea id="rBio" maxlength="200" style="min-height:60px;" oninput="document.getElementById('rBioCount').textContent=this.value.length"></textarea><p style="font-size:11px;color:var(--muted);margin-top:4px;text-align:right;"><span id="rBioCount">0</span>/200</p></div>
     <div class="form-group"><label>Email Address * <span style="color:var(--secondary);font-weight:400;">(this will be your username)</span></label><input type="email" id="rEmail" placeholder="your@email.com" autocomplete="email" /></div>
     <div class="form-group">
       <label>Choose Password * <span style="color:var(--muted);font-weight:400;">(min. 8 characters)</span></label>
@@ -647,12 +603,9 @@ const auth = firebase.auth();
 const PRESETS = {
   'ayurstudent2025': {p:'vaidya@123',   role:'UG'},
   'aypgscholar2025': {p:'pgvaidya@123', role:'PG'},
-  'ayurfaculty2025': {p:'faculty@ayur', role:'FAC'}
+  'ayurfaculty2025': {p:'faculty@ayur', role:'FAC'},
+  'ayuradmin2025':   {p:'admin@vaidya', role:'ADMIN'}
 };
-// Admin now logs in with her real Firebase Auth email + password (typed into the same box above) —
-// never hardcoded here — so Firestore rules can recognize admin via request.auth. Only the email
-// (not a secret) is compared below; the password is verified by Firebase itself, not stored in source.
-const ADMIN_AUTH_EMAIL='ayurvedaunfiltered@outlook.com';
 const CAT_LABELS={academic:'Academic Reforms',clinical:'Clinical Practice',research:'Research & Dev',administrative:'Administrative',development:'Development',regulatory:'Regulatory'};
 
 // ── STATE ──
@@ -687,15 +640,10 @@ async function doLogin(){
     else{showErr('loginErr','Invalid credentials. Please check your password.');btn.textContent='Sign In →';btn.disabled=false;return;}
   }
 
-  // Firebase Auth for self-registered users AND for Admin (Admin uses her real Firebase email/password here)
+  // Firebase Auth for self-registered users
   try{
     await auth.signInWithEmailAndPassword(u, p);
     const user = auth.currentUser;
-    // Admin recognized purely by matching her real Firebase Auth email — no accessRequests lookup needed.
-    if(u===ADMIN_AUTH_EMAIL){
-      btn.textContent='Sign In →'; btn.disabled=false;
-      _initView('ADMIN'); return;
-    }
     // Check approval in Firestore
     const snap = await db.collection('accessRequests').where('email','==',u).limit(1).get();
     if(snap.empty){
@@ -714,15 +662,6 @@ async function doLogin(){
       showErr('loginErr','Your access request was not approved. Please contact Dr. Kembhavi directly.');
       btn.textContent='Sign In →'; btn.disabled=false; return;
     }
-    // Suspension check (Stage 1) — reads the richer users/{uid} profile doc
-    try{
-      const uDoc=await db.collection('users').doc(user.uid).get();
-      if(uDoc.exists && uDoc.data().status==='suspended'){
-        await auth.signOut();
-        showErr('loginErr','Your account has been suspended. Please contact Dr. Kembhavi.');
-        btn.textContent='Sign In →'; btn.disabled=false; return;
-      }
-    }catch(e){}
     btn.textContent='Sign In →'; btn.disabled=false;
     _initView(data.role);
   } catch(e){
@@ -730,7 +669,7 @@ async function doLogin(){
     if(e.code==='auth/user-not-found') msg='No account found with this email. Please register first.';
     if(e.code==='auth/wrong-password') msg='Incorrect password. Use "Forgot Password?" to reset it.';
     if(e.code==='auth/too-many-requests') msg='Too many failed attempts. Please try again later.';
-    showErr('loginErr', msg+' ('+(e.code||'unknown error')+')');
+    showErr('loginErr', msg);
     btn.textContent='Sign In →'; btn.disabled=false;
   }
 }
@@ -739,179 +678,17 @@ function _initView(role){
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('mainApp').classList.remove('hidden');
   userRole=role;
-  const badges={UG:'🎓 UG Student',PG:'📚 PG Scholar',FAC:'👨‍🏫 Faculty / Professional',ADMIN:'🔐 Admin'};
+  const badges={UG:'🎓 UG Student',PG:'📚 PG Scholar',FAC:'👨‍🏫 Faculty / Professional',PRAC:'🏥 Ayurveda Practitioner',RETD:'🎓 Retd. Ayurveda Faculty',ADMIN:'🔐 Admin'};
   document.getElementById('userBadge').textContent=badges[role]||'👤 User';
   if(role==='UG'){showView('studentView');loadIdeas();loadStudentPolls();}
   else if(role==='PG'){showView('studentView');document.getElementById('pgSection').classList.remove('hidden');loadIdeas();loadStudentPolls();}
-  else if(role==='FAC'){showView('facultyView');loadForum();loadNetworkStats();displayComplianceRecs();}
+  else if(['FAC','PRAC','RETD'].includes(role)){showView('facultyView');loadForum();loadNetworkStats();displayComplianceRecs();}
   else if(role==='ADMIN'){showView('adminView');loadAdminDash();}
   if(role!=='ADMIN') loadAnnouncements();
   updateCounter();
-  window.addEventListener('hashchange', routeHash);
-  routeHash();
-  if(auth.currentUser){
-    document.getElementById('notifBellWrap').classList.remove('hidden');
-    refreshNotifBadge();
-  }
 }
 
-function showView(v){['studentView','facultyView','adminView','profileView','feedView'].forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById(v).classList.remove('hidden');}
-
-function backToRoleView(){
-  location.hash='';
-  if(userRole==='UG'||userRole==='PG') showView('studentView');
-  else if(userRole==='FAC') showView('facultyView');
-  else if(userRole==='ADMIN') showView('adminView');
-}
-
-// ════════════════════════════════════════
-// PUBLIC PROFILE (Stage 1) — simple hash routing: #/profile/<uid>
-// ════════════════════════════════════════
-function routeHash(){
-  const m=location.hash.match(/^#\/profile\/(.+)$/);
-  if(m) showProfile(m[1]);
-}
-function viewProfile(uid){location.hash='#/profile/'+uid;}
-function showProfile(uid){showView('profileView');renderProfileView(uid);}
-function closeProfile(){backToRoleView();}
-
-// ════════════════════════════════════════
-// ACTIVITY FEED (Stage 2)
-// ════════════════════════════════════════
-function showFeed(){showView('feedView');loadFeed();}
-function closeFeed(){backToRoleView();}
-async function loadFeed(){
-  const list=document.getElementById('feedList'); if(!list)return;
-  list.innerHTML='<p style="color:var(--muted);text-align:center;padding:30px;">Loading feed...</p>';
-  try{
-    const [postsSnap,ideasSnap]=await Promise.all([
-      db.collection('forumPosts').orderBy('timestamp','desc').limit(20).get(),
-      db.collection('ideas').orderBy('timestamp','desc').limit(20).get()
-    ]);
-    const items=[
-      ...postsSnap.docs.map(d=>({type:'post',data:d.data()})),
-      ...ideasSnap.docs.map(d=>({type:'idea',data:d.data()}))
-    ].sort((a,b)=>(b.data.timestamp?.toMillis?.()||0)-(a.data.timestamp?.toMillis?.()||0)).slice(0,25);
-    if(!items.length){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">No activity yet.</p>';return;}
-    list.innerHTML=items.map(item=>{
-      const d=item.data;
-      const authorHtml=d.authorUid?`<span style="cursor:pointer;text-decoration:underline;" onclick="viewProfile('${d.authorUid}')">${esc(d.author)}</span>`:esc(d.author||'Anonymous');
-      if(item.type==='post'){
-        return `<div class="post-item"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin-bottom:6px;"><span>📢 <strong>${authorHtml}</strong> posted in Forum</span><span style="font-size:12px;color:var(--muted);">${ts(d.timestamp)}</span></div><h4 style="margin-bottom:6px;">${esc(d.subject)}</h4><p style="font-size:13px;color:var(--muted);">${esc((d.content||'').substring(0,140))}${(d.content||'').length>140?'...':''}</p></div>`;
-      }
-      return `<div class="idea-card"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin-bottom:6px;"><span>💡 <strong>${authorHtml}</strong> shared an idea</span><span style="font-size:12px;color:var(--muted);">${ts(d.timestamp)}</span></div><span class="tag">${esc(d.category||'General')}</span><p style="margin-top:8px;font-size:13px;">${esc((d.text||'').substring(0,140))}${(d.text||'').length>140?'...':''}</p></div>`;
-    }).join('');
-  }catch(e){list.innerHTML=`<p style="color:red;text-align:center;padding:20px;">Error: ${e.message}</p>`;}
-}
-
-// ════════════════════════════════════════
-// NOTIFICATIONS (Stage 2) — in-app only, hidden for preset-credential logins (no uid)
-// ════════════════════════════════════════
-async function refreshNotifBadge(){
-  const me=auth.currentUser; if(!me)return;
-  try{
-    const snap=await db.collection('notifications').where('recipient_uid','==',me.uid).where('read','==',false).get();
-    const badge=document.getElementById('notifBadge');
-    if(snap.size>0){badge.textContent=snap.size;badge.classList.remove('hidden');}
-    else{badge.classList.add('hidden');}
-  }catch(e){}
-}
-async function toggleNotifPanel(){
-  const panel=document.getElementById('notifPanel');
-  if(!panel.classList.contains('hidden')){panel.classList.add('hidden');return;}
-  panel.classList.remove('hidden');
-  panel.innerHTML='<p style="color:var(--muted);text-align:center;padding:16px;font-size:13px;">Loading...</p>';
-  const me=auth.currentUser; if(!me)return;
-  try{
-    const snap=await db.collection('notifications').where('recipient_uid','==',me.uid).orderBy('timestamp','desc').limit(20).get();
-    if(snap.empty){panel.innerHTML='<p style="color:var(--muted);text-align:center;padding:16px;font-size:13px;">No notifications yet.</p>';return;}
-    panel.innerHTML=snap.docs.map(doc=>{
-      const d=doc.data();
-      const icon=d.type==='follow'?'🤝':d.type==='approval'?'✅':'🔔';
-      const clickable=d.type==='follow'&&d.actor_uid?`onclick="toggleNotifPanel();viewProfile('${d.actor_uid}')" style="cursor:pointer;"`:'';
-      return `<div ${clickable} style="padding:8px 6px;border-bottom:1px solid var(--border);font-size:13px;${d.read?'opacity:.6;':''}">${icon} ${esc(d.message)}<div style="font-size:11px;color:var(--muted);margin-top:2px;">${ts(d.timestamp)}</div></div>`;
-    }).join('');
-    // Bulk mark-as-read (simplest UX — opening the panel clears the badge)
-    const unread=snap.docs.filter(doc=>!doc.data().read);
-    if(unread.length){
-      const batch=db.batch();
-      unread.forEach(doc=>batch.update(doc.ref,{read:true}));
-      await batch.commit();
-      document.getElementById('notifBadge').classList.add('hidden');
-    }
-  }catch(e){panel.innerHTML=`<p style="color:red;text-align:center;padding:16px;font-size:13px;">Error: ${e.message}</p>`;}
-}
-async function renderProfileView(uid){
-  const el=document.getElementById('profileContent');
-  el.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">Loading profile...</p>';
-  try{
-    const doc=await db.collection('users').doc(uid).get();
-    if(!doc.exists){el.innerHTML='<p style="text-align:center;padding:40px;">Profile not found.</p>';return;}
-    const d=doc.data();
-    const roleBadgeCls=d.role==='PG'?'badge-pg':d.role==='UG'?'badge-ug':'badge-fac';
-    const roleLabel={UG:'UG Student',PG:'PG Scholar',FAC:'Faculty / Professional'}[d.role]||d.role;
-    const initials=(d.display_name||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
-    const memberSince=d.created_at?.toDate?d.created_at.toDate().toLocaleDateString('en-IN',{year:'numeric',month:'long'}):'—';
-    let postsHtml='<p style="color:var(--muted);font-size:13px;">No public posts yet.</p>';
-    try{
-      const postsSnap=await db.collection('forumPosts').where('authorUid','==',uid).orderBy('timestamp','desc').limit(5).get();
-      if(!postsSnap.empty){
-        postsHtml=postsSnap.docs.map(pd=>{const p=pd.data();return `<div class="post-item" style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;"><span class="post-cat">${CAT_LABELS[p.category]||p.category}</span><span style="font-size:12px;color:var(--muted);">${ts(p.timestamp)}</span></div><h4 style="margin:8px 0 4px;">${esc(p.subject)}</h4><p style="font-size:13px;color:var(--muted);">${esc((p.content||'').substring(0,140))}${(p.content||'').length>140?'...':''}</p></div>`;}).join('');
-      }
-    }catch(e){}
-    // Follow button (Stage 2) — hidden for your own profile and for preset-credential logins (no uid)
-    let followBtnHtml='';
-    const me=auth.currentUser;
-    if(me && me.uid!==uid){
-      let isFollowing=false;
-      try{const fDoc=await db.collection('follows').doc(me.uid+'_'+uid).get(); isFollowing=fDoc.exists;}catch(e){}
-      followBtnHtml=isFollowing
-        ? `<button class="btn btn-secondary btn-sm" style="margin-top:16px;" onclick="toggleFollow('${uid}',true)">✅ Following</button>`
-        : `<button class="btn btn-outline btn-sm" style="margin-top:16px;" onclick="toggleFollow('${uid}',false)">🤝 Follow</button>`;
-    }
-    el.innerHTML=`
-      <button class="btn btn-outline btn-sm" onclick="closeProfile()" style="margin-bottom:16px;">← Back</button>
-      <div class="card-glass" style="text-align:center;">
-        <div style="width:72px;height:72px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;margin:0 auto 14px;">${esc(initials)}</div>
-        <h2 style="margin-bottom:6px;">${esc(d.display_name)} ${d.verified?'<span title="Verified" style="color:var(--secondary);">✅</span>':''}</h2>
-        <span class="badge ${roleBadgeCls}">${roleLabel}</span>
-        <p style="color:var(--muted);margin-top:10px;">${esc(d.degree||'')}${d.specialization?' · '+esc(d.specialization):''}</p>
-        <p style="color:var(--muted);font-size:13px;">🏛️ ${esc(d.institution)} · 📍 ${esc(d.state)}</p>
-        ${d.bio?`<p style="margin-top:14px;font-size:14px;line-height:1.6;">${esc(d.bio)}</p>`:''}
-        <p style="font-size:12px;color:var(--muted);margin-top:12px;">Member since ${memberSince}</p>
-        <div class="grid4" style="max-width:420px;margin:16px auto 0;">
-          <div class="stat-card" style="background:#f1f5f9;"><div class="stat-num" style="color:var(--text);">${d.post_count||0}</div><div class="stat-lbl" style="color:var(--muted);">Posts</div></div>
-          <div class="stat-card" style="background:#f1f5f9;"><div class="stat-num" style="color:var(--text);">${d.idea_count||0}</div><div class="stat-lbl" style="color:var(--muted);">Ideas</div></div>
-          <div class="stat-card" style="background:#f1f5f9;"><div class="stat-num" style="color:var(--text);">${d.follower_count||0}</div><div class="stat-lbl" style="color:var(--muted);">Followers</div></div>
-          <div class="stat-card" style="background:#f1f5f9;"><div class="stat-num" style="color:var(--text);">${d.following_count||0}</div><div class="stat-lbl" style="color:var(--muted);">Following</div></div>
-        </div>
-        ${followBtnHtml}
-      </div>
-      <div class="card" style="margin-top:16px;"><strong style="display:block;margin-bottom:12px;">Recent Forum Posts</strong>${postsHtml}</div>`;
-  }catch(e){el.innerHTML=`<p style="color:red;text-align:center;padding:30px;">Error loading profile: ${e.message}</p>`;}
-}
-
-async function toggleFollow(targetUid,currentlyFollowing){
-  const me=auth.currentUser; if(!me)return;
-  const followId=me.uid+'_'+targetUid;
-  try{
-    if(currentlyFollowing){
-      await db.collection('follows').doc(followId).delete();
-      await db.collection('users').doc(targetUid).update({follower_count:firebase.firestore.FieldValue.increment(-1)});
-      await db.collection('users').doc(me.uid).update({following_count:firebase.firestore.FieldValue.increment(-1)});
-      notify('Unfollowed.');
-    }else{
-      await db.collection('follows').doc(followId).set({follower_uid:me.uid,following_uid:targetUid,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-      await db.collection('users').doc(targetUid).update({follower_count:firebase.firestore.FieldValue.increment(1)});
-      await db.collection('users').doc(me.uid).update({following_count:firebase.firestore.FieldValue.increment(1)});
-      let myName=me.email;
-      try{const myDoc=await db.collection('users').doc(me.uid).get(); myName=myDoc.data()?.display_name||myName;}catch(e){}
-      await db.collection('notifications').add({recipient_uid:targetUid,type:'follow',message:`${myName} started following you.`,actor_uid:me.uid,actor_name:myName,read:false,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-      notify('🤝 Now following!');
-    }
-    renderProfileView(targetUid);
-  }catch(e){notify('Error: '+e.message,'error');}
-}
+function showView(v){['studentView','facultyView','adminView'].forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById(v).classList.remove('hidden');}
 
 async function doLogout(){
   try{await auth.signOut();}catch(e){}
@@ -924,12 +701,6 @@ async function doLogout(){
 function openRegModal(){document.getElementById('regModal').style.display='block';hideErr('regErr');}
 function closeRegModal(){document.getElementById('regModal').style.display='none';}
 document.getElementById('regModal').addEventListener('click',function(e){if(e.target===this)closeRegModal();});
-
-function toggleRoleFields(){
-  const role=document.getElementById('rRole').value;
-  document.getElementById('rYearRow').style.display=(role==='UG'||role==='PG')?'grid':'none';
-  document.getElementById('rSpecRow').style.display=(role==='PG'||role==='FAC')?'grid':'none';
-}
 
 function checkPwStrength(pw){
   const bar=document.getElementById('pwStrengthBar');
@@ -952,21 +723,15 @@ async function submitRegistration(){
   const inst=document.getElementById('rInst').value.trim();
   const state=document.getElementById('rState').value.trim();
   const role=document.getElementById('rRole').value;
-  const degree=document.getElementById('rDegree').value.trim();
-  const year=document.getElementById('rYear').value;
-  const specialization=document.getElementById('rSpecialization').value.trim();
-  const registration_number=document.getElementById('rRegNo').value.trim();
-  const bio=document.getElementById('rBio').value.trim();
   const email=document.getElementById('rEmail').value.trim();
   const pw=document.getElementById('rPw').value;
   const pwConf=document.getElementById('rPwConf').value;
   const contact=document.getElementById('rContact').value.trim();
   const reason=document.getElementById('rReason').value.trim();
 
-  if(!name||!inst||!state||!role||!degree||!email||!pw||!pwConf||!contact){showErr('regErr','Please fill in all required fields.');return;}
+  if(!name||!inst||!state||!role||!email||!pw||!pwConf||!contact){showErr('regErr','Please fill in all required fields.');return;}
   if(pw.length<8){showErr('regErr','Password must be at least 8 characters long.');return;}
   if(pw!==pwConf){showErr('regErr','Passwords do not match. Please re-enter.');return;}
-  if(bio.length>200){showErr('regErr','Bio must be 200 characters or fewer.');return;}
 
   const btn=document.getElementById('regBtn');
   btn.textContent='Creating account...'; btn.disabled=true;
@@ -974,28 +739,17 @@ async function submitRegistration(){
   try{
     // Create Firebase Auth account
     await auth.createUserWithEmailAndPassword(email, pw);
-    const uid=auth.currentUser.uid;
-    // Write richer profile doc (Stage 1) — keyed by uid, pending until admin approval
-    await db.collection('users').doc(uid).set({
-      uid, display_name:name, email, role, degree, institution:inst, state,
-      registration_number:registration_number||null, year:year||null, specialization:specialization||null,
-      bio:bio||null, avatar_url:'', verified:false, status:'pending',
-      created_at:firebase.firestore.FieldValue.serverTimestamp(), approved_at:null, approved_by:null,
-      post_count:0, idea_count:0
-    });
-    // Save request to Firestore (drives the existing admin approval workflow)
+    // Sign out immediately — they can't use the platform until approved
+    await auth.signOut();
+    // Save request to Firestore
     await db.collection('accessRequests').add({
-      uid, name, institution:inst, state, role, email, contact, reason,
-      degree, year, specialization, registration_number, bio,
+      name, institution:inst, state, role, email, contact, reason,
       status:'pending', registeredViaAuth:true,
       timestamp:firebase.firestore.FieldValue.serverTimestamp()
     });
-    // Sign out — they can't use the platform until approved
-    await auth.signOut();
     closeRegModal();
-    ['rName','rInst','rState','rDegree','rSpecialization','rRegNo','rBio','rEmail','rPw','rPwConf','rContact','rReason'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('rRole').value=''; document.getElementById('rYear').value=''; document.getElementById('rBioCount').textContent='0';
-    toggleRoleFields();
+    ['rName','rInst','rState','rEmail','rPw','rPwConf','rContact','rReason'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('rRole').value='';
     btn.textContent='Create My Account →'; btn.disabled=false;
     alert('✅ Your account has been created successfully!\n\nYour request is now pending approval from Dr. Kembhavi.\n\nYou will be notified on your WhatsApp once approved. Please do not attempt to log in until you receive confirmation.');
   } catch(e){
@@ -1062,10 +816,6 @@ async function loadAccessRequests(){
               <p style="font-size:13px;color:var(--muted);margin-top:6px;">🏛️ ${esc(d.institution)} · 📍 ${esc(d.state)}</p>
               ${d.email?`<p style="font-size:13px;color:var(--muted);">📧 ${esc(d.email)}</p>`:''}
               <p style="font-size:13px;color:var(--muted);">📱 ${esc(d.contact)} · 🕐 ${ts(d.timestamp)}</p>
-              ${d.degree?`<p style="font-size:13px;color:var(--muted);">🎓 ${esc(d.degree)}${d.year?' · '+esc(d.year):''}</p>`:''}
-              ${d.specialization?`<p style="font-size:13px;color:var(--muted);">🔬 ${esc(d.specialization)}</p>`:''}
-              ${d.registration_number?`<p style="font-size:13px;color:var(--muted);">🪪 Reg. No: ${esc(d.registration_number)}</p>`:''}
-              ${d.bio?`<p style="font-size:13px;margin-top:6px;">📝 ${esc(d.bio)}</p>`:''}
               ${d.reason?`<p style="font-size:13px;font-style:italic;margin-top:6px;">"${esc(d.reason)}"</p>`:''}
             </div>
             ${isPending?`<div style="display:flex;gap:6px;flex-shrink:0;">
@@ -1082,11 +832,6 @@ async function approveRequest(docId){
   const d=requestsMap[docId]; if(!d){notify('Request data not found.','error');return;}
   try{
     await db.collection('accessRequests').doc(docId).update({status:'approved',approvedDate:new Date().toLocaleDateString('en-IN')});
-    if(d.uid){
-      await db.collection('users').doc(d.uid).update({status:'active',verified:true,approved_at:firebase.firestore.FieldValue.serverTimestamp(),approved_by:'Dr. Kembhavi'});
-      await db.collection('adminLog').add({action:'approve',targetUid:d.uid,targetEmail:d.email||null,targetName:d.name,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-      try{await db.collection('notifications').add({recipient_uid:d.uid,type:'approval',message:'🎉 Your registration has been approved! You now have full access.',actor_uid:null,actor_name:'Dr. Kembhavi',read:false,timestamp:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){}
-    }
     showApprovalModal(d.name, d.email, d.contact, d.role);
     loadAccessRequests(); loadAdminDash();
   }catch(e){notify('Error: '+e.message,'error');}
@@ -1094,65 +839,8 @@ async function approveRequest(docId){
 
 async function declineRequest(docId){
   if(!confirm('Decline this access request?'))return;
-  const d=requestsMap[docId];
   await db.collection('accessRequests').doc(docId).update({status:'declined'});
-  if(d?.uid){
-    try{await db.collection('users').doc(d.uid).delete();}catch(e){}
-    await db.collection('adminLog').add({action:'decline',targetUid:d.uid,targetEmail:d.email||null,targetName:d.name,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-  }
   notify('Request declined.'); loadAccessRequests();
-}
-
-// ════════════════════════════════════════
-// ADMIN: VERIFIED MEMBERS (Stage 1)
-// ════════════════════════════════════════
-async function loadAdminMembers(){
-  const list=document.getElementById('adminMembersList'); if(!list)return;
-  list.innerHTML='<p style="color:var(--muted);text-align:center;padding:30px;">Loading...</p>';
-  try{
-    const roleF=document.getElementById('amFRole').value;
-    const stateF=(document.getElementById('amFState').value||'').trim().toLowerCase();
-    const snap=await db.collection('users').where('status','in',['active','suspended']).get();
-    const docs=snap.docs.filter(doc=>{const d=doc.data();return (!roleF||d.role===roleF)&&(!stateF||(d.state||'').toLowerCase().includes(stateF));});
-    if(!docs.length){list.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">No verified members found.</p>';return;}
-    list.innerHTML='';
-    docs.forEach(doc=>{
-      const d=doc.data(), uid=doc.id, isSuspended=d.status==='suspended';
-      const roleBadgeCls=d.role==='PG'?'badge-pg':d.role==='UG'?'badge-ug':'badge-fac';
-      list.innerHTML+=`
-        <div class="req-card" ${isSuspended?'style="border-left:4px solid var(--danger);opacity:.75;"':''}>
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;">
-            <div style="flex:1;">
-              <strong style="font-size:15px;">${esc(d.display_name)}</strong>
-              <span class="badge ${roleBadgeCls}" style="margin-left:6px;">${esc(d.role)}</span>
-              <span class="badge ${isSuspended?'badge-closed':'badge-active'}" style="margin-left:4px;">${isSuspended?'🚫 Suspended':'✅ Verified'}</span>
-              <p style="font-size:13px;color:var(--muted);margin-top:6px;">🏛️ ${esc(d.institution)} · 📍 ${esc(d.state)}</p>
-              ${d.degree?`<p style="font-size:13px;color:var(--muted);">🎓 ${esc(d.degree)}${d.year?' · '+esc(d.year):''}${d.specialization?' · '+esc(d.specialization):''}</p>`:''}
-              ${d.registration_number?`<p style="font-size:13px;color:var(--muted);">🪪 Reg. No: ${esc(d.registration_number)}</p>`:''}
-              ${d.bio?`<p style="font-size:13px;margin-top:6px;">📝 ${esc(d.bio)}</p>`:''}
-              <p style="font-size:12px;color:var(--muted);margin-top:6px;">📢 ${d.post_count||0} posts · 💡 ${d.idea_count||0} ideas</p>
-            </div>
-            <div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;">
-              <button class="btn btn-outline btn-sm" onclick="viewProfile('${uid}')">View Profile</button>
-              ${isSuspended?`<button class="btn btn-secondary btn-sm" onclick="reactivateUser('${uid}','${esc(d.display_name)}')">✅ Reactivate</button>`:`<button class="btn btn-danger btn-sm" onclick="suspendUser('${uid}','${esc(d.display_name)}')">🚫 Suspend</button>`}
-            </div>
-          </div>
-        </div>`;
-    });
-  }catch(e){list.innerHTML=`<p style="color:red;padding:20px;">Error: ${e.message}</p>`;}
-}
-
-async function suspendUser(uid,name){
-  if(!confirm(`Suspend ${name}? They will be signed out and unable to log in until reactivated.`))return;
-  await db.collection('users').doc(uid).update({status:'suspended'});
-  await db.collection('adminLog').add({action:'suspend',targetUid:uid,targetName:name,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-  notify(`🚫 ${name} has been suspended.`); loadAdminMembers();
-}
-
-async function reactivateUser(uid,name){
-  await db.collection('users').doc(uid).update({status:'active'});
-  await db.collection('adminLog').add({action:'reactivate',targetUid:uid,targetName:name,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-  notify(`✅ ${name} has been reactivated.`); loadAdminMembers();
 }
 
 function showApprovalModal(name, email, contact, role){
@@ -1222,12 +910,12 @@ function setRating(n){rating=n;document.querySelectorAll('.star').forEach((s,i)=
 function sTab(s){['feedback','ideas','polls'].forEach(id=>document.getElementById('s-'+id).classList.add('hidden'));document.getElementById('s-'+s).classList.remove('hidden');document.querySelectorAll('#sNav .nav-btn').forEach((b,i)=>b.classList.toggle('active',['feedback','ideas','polls'][i]===s));if(s==='ideas')loadIdeas();if(s==='polls')loadStudentPolls();}
 function fTab(s){['forum','network','compliance','proposals','fideas'].forEach(id=>document.getElementById('f-'+id).classList.add('hidden'));document.getElementById('f-'+s).classList.remove('hidden');document.querySelectorAll('#fNav .nav-btn').forEach((b,i)=>b.classList.toggle('active',['forum','network','compliance','proposals','fideas'][i]===s));if(s==='forum')loadForum();if(s==='network'){loadNetworkStats();loadMembers();}if(s==='fideas')loadFacultyIdeas();if(s==='compliance')displayComplianceRecs();}
 function aTab(s){
-  ['dashboard','afeedback','aforum','aideas','apolls','anetwork','aproposals','arequests','amembers','apost'].forEach(id=>document.getElementById('a-'+id).classList.add('hidden'));
+  ['dashboard','afeedback','aforum','aideas','apolls','anetwork','aproposals','arequests','apost'].forEach(id=>document.getElementById('a-'+id).classList.add('hidden'));
   document.getElementById('a-'+s).classList.remove('hidden');
   document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
   const btn=document.getElementById('atb-'+s)||document.getElementById('reqTabBtn');
   if(btn)btn.classList.add('active');
-  const fns={afeedback:loadAdminFB,aforum:loadAdminForum,aideas:loadAdminIdeas,apolls:loadAdminPolls,anetwork:loadAdminNetwork,aproposals:loadAdminProposals,arequests:loadAccessRequests,amembers:loadAdminMembers,apost:loadAdminAnnouncements};
+  const fns={afeedback:loadAdminFB,aforum:loadAdminForum,aideas:loadAdminIdeas,apolls:loadAdminPolls,anetwork:loadAdminNetwork,aproposals:loadAdminProposals,arequests:loadAccessRequests,apost:loadAdminAnnouncements};
   if(fns[s])fns[s]();
 }
 
@@ -1342,10 +1030,7 @@ async function _submitIdea(tId,cId,aId,auId){
   const text=document.getElementById(tId).value.trim(), cat=document.getElementById(cId).value;
   if(!text){notify('Please write your idea.','error');return;} if(!cat){notify('Please select a category.','error');return;}
   const isAnon=document.getElementById(aId).checked;
-  const doc={text,category:cat,author:isAnon?'Anonymous':(document.getElementById(auId).value.trim()||'Anonymous'),upvotes:0,timestamp:firebase.firestore.FieldValue.serverTimestamp()};
-  if(!isAnon && auth.currentUser) doc.authorUid=auth.currentUser.uid;
-  await db.collection('ideas').add(doc);
-  if(doc.authorUid){try{await db.collection('users').doc(doc.authorUid).update({idea_count:firebase.firestore.FieldValue.increment(1)});}catch(e){}}
+  await db.collection('ideas').add({text,category:cat,author:isAnon?'Anonymous':(document.getElementById(auId).value.trim()||'Anonymous'),upvotes:0,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
   document.getElementById(tId).value=''; document.getElementById(cId).value='';
   notify('💡 Idea posted!');
 }
@@ -1396,10 +1081,7 @@ async function submitForumPost(){
   const subj=document.getElementById('fSubject').value.trim(), msg=document.getElementById('fMessage').value.trim();
   if(!subj||!msg){notify('Please fill subject and message.','error');return;}
   const isAnon=document.getElementById('fAnon').value==='anon';
-  const doc={author:isAnon?'Anonymous Contributor':(document.getElementById('fAuthorName').value.trim()||'Anonymous'),category:document.getElementById('fCat').value,subject:subj,content:msg,reactions:{support:0,helpful:0,concerned:0},timestamp:firebase.firestore.FieldValue.serverTimestamp()};
-  if(!isAnon && auth.currentUser) doc.authorUid=auth.currentUser.uid;
-  await db.collection('forumPosts').add(doc);
-  if(doc.authorUid){try{await db.collection('users').doc(doc.authorUid).update({post_count:firebase.firestore.FieldValue.increment(1)});}catch(e){}}
+  await db.collection('forumPosts').add({author:isAnon?'Anonymous Contributor':(document.getElementById('fAuthorName').value.trim()||'Anonymous'),category:document.getElementById('fCat').value,subject:subj,content:msg,reactions:{support:0,helpful:0,concerned:0},timestamp:firebase.firestore.FieldValue.serverTimestamp()});
   document.getElementById('fSubject').value=''; document.getElementById('fMessage').value='';
   notify('✅ Views shared!'); loadForum(); updateCounter();
 }
@@ -1416,8 +1098,7 @@ async function loadForum(target){
     list.innerHTML='';
     filtered.forEach(doc=>{const d=doc.data();
       const aL=d.isAdmin?'<span style="background:var(--orange);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;margin-left:6px;font-weight:700;">Admin</span>':'';
-      const authorHtml=d.authorUid?`<span style="cursor:pointer;text-decoration:underline;" onclick="viewProfile('${d.authorUid}')">${esc(d.author)}</span>`:esc(d.author);
-      list.innerHTML+=`<div class="post-item ${d.isAdmin?'admin-post':''}"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin-bottom:8px;"><span style="font-weight:700;">${authorHtml}${aL}</span><span style="font-size:12px;color:var(--muted);">${ts(d.timestamp)}</span></div><h4 style="margin-bottom:8px;">${esc(d.subject)}</h4><p style="line-height:1.7;margin-bottom:12px;">${esc(d.content)}</p><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"><span class="post-cat">${CAT_LABELS[d.category]||d.category}</span><div><button class="reaction-btn" onclick="reactPost('${doc.id}','support',this)">💪 ${d.reactions?.support||0}</button><button class="reaction-btn" onclick="reactPost('${doc.id}','helpful',this)">👍 ${d.reactions?.helpful||0}</button><button class="reaction-btn" onclick="reactPost('${doc.id}','concerned',this)">😟 ${d.reactions?.concerned||0}</button></div></div></div>`;
+      list.innerHTML+=`<div class="post-item ${d.isAdmin?'admin-post':''}"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin-bottom:8px;"><span style="font-weight:700;">${esc(d.author)}${aL}</span><span style="font-size:12px;color:var(--muted);">${ts(d.timestamp)}</span></div><h4 style="margin-bottom:8px;">${esc(d.subject)}</h4><p style="line-height:1.7;margin-bottom:12px;">${esc(d.content)}</p><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"><span class="post-cat">${CAT_LABELS[d.category]||d.category}</span><div><button class="reaction-btn" onclick="reactPost('${doc.id}','support',this)">💪 ${d.reactions?.support||0}</button><button class="reaction-btn" onclick="reactPost('${doc.id}','helpful',this)">👍 ${d.reactions?.helpful||0}</button><button class="reaction-btn" onclick="reactPost('${doc.id}','concerned',this)">😟 ${d.reactions?.concerned||0}</button></div></div></div>`;
     });
   }catch(e){list.innerHTML=`<p style="color:red;padding:20px;">Error: ${e.message}</p>`;}
 }
