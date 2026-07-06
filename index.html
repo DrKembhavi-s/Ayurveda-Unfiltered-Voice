@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dr. Kembhavi's Ayurveda Unfiltered Voice</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -589,7 +590,13 @@ footer { background: rgba(44,62,80,.9); color: #fff; border-radius: 15px; paddin
             <input type="checkbox" id="selectAll" style="width:16px;height:16px;" onchange="selectAllPending()"> Select All Pending
           </label>
           <button class="btn btn-teal" id="bulkApproveBtn" onclick="bulkApprove()" disabled style="opacity:.5;">Bulk Approve (0 selected)</button>
-          <span style="color:rgba(255,255,255,.6);font-size:12px;">Select requests then click Bulk Approve to approve all at once</span>
+          <select id="reqFilter" onchange="loadRequests()" style="padding:8px 12px;border:2px solid rgba(255,255,255,.3);border-radius:8px;font-size:13px;background:rgba(255,255,255,.9);margin-left:auto;">
+            <option value="all">All Requests</option>
+            <option value="new">🆕 New (last 48 hrs)</option>
+            <option value="pending">⏳ All Pending</option>
+            <option value="approved">✅ Approved</option>
+            <option value="declined">✗ Declined</option>
+          </select>
         </div>
         <div id="requestList"></div>
       </div>
@@ -781,6 +788,23 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
 var auth = firebase.auth();
+
+// EMAILJS
+emailjs.init('nypLk9Yr80aVzLFZm');
+
+async function sendWelcomeEmail(name, email) {
+  if (!email) return;
+  try {
+    await emailjs.send('service_ox4weo5', 'template_ri7ffsh', {
+      to_name: name,
+      to_email: email,
+      platform_url: window.location.href.split('?')[0]
+    });
+    console.log('Welcome email sent to ' + email);
+  } catch(e) {
+    console.warn('Email error for ' + email + ':', e);
+  }
+}
 
 // PRESET CREDENTIALS
 var PRESETS = {
@@ -1323,6 +1347,7 @@ async function approveReq(docId) {
   var d = reqMap[docId]; if (!d) { notify('Request data not found.', 'err'); return; }
   try {
     await db.collection('accessRequests').doc(docId).update({ status: 'approved', approvedDate: new Date().toLocaleDateString('en-IN') });
+    sendWelcomeEmail(d.name, d.email);
     showApprovalModal(d.name, d.email, d.contact, d.role);
     loadRequests(); loadAdminDash();
   } catch(e) { notify('Error: ' + e.message, 'err'); }
@@ -1553,6 +1578,7 @@ async function bulkApprove() {
     var docId = checked[i].value; var d = reqMap[docId]; if (!d) continue;
     try {
       await db.collection('accessRequests').doc(docId).update({ status: 'approved', approvedDate: new Date().toLocaleDateString('en-IN') });
+      sendWelcomeEmail(d.name, d.email);
       approved.push(d);
     } catch(e) { errors.push(d.name); }
   }
