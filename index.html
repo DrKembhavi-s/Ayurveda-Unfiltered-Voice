@@ -584,6 +584,13 @@ footer { background: rgba(44,62,80,.9); color: #fff; border-radius: 15px; paddin
           <span id="pendingBadge" class="badge badge-anon" style="font-size:13px;"></span>
         </div>
         <div class="alert alert-info" style="font-size:13px;">Self-registered users create their own email and password. On approval, they can log in immediately.</div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;padding:14px;background:rgba(255,255,255,.12);border-radius:10px;">
+          <label style="display:flex;align-items:center;gap:8px;color:#fff;cursor:pointer;font-weight:700;font-size:13px;">
+            <input type="checkbox" id="selectAll" style="width:16px;height:16px;" onchange="selectAllPending()"> Select All Pending
+          </label>
+          <button class="btn btn-teal" id="bulkApproveBtn" onclick="bulkApprove()" disabled style="opacity:.5;">Bulk Approve (0 selected)</button>
+          <span style="color:rgba(255,255,255,.6);font-size:12px;">Select requests then click Bulk Approve to approve all at once</span>
+        </div>
         <div id="requestList"></div>
       </div>
 
@@ -693,6 +700,37 @@ footer { background: rgba(44,62,80,.9); color: #fff; border-radius: 15px; paddin
     </div>
     <div id="waMsgBlock" class="hidden"><p style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:4px;">WhatsApp Message - copied:</p><div class="msg-preview" id="waMsgText"></div></div>
     <div id="emailMsgBlock" class="hidden"><p style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:4px;">Email Message - copied:</p><div class="msg-preview" id="emailMsgText"></div></div>
+  </div>
+</div>
+
+<!-- BULK APPROVAL RESULTS MODAL -->
+<div class="modal-bg" id="bulkModal">
+  <div class="modal-box" style="max-width:560px;">
+    <button class="modal-close" onclick="q('bulkModal').style.display='none'">x</button>
+    <h3 style="color:var(--teal);margin-bottom:4px;">Bulk Approval Complete</h3>
+    <p id="bulkSummary" style="color:var(--muted);font-size:13px;margin-bottom:16px;"></p>
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <strong style="font-size:14px;">WhatsApp Numbers (for Broadcast List)</strong>
+        <button class="btn btn-green btn-sm" onclick="copyBulk('waNumbers')">Copy All</button>
+      </div>
+      <textarea id="waNumbers" style="width:100%;height:90px;font-family:monospace;font-size:13px;padding:10px;border:2px solid var(--border);border-radius:8px;" readonly></textarea>
+      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Copy these numbers, open WhatsApp, create a New Broadcast, paste all numbers, then send the message below.</p>
+    </div>
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <strong style="font-size:14px;">Email Addresses</strong>
+        <button class="btn btn-blue btn-sm" onclick="copyBulk('bulkEmails')">Copy All</button>
+      </div>
+      <textarea id="bulkEmails" style="width:100%;height:70px;font-family:monospace;font-size:13px;padding:10px;border:2px solid var(--border);border-radius:8px;" readonly></textarea>
+    </div>
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <strong style="font-size:14px;">WhatsApp Broadcast Message</strong>
+        <button class="btn btn-green btn-sm" onclick="copyBulk('bulkWaMsg')">Copy Message</button>
+      </div>
+      <div class="msg-preview" id="bulkWaMsg"></div>
+    </div>
   </div>
 </div>
 
@@ -1275,7 +1313,8 @@ async function loadRequests() {
       var isPending = d.status === 'pending';
       var borderCol = isPending ? 'var(--orange)' : d.status === 'approved' ? 'var(--teal)' : 'var(--red)';
       var authBadge = d.registeredViaAuth ? '<span style="background:#eff6ff;color:#1d4ed8;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:700;">Firebase Auth</span>' : '<span style="background:#f3e8ff;color:#7c3aed;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:700;">Manual</span>';
-      list.innerHTML += '<div style="background:#fff;border-radius:10px;padding:18px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);border-left:4px solid ' + borderCol + ';"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;"><div style="flex:1;"><strong style="font-size:15px;">' + esc(d.name) + '</strong> <span class="badge badge-fac">' + esc(d.role) + '</span> ' + authBadge + '<p style="font-size:13px;color:var(--muted);margin-top:6px;">&#127963; ' + esc(d.institution) + ' - ' + esc(d.state) + '</p>' + (d.email ? '<p style="font-size:13px;color:var(--muted);">&#128231; ' + esc(d.email) + '</p>' : '') + '<p style="font-size:13px;color:var(--muted);">&#128241; ' + esc(d.contact) + ' - ' + fmtDate(d.timestamp) + '</p>' + (d.reason ? '<p style="font-size:13px;font-style:italic;margin-top:6px;">"' + esc(d.reason) + '"</p>' : '') + '</div>' + (isPending ? '<div style="display:flex;gap:6px;flex-shrink:0;"><button class="btn btn-teal btn-sm" onclick="approveReq(\'' + doc.id + '\')">Approve</button><button class="btn btn-red btn-sm" onclick="declineReq(\'' + doc.id + '\')">Decline</button></div>' : '') + '</div></div>';
+      var chkBox = isPending ? '<input type="checkbox" class="req-chk" value="' + doc.id + '" style="width:18px;height:18px;margin-top:2px;flex-shrink:0;cursor:pointer;" onchange="updateBulkBtn()">' : '';
+      list.innerHTML += '<div style="background:#fff;border-radius:10px;padding:18px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);border-left:4px solid ' + borderCol + ';"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;"><div style="display:flex;gap:10px;flex:1;align-items:flex-start;">' + chkBox + '<div style="flex:1;"><strong style="font-size:15px;">' + esc(d.name) + '</strong> <span class="badge badge-fac">' + esc(d.role) + '</span> ' + authBadge + '<p style="font-size:13px;color:var(--muted);margin-top:6px;">&#127963; ' + esc(d.institution) + ' - ' + esc(d.state) + '</p>' + (d.email ? '<p style="font-size:13px;color:var(--muted);">&#128231; ' + esc(d.email) + '</p>' : '') + '<p style="font-size:13px;color:var(--muted);">&#128241; ' + esc(d.contact) + ' - ' + fmtDate(d.timestamp) + '</p>' + (d.reason ? '<p style="font-size:13px;font-style:italic;margin-top:6px;">"' + esc(d.reason) + '"</p>' : '') + '</div></div>' + (isPending ? '<div style="display:flex;gap:6px;flex-shrink:0;"><button class="btn btn-teal btn-sm" onclick="approveReq(\'' + doc.id + '\')">Approve</button><button class="btn btn-red btn-sm" onclick="declineReq(\'' + doc.id + '\')">Decline</button></div>' : '') + '</div></div>';
     });
   } catch(e) { list.innerHTML = '<p style="color:red;padding:20px;">Error: ' + e.message + '</p>'; }
 }
@@ -1485,6 +1524,57 @@ var wa = {
   sharePlatform: function() { this.open('Dr. Kembhavi\'s Ayurveda Unfiltered Voice is live!\n\nRegister with your own email and password at:\n' + this.url + '\n\n#AyurvedaReform #DrKembhavi'); },
   shareReform: function() { this.open('Ayurveda Reform Discussion Platform\n\nDr. Kembhavi invites professionals to discuss Academic, Clinical, Research, Administrative and Development reforms.\n\nRegister at: ' + this.url + '\n\nTogether we drive meaningful change!'); }
 };
+
+// BULK APPROVAL
+function updateBulkBtn() {
+  var checked = document.querySelectorAll('.req-chk:checked').length;
+  var btn = q('bulkApproveBtn');
+  if (btn) {
+    btn.textContent = 'Bulk Approve (' + checked + ' selected)';
+    btn.disabled = checked === 0;
+    btn.style.opacity = checked === 0 ? '.5' : '1';
+  }
+}
+
+function selectAllPending() {
+  var all = q('selectAll');
+  document.querySelectorAll('.req-chk').forEach(function(cb) { cb.checked = all.checked; });
+  updateBulkBtn();
+}
+
+async function bulkApprove() {
+  var checked = document.querySelectorAll('.req-chk:checked');
+  if (!checked.length) { notify('Please select at least one request.', 'err'); return; }
+  if (!confirm('Approve ' + checked.length + ' request(s)? They will all be able to log in immediately.')) return;
+  var btn = q('bulkApproveBtn');
+  btn.textContent = 'Approving...'; btn.disabled = true; btn.style.opacity = '.5';
+  var approved = []; var errors = [];
+  for (var i = 0; i < checked.length; i++) {
+    var docId = checked[i].value; var d = reqMap[docId]; if (!d) continue;
+    try {
+      await db.collection('accessRequests').doc(docId).update({ status: 'approved', approvedDate: new Date().toLocaleDateString('en-IN') });
+      approved.push(d);
+    } catch(e) { errors.push(d.name); }
+  }
+  var url = window.location.href.split('?')[0];
+  var waNumbers = approved.map(function(d) { return d.contact || ''; }).filter(Boolean).join('\n');
+  var emails = approved.map(function(d) { return d.email || ''; }).filter(Boolean).join('\n');
+  var waMsg = 'Dear Friend,\n\nYour access to Dr. Kembhavi\'s Ayurveda Unfiltered Voice has been approved!\n\nLog in at: ' + url + '\n\nUse:\n- Username: Your registered email address\n- Password: The password you chose when registering\n\nForgot your password? Click "Forgot Password?" on the login screen - a reset link will be sent to your email automatically.\n\nWelcome to the community!\n\n- Dr. Kembhavi';
+  q('bulkSummary').textContent = approved.length + ' request(s) approved successfully.' + (errors.length ? ' ' + errors.length + ' failed: ' + errors.join(', ') : '');
+  q('waNumbers').value = waNumbers;
+  q('bulkEmails').value = emails;
+  q('bulkWaMsg').textContent = waMsg;
+  q('bulkModal').style.display = 'block';
+  if (q('selectAll')) q('selectAll').checked = false;
+  btn.textContent = 'Bulk Approve (0 selected)'; btn.disabled = true; btn.style.opacity = '.5';
+  loadRequests(); loadAdminDash();
+}
+
+function copyBulk(id) {
+  var el = q(id);
+  var text = el.tagName === 'TEXTAREA' ? el.value : el.textContent;
+  navigator.clipboard.writeText(text).then(function() { notify('Copied to clipboard!'); }).catch(function() { notify('Please select and copy manually.', 'err'); });
+}
 
 // CLOSE MODALS ON BACKDROP CLICK
 q('regModal').addEventListener('click', function(e) { if (e.target === this) closeReg(); });
