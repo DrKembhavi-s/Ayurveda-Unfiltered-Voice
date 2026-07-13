@@ -816,6 +816,12 @@ var PRESETS = {
   'ayuradmin2025':   { p: 'admin@vaidya',  role: 'ADMIN' }
 };
 
+// Real Firebase Auth identity used behind the scenes for the Admin login,
+// so Firestore security rules can verify a genuine authenticated admin session
+// (needed to read confidential collections like 'feedback').
+var ADMIN_AUTH_EMAIL = 'admin@ayurvedaunfiltered.app';
+var ADMIN_AUTH_PASSWORD = 'voice81fc';
+
 var CAT = { academic: 'Academic Reforms', clinical: 'Clinical Practice', research: 'Research and Dev', administrative: 'Administrative', development: 'Development', regulatory: 'Regulatory' };
 
 // STATE
@@ -852,7 +858,18 @@ async function doLogin() {
   var btn = q('loginBtn');
   btn.textContent = 'Signing in...'; btn.disabled = true;
   if (PRESETS[u]) {
-    if (PRESETS[u].p === p) { btn.textContent = 'Sign In'; btn.disabled = false; initView(PRESETS[u].role); return; }
+    if (PRESETS[u].p === p) {
+      if (PRESETS[u].role === 'ADMIN') {
+        try {
+          await auth.signInWithEmailAndPassword(ADMIN_AUTH_EMAIL, ADMIN_AUTH_PASSWORD);
+        } catch(e) {
+          console.error('Admin Firebase Auth sign-in failed:', e);
+          showErr('loginErr', 'Admin authentication failed. The Firebase admin account may be misconfigured.');
+          btn.textContent = 'Sign In'; btn.disabled = false; return;
+        }
+      }
+      btn.textContent = 'Sign In'; btn.disabled = false; initView(PRESETS[u].role); return;
+    }
     showErr('loginErr', 'Invalid credentials. Please check your password.');
     btn.textContent = 'Sign In'; btn.disabled = false; return;
   }
