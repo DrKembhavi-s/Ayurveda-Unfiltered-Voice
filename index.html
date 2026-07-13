@@ -1423,15 +1423,15 @@ function dismissAnn(id) { dismissed.push(id); sessionStorage.setItem('ayv_dann',
 
 // ADMIN FUNCTIONS
 async function loadAdminDash() {
+  try { var fbSnap = await db.collection('feedback').get(); q('sTot').textContent = fbSnap.size; } catch(e) { console.error('Dashboard: feedback read failed:', e); q('sTot').textContent = 'ERR'; }
+  try { var ideasSnap = await db.collection('ideas').get(); q('sIdeas').textContent = ideasSnap.size; } catch(e) { console.error('Dashboard: ideas read failed:', e); q('sIdeas').textContent = 'ERR'; }
+  try { var forumSnap = await db.collection('forumPosts').get(); q('sForum').textContent = forumSnap.size; } catch(e) { console.error('Dashboard: forumPosts read failed:', e); q('sForum').textContent = 'ERR'; }
   try {
-    var results = await Promise.all([db.collection('feedback').get(), db.collection('ideas').get(), db.collection('forumPosts').get(), db.collection('accessRequests').where('status', '==', 'pending').get(), db.collection('accessRequests').get()]);
-    q('sTot').textContent = results[0].size;
-    q('sIdeas').textContent = results[1].size;
-    q('sForum').textContent = results[2].size;
-    q('sPending').textContent = results[3].size;
-    q('sUsers').textContent = results[4].size;
-    if (results[3].size > 0) { var btn = q('ab-arequests'); if (btn) btn.textContent = 'Requests (' + results[3].size + ')'; }
-  } catch(e) {}
+    var pendSnap = await db.collection('accessRequests').where('status', '==', 'pending').get();
+    q('sPending').textContent = pendSnap.size;
+    if (pendSnap.size > 0) { var btn = q('ab-arequests'); if (btn) btn.textContent = 'Requests (' + pendSnap.size + ')'; }
+  } catch(e) { console.error('Dashboard: pending requests read failed:', e); q('sPending').textContent = 'ERR'; }
+  try { var allReq = await db.collection('accessRequests').get(); q('sUsers').textContent = allReq.size; } catch(e) { console.error('Dashboard: total users read failed:', e); q('sUsers').textContent = 'ERR'; }
 }
 
 async function loadAdminFB() {
