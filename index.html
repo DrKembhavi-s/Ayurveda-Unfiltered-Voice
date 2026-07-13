@@ -70,6 +70,7 @@ textarea { resize: vertical; min-height: 100px; }
 /* GRID */
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.grid5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
 
 /* STAR RATING */
 .star { font-size: 22px; cursor: pointer; color: #d1d5db; }
@@ -162,7 +163,7 @@ footer { background: rgba(44,62,80,.9); color: #fff; border-radius: 15px; paddin
 .cta-banner { background: linear-gradient(135deg, #ff9a9e, #fecfef); border-radius: 20px; padding: 28px; text-align: center; margin: 20px 0; }
 
 @media (max-width: 600px) {
-  .grid2, .grid4 { grid-template-columns: 1fr; }
+  .grid2, .grid4, .grid5 { grid-template-columns: 1fr; }
   .snav-btn { min-width: 60px; font-size: 11px; }
 }
 </style>
@@ -504,7 +505,8 @@ footer { background: rgba(44,62,80,.9); color: #fff; border-radius: 15px; paddin
 
       <!-- DASHBOARD -->
       <div id="adash">
-        <div class="grid4" style="margin-bottom:20px;">
+        <div class="grid5" style="margin-bottom:20px;">
+          <div class="stat-card"><div class="stat-num" id="sUsers">-</div><div class="stat-lbl">Total Registered Users</div></div>
           <div class="stat-card"><div class="stat-num" id="sTot">-</div><div class="stat-lbl">Student Feedback</div></div>
           <div class="stat-card"><div class="stat-num" id="sIdeas">-</div><div class="stat-lbl">Ideas Shared</div></div>
           <div class="stat-card"><div class="stat-num" id="sForum">-</div><div class="stat-lbl">Forum Posts</div></div>
@@ -1422,11 +1424,12 @@ function dismissAnn(id) { dismissed.push(id); sessionStorage.setItem('ayv_dann',
 // ADMIN FUNCTIONS
 async function loadAdminDash() {
   try {
-    var results = await Promise.all([db.collection('feedback').get(), db.collection('ideas').get(), db.collection('forumPosts').get(), db.collection('accessRequests').where('status', '==', 'pending').get()]);
+    var results = await Promise.all([db.collection('feedback').get(), db.collection('ideas').get(), db.collection('forumPosts').get(), db.collection('accessRequests').where('status', '==', 'pending').get(), db.collection('accessRequests').get()]);
     q('sTot').textContent = results[0].size;
     q('sIdeas').textContent = results[1].size;
     q('sForum').textContent = results[2].size;
     q('sPending').textContent = results[3].size;
+    q('sUsers').textContent = results[4].size;
     if (results[3].size > 0) { var btn = q('ab-arequests'); if (btn) btn.textContent = 'Requests (' + results[3].size + ')'; }
   } catch(e) {}
 }
